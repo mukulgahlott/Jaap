@@ -157,33 +157,3 @@ fun HomeScreen() {
         }
     }
 
-
-
-@Composable
-fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.size(50.dp)
-            .clickable {
-                backgroundColor.value = if (backgroundColor.value == Color(0XFF49494972)) {
-                    Orange
-                } else {
-                    Color(0XFF49494972)
-                }
-
-            }
-    ) {
-        Surface(
-            shape = CircleShape,
-            color = backgroundColor.value,
-            modifier = Modifier.size(50.dp)
-        ) {
-        }
-        Image(
-            painter = painterResource(icon),
-            contentDescription = "Circular Image",
-            modifier = Modifier.size(30.dp)
-        )
-    }
-}
-
