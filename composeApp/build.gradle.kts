@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.filament.android)
+    implementation(libs.androidx.navigation.common.ktx)
     debugImplementation(compose.uiTooling)
 }
 

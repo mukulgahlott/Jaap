@@ -1,18 +1,43 @@
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.jetpackCompose.ui.theme.Orange
+import com.example.jetpackCompose.ui.theme.PureOrange
+import japp.composeapp.generated.resources.Res
+import japp.composeapp.generated.resources.ic_right_arrow
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+
 
 @Composable
 fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource) {
@@ -20,10 +45,10 @@ fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource) 
         contentAlignment = Alignment.Center,
         modifier = Modifier.size(50.dp)
             .clickable {
-                backgroundColor.value = if (backgroundColor.value == Color(0XFF49494972)) {
-                    Orange
+                backgroundColor.value = if (backgroundColor.value == Color(0xFFb7926d)) {
+                    PureOrange
                 } else {
-                    Color(0XFF49494972)
+                    Color(0xFFb7926d)
                 }
 
             }
@@ -39,5 +64,106 @@ fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource) 
             contentDescription = "Circular Image",
             modifier = Modifier.size(30.dp)
         )
+    }
+}
+
+
+
+@Composable
+fun RenderCustomButton(
+    showSwitch: Boolean,
+    icon: Painter,
+    title: String,
+    description: String,
+    topMargin: Dp,
+    showDescription: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val isChecked = remember { mutableStateOf(true) }
+
+    Row(
+        modifier = modifier.clickable(onClick = onClick)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = topMargin)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color(0XFFf3ede7)),
+            contentAlignment = Alignment.CenterStart
+        ) {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 20.dp,
+                        end = 20.dp,
+                        top = if (showDescription) 14.dp else 22.dp,
+                        bottom = if (showDescription) 14.dp else 22.dp
+                    ),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Image(
+                    painter = icon,
+                    contentDescription = "Main Icon",
+                    modifier = Modifier.size(width = 24.dp, height = 24.dp)
+                        .align(Alignment.CenterVertically),
+                    contentScale = ContentScale.Fit,
+                )
+
+                Column(
+                    modifier = Modifier
+                        .wrapContentWidth(),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0XFF87490c),
+                        modifier = Modifier.wrapContentSize()
+                            .padding(start = 24.dp)
+                    )
+                    if (showDescription) {
+                        Text(
+                            text = description,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Normal,
+                            color = Color(0XFF87490c),
+                            modifier = Modifier.wrapContentSize()
+                                .padding(start = 24.dp)
+                        )
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    if (showSwitch) {
+                        Switch(
+
+                            checked = isChecked.value,
+                            onCheckedChange = { isChecked.value = it},
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = Color(0XFFe28b2a))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(Res.drawable.ic_right_arrow),
+                            contentDescription = "Right Arrow",
+                            modifier = Modifier.size(width = 30.dp, height = 30.dp),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+            }
+        }
     }
 }

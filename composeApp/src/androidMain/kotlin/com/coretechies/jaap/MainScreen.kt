@@ -1,4 +1,3 @@
-import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -6,15 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -22,7 +18,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.coretechies.jaap.R
-import com.coretechies.jaap.hideSystemUI
+import com.coretechies.jaap.screens.ListScreen
+import com.example.jetpackCompose.ui.theme.Orange
 
 @Preview(showBackground = true)
 @Composable
@@ -68,14 +65,14 @@ fun BottomNavigationBar(navController: NavHostController) {
                         contentDescription = item.title,
                         // Apply tint based on selection state
                         colorFilter = ColorFilter.tint(
-                            if (isSelected) Color.Red else Color(0XFF2c2c2c)
+                            if (isSelected) Orange else Color(0XFF2c2c2c)
                         )
                     )
                 },
                 label = {
                     Text(
                         text = item.title,
-                        color = if (isSelected) Color.Red else Color(0XFF2c2c2c) // Change text color on selection
+                        color = if (isSelected) Orange else Color(0XFF2c2c2c) // Change text color on selection
                     )
                 },
                 selected = isSelected,
@@ -87,7 +84,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Red,       // Selected icon color
+                    selectedIconColor = Orange,       // Selected icon color
                     unselectedIconColor = Color(0XFF2c2c2c),    // Unselected icon color
                     indicatorColor = Color.Transparent   // Transparent indicator color
                 )
@@ -101,7 +98,7 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier) {
     NavHost(
         navController,
         startDestination = BottomNavItem.Home.route,
-        modifier = modifier.background(if (isSystemInDarkTheme()) Color.Black else Color(0XFFf2a45a))
+        modifier = modifier.background(if (isSystemInDarkTheme()) Color.Black else Color.White)
     ) {
         composable(BottomNavItem.Home.route) {
             HomeScreen()
@@ -113,29 +110,4 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier) {
             MenuScreen()
         }
     }
-}
-
-
-@Composable
-fun ListScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentHeight(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Greeting(name = "List Screen")
-    }
-}
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(text = "Hello $name!", modifier = modifier, color = Color.Red)
-}
-
-@Composable
-fun GreetingPreview() {
-    Greeting("Android")
 }

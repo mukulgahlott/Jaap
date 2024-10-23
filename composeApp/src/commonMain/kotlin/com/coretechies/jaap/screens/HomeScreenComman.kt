@@ -46,10 +46,10 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun HomeScreen() {
 
-    val volumeBackgroundColor = remember { mutableStateOf(Color(0XFF49494972)) }
-    val vibrationBackgroundColor = remember { mutableStateOf(Color(0XFF49494972)) }
-    val theamBackgroundColor = remember { mutableStateOf(Color(0XFF49494972)) }
-    val darkModBackgroundColor = remember { mutableStateOf(Color(0XFF49494972)) }
+    val volumeBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
+    val vibrationBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
+    val theamBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
+    val darkModBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
 
     // counter state
     var defaultCounterCount by remember { mutableStateOf(0) }

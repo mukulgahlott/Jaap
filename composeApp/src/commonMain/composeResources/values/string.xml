@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_title">Digital Jaap</string>
+    <string name="save_button">Save</string>
+    <string name="counter_default_count">0000</string>
+    <string name="menu_title">Menu</string>
+    <string name="notification">Notifications</string>
+    <string name="notification_enabled">Enabled</string>
+    <string name="language">Enabled</string>
+    <string name="language_name">English</string>
+    <string name="share_app">Share App</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="terms">Terms of Use</string>
+    <string name="list">List</string>
+    <string name="privacy">Privacy Policy</string>
+</resources>
