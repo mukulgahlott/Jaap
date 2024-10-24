@@ -23,11 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.coretechies.jaap.utils.playBeep
+import com.coretechies.jaap.utils.triggerVibration
 import com.example.jetpackCompose.ui.theme.Orange
+import japp.composeapp.generated.resources.DS_DIGI
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.device_1
 import japp.composeapp.generated.resources.moon_stars
@@ -35,11 +39,12 @@ import japp.composeapp.generated.resources.palette
 import japp.composeapp.generated.resources.save
 import japp.composeapp.generated.resources.vibrate
 import japp.composeapp.generated.resources.volume
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(context : Any?) {
 
     val volumeBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val vibrationBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
@@ -105,14 +110,18 @@ fun HomeScreen() {
 
                         Text(
                             text = if (defaultCounterCount == 0) "0000" else "${defaultCounterCount}",
-                            modifier = Modifier.padding(top = 77.dp),
-                            fontSize = 50.sp,
+                            modifier = Modifier.padding(top = 70.dp),
+                            fontSize = 70.sp,
+                            fontFamily = FontFamily(
+                                Font(Res.font.DS_DIGI)),
                             textAlign = TextAlign.End,
                         )
 
                         Button(
                             onClick = {
-                                triggerVibration(context, 100)
+                                triggerVibration(context,100)
+                                playBeep(context)
+                                if(defaultCounterCount <= 9999)
                                 defaultCounterCount++
                             },
                             colors = ButtonDefaults.buttonColors(
