@@ -79,7 +79,7 @@ fun RenderCustomButton(
     showDescription: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
-) {
+)  {
     val isChecked = remember { mutableStateOf(true) }
 
     Row(

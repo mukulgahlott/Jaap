@@ -1,23 +1,20 @@
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,18 +27,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jetpackCompose.ui.theme.DarkOrange
 import com.example.jetpackCompose.ui.theme.Orange
-import com.example.jetpackCompose.ui.theme.OrangeSubColor
-import com.example.jetpackCompose.ui.theme.SubDark
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.device_1
 import japp.composeapp.generated.resources.moon_stars
 import japp.composeapp.generated.resources.palette
+import japp.composeapp.generated.resources.save
 import japp.composeapp.generated.resources.vibrate
 import japp.composeapp.generated.resources.volume
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HomeScreen() {
@@ -51,11 +46,17 @@ fun HomeScreen() {
     val theamBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val darkModBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
 
+
+    var showSaveBottomSheet by remember { mutableStateOf(false) }
+    var showResetBottomSheet by remember { mutableStateOf(false) }
     // counter state
     var defaultCounterCount by remember { mutableStateOf(0) }
 
 
+
+
     FullScreenBackground {
+
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -82,10 +83,19 @@ fun HomeScreen() {
                 customButtons(darkModBackgroundColor, Res.drawable.moon_stars)
             }
 
-            Box(modifier = Modifier.wrapContentSize().padding(top = 50.dp), contentAlignment = Alignment.TopCenter) {
+            Box(
+                modifier = Modifier.wrapContentSize().padding(top = 50.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
 
-                Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(contentAlignment = Alignment.TopCenter, modifier = Modifier.wrapContentSize()) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        contentAlignment = Alignment.TopCenter,
+                        modifier = Modifier.wrapContentSize()
+                    ) {
                         Image(
                             painter = painterResource(Res.drawable.device_1),
                             contentDescription = "device",
@@ -102,6 +112,7 @@ fun HomeScreen() {
 
                         Button(
                             onClick = {
+                                triggerVibration(context, 100)
                                 defaultCounterCount++
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -117,7 +128,8 @@ fun HomeScreen() {
                         // Counter Reset Button
                         Button(
                             onClick = {
-                                defaultCounterCount = 0
+                                showResetBottomSheet = true
+
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
@@ -132,6 +144,7 @@ fun HomeScreen() {
 
                     Button(
                         onClick = {
+                            showSaveBottomSheet = true
 
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -144,7 +157,7 @@ fun HomeScreen() {
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Text(
-                            text = "save",
+                            text = stringResource(Res.string.save),
                             modifier = Modifier.padding(8.dp),
                             fontSize = 26.sp,
                         )
@@ -154,6 +167,25 @@ fun HomeScreen() {
 
 
         }
+            Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
+                SaveBottomSheet(
+                    totalCount = defaultCounterCount,
+                    onDismiss = { showSaveBottomSheet = false },
+                    onSave = { showSaveBottomSheet = false },
+                    showBottomSheet = showSaveBottomSheet
+                )
+
+            }
+
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
+            resetBottomSheet(
+                onDismiss = { showResetBottomSheet = false },
+               onReset = { showResetBottomSheet = false
+                   defaultCounterCount = 0 },
+                showBottomSheet = showResetBottomSheet)
+
         }
-    }
+
+        }
+}
 
