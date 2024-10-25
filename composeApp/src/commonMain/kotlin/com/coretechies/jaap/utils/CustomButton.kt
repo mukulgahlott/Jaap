@@ -25,13 +25,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.jetpackCompose.ui.theme.Orange
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.example.jetpackCompose.ui.theme.PureOrange
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.ic_right_arrow
@@ -40,27 +42,30 @@ import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
-fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource) {
+fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource, enabled : Boolean , onClick: () -> Unit, darkMode : Boolean) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.size(50.dp)
             .clickable {
-                backgroundColor.value = if (backgroundColor.value == Color(0xFFb7926d)) {
+               backgroundColor.value = if (enabled) {
                     PureOrange
                 } else {
                     Color(0xFFb7926d)
                 }
+                onClick()
 
             }
     ) {
         Surface(
             shape = CircleShape,
-            color = backgroundColor.value,
+            color = if (enabled) PureOrange else
+                Color(0xFFb7926d),
             modifier = Modifier.size(50.dp)
         ) {
         }
         Image(
             painter = painterResource(icon),
+            colorFilter = ColorFilter.tint(if (!darkMode) Color.White else Color.Black),
             contentDescription = "Circular Image",
             modifier = Modifier.size(30.dp)
         )
@@ -78,6 +83,7 @@ fun RenderCustomButton(
     topMargin: Dp,
     showDescription: Boolean,
     modifier: Modifier = Modifier,
+    darkMode: Boolean,
     onClick: () -> Unit
 )  {
     val isChecked = remember { mutableStateOf(true) }
@@ -91,7 +97,7 @@ fun RenderCustomButton(
                 .wrapContentHeight()
                 .padding(top = topMargin)
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color(0XFFf3ede7)),
+                .background(if (darkMode) Color (0XFF2c2c2c) else Color(0XFFf3ede7)),
             contentAlignment = Alignment.CenterStart
         ) {
 
@@ -111,6 +117,7 @@ fun RenderCustomButton(
                 Image(
                     painter = icon,
                     contentDescription = "Main Icon",
+                    colorFilter = ColorFilter.tint(if (darkMode) Color.White else Color(0XFF87490c)),
                     modifier = Modifier.size(width = 24.dp, height = 24.dp)
                         .align(Alignment.CenterVertically),
                     contentScale = ContentScale.Fit,
@@ -126,7 +133,7 @@ fun RenderCustomButton(
                         text = title,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
-                        color = Color(0XFF87490c),
+                        color = if (darkMode) Color.White else Color(0XFF87490c),
                         modifier = Modifier.wrapContentSize()
                             .padding(start = 24.dp)
                     )
@@ -135,7 +142,7 @@ fun RenderCustomButton(
                             text = description,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Normal,
-                            color = Color(0XFF87490c),
+                            color = if (darkMode) Color.Gray else Color(0XFF87490c),
                             modifier = Modifier.wrapContentSize()
                                 .padding(start = 24.dp)
                         )

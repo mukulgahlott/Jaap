@@ -23,12 +23,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.coretechies.jaap.screens.JaapData
+import com.example.jetpackCompose.ui.theme.Orange
 
 @Composable
-fun CardViewJaap(item: JaapData) {
+fun CardViewJaap(item: JaapData, darkMode: Boolean) {
     Card(
         elevation = 0.dp,
         shape = RoundedCornerShape(8.dp),
+        backgroundColor = if (darkMode) Color.Black else Color.White,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
@@ -43,7 +45,7 @@ fun CardViewJaap(item: JaapData) {
             // Left part - Rounded box with number
             Box(
                 modifier = Modifier
-                    .background(color = Color(0xFFF28A2A), shape = RoundedCornerShape(8.dp))
+                    .background(color = if(darkMode) Color(0XFF2c2c2c) else Orange, shape = RoundedCornerShape(8.dp))
                     .padding(12.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -67,7 +69,7 @@ fun CardViewJaap(item: JaapData) {
                     text = item.title,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF87490C)
+                    color = if (!darkMode)Color(0xFF87490C) else Color.White
                 )
                 Text(
                     text = item.time,
@@ -81,7 +83,7 @@ fun CardViewJaap(item: JaapData) {
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "More Options",
                 modifier = Modifier.size(24.dp),
-                tint = Color(0xFF87490C)
+                tint = if (!darkMode)Color(0xFF87490C)else Color.Gray
             )
         }
     }

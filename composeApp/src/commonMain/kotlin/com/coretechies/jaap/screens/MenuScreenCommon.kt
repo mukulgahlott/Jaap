@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -16,8 +15,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +28,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.contact_us
 import japp.composeapp.generated.resources.ic_bell
@@ -46,15 +53,24 @@ import japp.composeapp.generated.resources.rate_us
 import japp.composeapp.generated.resources.share_app
 import japp.composeapp.generated.resources.terms
 import japp.composeapp.generated.resources.user_3__1
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun MenuScreen() {
+fun MenuScreen(prefs: DataStore<Preferences>) {
 
     val moonBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val scrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
+    val darkMode by prefs
+        .data
+        .map {
+            val darkModeKey = booleanPreferencesKey("DarkMode")
+            it[darkModeKey] ?: false
+        }.collectAsState(false)
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -74,12 +90,19 @@ fun MenuScreen() {
                 modifier = Modifier.wrapContentHeight(),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0XFF87490c),
+                color = if (darkMode)Color.White else Color(0XFF87490c),
                 text = "Menu",
                 textAlign = TextAlign.Center
             )
 
-            customButtons(moonBackgroundColor, Res.drawable.moon_stars)
+            customButtons(moonBackgroundColor, Res.drawable.moon_stars, darkMode , onClick = {
+                scope.launch {
+                    prefs.edit { dataStore ->
+                        val darkModeKey = booleanPreferencesKey("DarkMode")
+                        dataStore[darkModeKey] = !darkMode
+                    }
+                }
+            }, darkMode)
         }
 
         Column(
@@ -98,6 +121,7 @@ fun MenuScreen() {
                 topMargin = 5.dp,
                 showDescription = true,
                 modifier = Modifier,
+                darkMode = darkMode,
                 onClick = {
 
                 },
@@ -111,6 +135,7 @@ fun MenuScreen() {
                 topMargin = 5.dp,
                 showDescription = true,
                 modifier = Modifier,
+                darkMode = darkMode,
                 onClick = {
 
                 },
@@ -124,6 +149,7 @@ fun MenuScreen() {
                 topMargin = 24.dp,
                 showDescription = false,
                 modifier = Modifier,
+                darkMode = darkMode,
                 onClick = {
 
                 },
@@ -137,6 +163,7 @@ fun MenuScreen() {
                 topMargin = 5.dp,
                 showDescription = false,
                 modifier = Modifier,
+                darkMode = darkMode,
                 onClick = {
 
                 },
@@ -150,6 +177,7 @@ fun MenuScreen() {
                 topMargin = 5.dp,
                 showDescription = false,
                 modifier = Modifier,
+                darkMode = darkMode,
                 onClick = {
 
                 },
@@ -163,6 +191,7 @@ fun MenuScreen() {
                 topMargin = 24.dp,
                 showDescription = false,
                 modifier = Modifier,
+                darkMode = darkMode,
                 onClick = {
 
                 },
@@ -176,6 +205,7 @@ fun MenuScreen() {
                 topMargin = 5.dp,
                 showDescription = false,
                 modifier = Modifier,
+                darkMode = darkMode,
                 onClick = {
 
                 },
@@ -194,6 +224,7 @@ fun MenuScreen() {
 
 @Composable
 fun profileButtons(icon: DrawableResource) {
+
     Box(
         contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
     ) {

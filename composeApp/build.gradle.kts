@@ -47,7 +47,14 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            // Multiplatform Settings and DataStore
+            implementation(libs.multiplatform.settings)
+            api(libs.datastore.preferences)
+            api(libs.datastore)
+
         }
+
     }
 }
 
@@ -83,6 +90,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.filament.android)
     implementation(libs.androidx.navigation.common.ktx)
+    implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.datastore.preferences.core.jvm)
     debugImplementation(compose.uiTooling)
 }
 
