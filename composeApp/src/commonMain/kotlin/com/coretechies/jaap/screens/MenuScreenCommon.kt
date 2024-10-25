@@ -37,6 +37,7 @@ import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.contact_us
 import japp.composeapp.generated.resources.ic_bell
 import japp.composeapp.generated.resources.ic_coretechies
+import japp.composeapp.generated.resources.ic_coretechies_white
 import japp.composeapp.generated.resources.ic_document
 import japp.composeapp.generated.resources.ic_envelop
 import japp.composeapp.generated.resources.ic_language
@@ -212,7 +213,7 @@ fun MenuScreen(prefs: DataStore<Preferences>) {
             )
 
             Image(
-                painter = painterResource(Res.drawable.ic_coretechies),
+                painter = painterResource(if(darkMode) Res.drawable.ic_coretechies_white else Res.drawable.ic_coretechies),
                 contentDescription = "CoreTechies Icon",
                 modifier = Modifier.fillMaxWidth().height(140.dp)
                     .padding(top = 54.dp, bottom = 24.dp),

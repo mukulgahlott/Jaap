@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -32,7 +34,6 @@ kotlin {
         
         androidMain.dependencies {
             implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
 
 
         }
@@ -47,12 +48,29 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.activity.compose)
 
             // Multiplatform Settings and DataStore
             implementation(libs.multiplatform.settings)
             api(libs.datastore.preferences)
             api(libs.datastore)
 
+            // Current Date time
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+
+
+            // For shared viewmodels, can be used with iOS too
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtime.compose)
+
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
+
+        }
+        getByName("commonMain") {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+            }
         }
 
     }
@@ -84,6 +102,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
+room {
+    schemaDirectory("$projectDir/schemas")
+}
 
 dependencies {
     implementation(libs.androidx.material3.android)
@@ -93,5 +114,6 @@ dependencies {
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences.core.jvm)
     debugImplementation(compose.uiTooling)
+    ksp(libs.androidx.room.compiler)
 }
 

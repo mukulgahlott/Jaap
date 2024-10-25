@@ -35,19 +35,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.coretechies.jaap.room.counter.CountingDao
+import com.coretechies.jaap.room.counter.CountingDetails
 import com.example.jetpackCompose.ui.theme.Orange
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.no
 import japp.composeapp.generated.resources.reset_counter
 import japp.composeapp.generated.resources.reset_description
 import japp.composeapp.generated.resources.yes
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SaveBottomSheet(
     onDismiss: () -> Unit,
+    countingDao: CountingDao,
     onSave: () -> Unit,
     totalCount: Int,
     showBottomSheet: Boolean
@@ -55,14 +66,10 @@ fun SaveBottomSheet(
     val textState = remember { mutableStateOf(TextFieldValue("")) }
 
     AnimatedVisibility(
-        visible = showBottomSheet,
-        enter = slideInVertically(
-            initialOffsetY = { it },
-            animationSpec = tween(durationMillis = 300)
-        ),
-        exit = slideOutVertically(
-            targetOffsetY = { it },
-            animationSpec = tween(durationMillis = 300)
+        visible = showBottomSheet, enter = slideInVertically(
+            initialOffsetY = { it }, animationSpec = tween(durationMillis = 300)
+        ), exit = slideOutVertically(
+            targetOffsetY = { it }, animationSpec = tween(durationMillis = 300)
         )
     ) {
         Surface(
@@ -71,9 +78,7 @@ fun SaveBottomSheet(
             color = Color.White
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Bottom
             ) {
@@ -84,19 +89,15 @@ fun SaveBottomSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp)
-                            .clickable {
+                    Box(contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(50.dp).clickable {
                                 onDismiss()
-                            }
-                    ) {
+                            }) {
                         Surface(
                             shape = CircleShape,
                             color = Color(0xFFb7926d),
                             modifier = Modifier.size(40.dp)
-                        ) {
-                        }
+                        ) {}
                         IconButton(onClick = onDismiss) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
@@ -107,28 +108,32 @@ fun SaveBottomSheet(
                     }
 
                     Text(
-                        text = "Save",
-                        style = TextStyle(
+                        text = "Save", style = TextStyle(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF8C4B26)
                         )
                     )
 
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp)
-                            .clickable {
+                    Box(contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(50.dp).clickable {
                                 onDismiss()
-                            }
-                    ) {
+                            }) {
                         Surface(
                             shape = CircleShape,
                             color = Color(0xFFe28b2a),
                             modifier = Modifier.size(40.dp)
-                        ) {
-                        }
-                        IconButton(onClick = onSave) {
+                        ) {}
+                        IconButton(onClick = {
+                            insertList(
+                                totalCount,
+                                textState.value.text,
+                                "Jajman0900",
+                                "Jajman-0900",
+                                countingDao
+                            )
+                            onSave()
+                        }) {
                             Icon(
                                 imageVector = Icons.Filled.Check,
                                 contentDescription = "Save",
@@ -141,8 +146,7 @@ fun SaveBottomSheet(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Text Field for Name input
-                TextField(
-                    value = textState.value,
+                TextField(value = textState.value,
                     onValueChange = { textState.value = it },
                     placeholder = { Text(text = "Name") },
                     colors = TextFieldDefaults.textFieldColors(
@@ -150,17 +154,14 @@ fun SaveBottomSheet(
                         placeholderColor = Color(0xFF9D8E80) // Placeholder color
                     ),
                     shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
+                    modifier = Modifier.fillMaxWidth().height(56.dp)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Total Count text
                 Text(
-                    text = "Total Count : $totalCount",
-                    style = TextStyle(
+                    text = "Total Count : $totalCount", style = TextStyle(
                         color = Color(0xFFFF8C00), // Custom color for count text
                         fontSize = 16.sp
                     )
@@ -171,23 +172,60 @@ fun SaveBottomSheet(
 }
 
 
+fun insertList(
+    totalCount: Int,
+    countTitle: String,
+    countingDetailsUserId: String,
+    countingDetailsUserNane: String,
+    countingDao: CountingDao,
+) {
+
+    if (countTitle.isNotBlank()) {
+        val countingTempObj = CountingDetails(
+            totalCount = totalCount,
+            countTitle = countTitle,
+            countDate = getCurrentDateTime(),
+            countingDetailsUserId = countingDetailsUserId,
+            countingDetailsUserName = countingDetailsUserNane
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            countingDao.insert(countingTempObj)
+        }
+
+    }
+}
+
+fun getCurrentDateTime(): String {
+    val currentMoment = Clock.System.now()
+    val dateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
+
+    // Format date as "YYYY-MM-DD"
+    val date = "${dateTime.year}-${dateTime.monthNumber}-${dateTime.dayOfMonth}"
+
+    val hour = dateTime.hour % 12
+    val amPm = if (dateTime.hour >= 12) "PM" else "AM"
+    val minute = dateTime.minute.toString().padStart(2, '0')
+
+    val time = "${if (hour == 0) 12 else hour}:$minute $amPm"
+
+    val weekOfTheDay = dateTime.dayOfWeek.name
+    val firstThreeChars = weekOfTheDay.substring(0, 3).toLowerCase()
+
+    return "${firstThreeChars} , $date . $time"
+}
+
+
 @Composable
 fun resetBottomSheet(
-    onDismiss: () -> Unit,
-    onReset: () -> Unit,
-    showBottomSheet: Boolean
+    onDismiss: () -> Unit, onReset: () -> Unit, showBottomSheet: Boolean
 ) {
 
 
     AnimatedVisibility(
-        visible = showBottomSheet,
-        enter = slideInVertically(
-            initialOffsetY = { it },
-            animationSpec = tween(durationMillis = 300)
-        ),
-        exit = slideOutVertically(
-            targetOffsetY = { it },
-            animationSpec = tween(durationMillis = 300)
+        visible = showBottomSheet, enter = slideInVertically(
+            initialOffsetY = { it }, animationSpec = tween(durationMillis = 300)
+        ), exit = slideOutVertically(
+            targetOffsetY = { it }, animationSpec = tween(durationMillis = 300)
         )
     ) {
         Surface(
@@ -209,19 +247,15 @@ fun resetBottomSheet(
                             color = Color(0xFF8C4B26)
                         )
                     )
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp)
-                            .clickable {
+                    Box(contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(50.dp).clickable {
                                 onDismiss()
-                            }
-                    ) {
+                            }) {
                         Surface(
                             shape = CircleShape,
                             color = Color(0xFFcfb69e),
                             modifier = Modifier.size(40.dp)
-                        ) {
-                        }
+                        ) {}
                         IconButton(onClick = onDismiss) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
@@ -233,8 +267,7 @@ fun resetBottomSheet(
                 }
                 Row(modifier = Modifier.fillMaxWidth(0.8f)) {
                     Text(
-                        text = stringResource(Res.string.reset_description),
-                        style = TextStyle(
+                        text = stringResource(Res.string.reset_description), style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF8C4B26)
@@ -248,12 +281,9 @@ fun resetBottomSheet(
                         onReset()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Orange,
-                        contentColor = Color.White
+                        backgroundColor = Orange, contentColor = Color.White
                     ),
-                    modifier = Modifier
-                        .padding(top = 10.dp)
-                        .align(Alignment.CenterHorizontally)
+                    modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
                         .fillMaxWidth(fraction = 0.7f),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -267,11 +297,9 @@ fun resetBottomSheet(
                 Button(
                     onClick = onDismiss,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Orange,
-                        contentColor = Color.White
+                        backgroundColor = Orange, contentColor = Color.White
                     ),
-                    modifier = Modifier
-                        .padding(top = 10.dp).align(Alignment.CenterHorizontally)
+                    modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
                         .fillMaxWidth(fraction = 0.7f),
                     shape = RoundedCornerShape(16.dp)
                 ) {
@@ -288,5 +316,6 @@ fun resetBottomSheet(
 
     }
 }
+
 
 

@@ -22,11 +22,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.screens.JaapData
 import com.example.jetpackCompose.ui.theme.Orange
 
 @Composable
-fun CardViewJaap(item: JaapData, darkMode: Boolean) {
+fun CardViewJaap(item: CountingDetails, darkMode: Boolean) {
     Card(
         elevation = 0.dp,
         shape = RoundedCornerShape(8.dp),
@@ -50,7 +51,7 @@ fun CardViewJaap(item: JaapData, darkMode: Boolean) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = item.count,
+                    text = item.totalCount.toString(),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -66,13 +67,13 @@ fun CardViewJaap(item: JaapData, darkMode: Boolean) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = item.title,
+                    text = item.countTitle,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (!darkMode)Color(0xFF87490C) else Color.White
                 )
                 Text(
-                    text = item.time,
+                    text = item.countDate,
                     fontSize = 12.sp,
                     color = Color.Gray
                 )

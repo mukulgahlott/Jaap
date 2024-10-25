@@ -36,6 +36,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.utils.playBeep
 import com.coretechies.jaap.utils.triggerVibration
 import com.example.jetpackCompose.ui.theme.Orange
@@ -48,6 +49,9 @@ import japp.composeapp.generated.resources.palette
 import japp.composeapp.generated.resources.save
 import japp.composeapp.generated.resources.vibrate
 import japp.composeapp.generated.resources.volume
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
@@ -55,7 +59,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HomeScreen(context: Any?, prefs: DataStore<Preferences>) {
+fun HomeScreen(context: Any?, prefs: DataStore<Preferences>, countingDao: CountingDao) {
 
 
     val volumeBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
@@ -255,7 +259,8 @@ fun HomeScreen(context: Any?, prefs: DataStore<Preferences>) {
             }
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
                 SaveBottomSheet(
-                    totalCount = defaultCounterCount,
+                    totalCount = counter,
+                    countingDao = countingDao,
                     onDismiss = { showSaveBottomSheet = false },
                     onSave = { showSaveBottomSheet = false },
                     showBottomSheet = showSaveBottomSheet

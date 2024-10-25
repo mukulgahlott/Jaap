@@ -22,12 +22,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.coretechies.jaap.R
+import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.screens.ListScreen
 import com.example.jetpackCompose.ui.theme.Orange
 import kotlinx.coroutines.flow.map
 
 @Composable
-fun MainScreen(prefs: DataStore<Preferences>) {
+fun MainScreen(prefs: DataStore<Preferences>, countingDao: CountingDao) {
     val navController = rememberNavController()
     Scaffold(
         modifier = Modifier
@@ -35,7 +36,7 @@ fun MainScreen(prefs: DataStore<Preferences>) {
             .background(Color.Gray),
         bottomBar = { BottomNavigationBar(navController = navController, prefs) }
     ) { innerPadding ->
-        NavigationGraph(navController = navController, modifier = Modifier.padding(innerPadding), prefs)
+        NavigationGraph(navController = navController, modifier = Modifier.padding(innerPadding),prefs = prefs, countingDao)
     }
 }
 sealed class BottomNavItem(val route: String, val iconRes: Int, val title: String) {
@@ -105,7 +106,7 @@ fun BottomNavigationBar(navController: NavHostController,prefs: DataStore<Prefer
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController, modifier: Modifier, prefs: DataStore<Preferences>) {
+fun NavigationGraph(navController: NavHostController, modifier: Modifier, prefs: DataStore<Preferences>, countingDao: CountingDao) {
 
     val darkMode by prefs
         .data
@@ -120,10 +121,10 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier, prefs:
         modifier = modifier.background(if (darkMode) Color.Black else Color.White)
     ) {
         composable(BottomNavItem.Home.route) {
-            HomeScreen(LocalContext.current,prefs)
+            HomeScreen(LocalContext.current,prefs,countingDao)
         }
         composable(BottomNavItem.List.route) {
-            ListScreen(prefs)
+            ListScreen(prefs,countingDao)
         }
         composable(BottomNavItem.Menu.route) {
             MenuScreen(prefs)

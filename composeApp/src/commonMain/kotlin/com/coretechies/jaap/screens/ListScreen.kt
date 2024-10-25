@@ -29,6 +29,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import com.coretechies.jaap.cardview.CardViewJaap
+import com.coretechies.jaap.room.counter.CountingDao
 import customButtons
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.list
@@ -41,19 +42,22 @@ import org.jetbrains.compose.resources.stringResource
 data class JaapData(val count: String, val title: String, val time: String)
 
 @Composable
-fun ListScreen(prefs: DataStore<Preferences>) {
+fun ListScreen(prefs: DataStore<Preferences>, countingDao: CountingDao) {
+
+    val countingData by countingDao.getAllCountingDetails().collectAsState(initial = emptyList())
+
     val moonBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val volumeBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
 
     val darkMode by prefs.data.map {
-            val darkModeKey = booleanPreferencesKey("DarkMode")
-            it[darkModeKey] ?: false
-        }.collectAsState(false)
+        val darkModeKey = booleanPreferencesKey("DarkMode")
+        it[darkModeKey] ?: false
+    }.collectAsState(false)
 
     val volumeEnabled by prefs.data.map {
-            val volumeKey = booleanPreferencesKey("Volume")
-            it[volumeKey] ?: false
-        }.collectAsState(false)
+        val volumeKey = booleanPreferencesKey("Volume")
+        it[volumeKey] ?: false
+    }.collectAsState(false)
 
 
     val scope = rememberCoroutineScope()
@@ -93,7 +97,7 @@ fun ListScreen(prefs: DataStore<Preferences>) {
                 modifier = Modifier.wrapContentHeight(),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = if (darkMode)Color.White else Color(0XFF87490c),
+                color = if (darkMode) Color.White else Color(0XFF87490c),
                 text = stringResource(Res.string.list),
                 textAlign = TextAlign.Center
             )
@@ -116,8 +120,11 @@ fun ListScreen(prefs: DataStore<Preferences>) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(jaapItems) { item ->
-                CardViewJaap(item, darkMode)
+
+            if (countingData.isNotEmpty()) {
+                items(countingData) { item ->
+                    CardViewJaap(item, darkMode)
+                }
             }
         }
     }
