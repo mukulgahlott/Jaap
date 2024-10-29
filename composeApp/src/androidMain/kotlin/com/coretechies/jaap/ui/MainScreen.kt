@@ -4,8 +4,12 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -17,18 +21,23 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.coretechies.jaap.R
 import com.coretechies.jaap.room.counter.CountingDao
+import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.screens.ListScreen
 import com.example.jetpackCompose.ui.theme.Orange
 import kotlinx.coroutines.flow.map
 
+
+
 @Composable
 fun MainScreen(prefs: DataStore<Preferences>, countingDao: CountingDao) {
+
     val navController = rememberNavController()
     Scaffold(
         modifier = Modifier
@@ -65,7 +74,7 @@ fun BottomNavigationBar(navController: NavHostController,prefs: DataStore<Prefer
             it[darkModeKey] ?: false
         }.collectAsState(false)
 
-    NavigationBar( modifier = Modifier.height(70.dp), containerColor = if (darkMode) Color.Black else Color.White) {
+    NavigationBar( modifier = Modifier.wrapContentHeight(), containerColor = if (darkMode) Color.Black else Color.White) {
         items.forEach { item ->
             val isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true
 
@@ -108,6 +117,8 @@ fun BottomNavigationBar(navController: NavHostController,prefs: DataStore<Prefer
 @Composable
 fun NavigationGraph(navController: NavHostController, modifier: Modifier, prefs: DataStore<Preferences>, countingDao: CountingDao) {
 
+    var countingData by remember { mutableStateOf<CountingDetails?>(null) }
+
     val darkMode by prefs
         .data
         .map {
@@ -121,13 +132,18 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier, prefs:
         modifier = modifier.background(if (darkMode) Color.Black else Color.White)
     ) {
         composable(BottomNavItem.Home.route) {
-            HomeScreen(LocalContext.current,prefs,countingDao)
+            HomeScreen(LocalContext.current,prefs,countingDao, countingData , onDiscontinue = {
+                countingData = null
+            })
         }
         composable(BottomNavItem.List.route) {
-            ListScreen(prefs,countingDao)
+            ListScreen(prefs,countingDao) {
+                data -> countingData = data
+                navController.navigate(BottomNavItem.Home.route)
+            }
         }
         composable(BottomNavItem.Menu.route) {
-            MenuScreen(prefs)
+            MenuScreen(LocalContext.current,prefs)
         }
     }
 }

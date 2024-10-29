@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    id("com.google.gms.google-services")
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 kotlin {
@@ -34,6 +36,9 @@ kotlin {
         
         androidMain.dependencies {
             implementation(compose.preview)
+            implementation(platform("com.google.firebase:firebase-bom:30.0.1"))
+            implementation("com.google.firebase:firebase-crashlytics")
+            implementation("com.google.firebase:firebase-analytics")
 
 
         }
@@ -113,7 +118,9 @@ dependencies {
     implementation(libs.androidx.navigation.common.ktx)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences.core.jvm)
+    implementation(libs.firebase.crashlytics)
     debugImplementation(compose.uiTooling)
     ksp(libs.androidx.room.compiler)
+    implementation("com.google.firebase:firebase-common-ktx:21.0.0")
 }
 

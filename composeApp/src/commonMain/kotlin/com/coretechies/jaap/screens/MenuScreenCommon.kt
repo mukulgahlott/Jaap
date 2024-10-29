@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +34,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.coretechies.jaap.localization.Language
+import com.coretechies.jaap.localization.LocalizedApp
+import com.coretechies.jaap.shareApp.shareApp
+import com.coretechies.jaap.utils.openUrl
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.contact_us
 import japp.composeapp.generated.resources.ic_bell
@@ -61,11 +67,13 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun MenuScreen(prefs: DataStore<Preferences>) {
+fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
 
     val moonBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
+
+
     val darkMode by prefs
         .data
         .map {
@@ -73,156 +81,177 @@ fun MenuScreen(prefs: DataStore<Preferences>) {
             it[darkModeKey] ?: false
         }.collectAsState(false)
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-        .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                .padding(vertical = 20.dp, horizontal = 15.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    val localization by prefs
+        .data
+        .map {
+            val localizationKey = stringPreferencesKey("localize")
+            it[localizationKey] ?: "hi"
+        }.collectAsState("hi")
 
-            profileButtons(Res.drawable.user_3__1)
 
-            Text(
-                modifier = Modifier.wrapContentHeight(),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (darkMode)Color.White else Color(0XFF87490c),
-                text = "Menu",
-                textAlign = TextAlign.Center
-            )
 
-            customButtons(moonBackgroundColor, Res.drawable.moon_stars, darkMode , onClick = {
-                scope.launch {
-                    prefs.edit { dataStore ->
-                        val darkModeKey = booleanPreferencesKey("DarkMode")
-                        dataStore[darkModeKey] = !darkMode
-                    }
-                }
-            }, darkMode)
-        }
+    LocalizedApp(language = localization) {
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 12.dp, end = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+            modifier = Modifier.fillMaxSize()
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                    .padding(vertical = 20.dp, horizontal = 15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-            RenderCustomButton(
-                showSwitch = true,
-                icon = painterResource(Res.drawable.ic_bell),
-                title = stringResource(Res.string.notification),
-                description = stringResource(Res.string.notification_enabled),
-                topMargin = 5.dp,
-                showDescription = true,
-                modifier = Modifier,
-                darkMode = darkMode,
-                onClick = {
+                profileButtons(Res.drawable.user_3__1)
 
-                },
-            )
+                Text(
+                    modifier = Modifier.wrapContentHeight(),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (darkMode) Color.White else Color(0XFF87490c),
+                    text = "Menu",
+                    textAlign = TextAlign.Center
+                )
 
-            RenderCustomButton(
-                showSwitch = false,
-                icon = painterResource(Res.drawable.ic_language),
-                title = stringResource(Res.string.language),
-                description = stringResource(Res.string.language_name),
-                topMargin = 5.dp,
-                showDescription = true,
-                modifier = Modifier,
-                darkMode = darkMode,
-                onClick = {
+                customButtons(moonBackgroundColor, Res.drawable.moon_stars, darkMode, onClick = {
+                    scope.launch {
+                        prefs.edit { dataStore ->
+                            val darkModeKey = booleanPreferencesKey("DarkMode")
+                            dataStore[darkModeKey] = !darkMode
+                        }
+                    }
+                }, darkMode)
+            }
 
-                },
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp, end = 12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
 
-            RenderCustomButton(
-                showSwitch = false,
-                icon = painterResource(Res.drawable.ic_share),
-                title = stringResource(Res.string.share_app),
-                description = stringResource(Res.string.share_app),
-                topMargin = 24.dp,
-                showDescription = false,
-                modifier = Modifier,
-                darkMode = darkMode,
-                onClick = {
+//            RenderCustomButton(
+//                showSwitch = true,
+//                icon = painterResource(Res.drawable.ic_bell),
+//                title = stringResource(Res.string.notification),
+//                description = stringResource(Res.string.notification_enabled),
+//                topMargin = 5.dp,
+//                showDescription = true,
+//                modifier = Modifier,
+//                darkMode = darkMode,
+//                onClick = {
+//
+//                },
+//            )
 
-                },
-            )
+                RenderCustomButton(
+                    showSwitch = false,
+                    icon = painterResource(Res.drawable.ic_language),
+                    title = stringResource(Res.string.language),
+                    description = stringResource(Res.string.language_name),
+                    topMargin = 5.dp,
+                    showDescription = true,
+                    modifier = Modifier,
+                    darkMode = darkMode,
+                    onClick = {
 
-            RenderCustomButton(
-                showSwitch = false,
-                icon = painterResource(Res.drawable.ic_rate),
-                title = stringResource(Res.string.rate_us),
-                description = stringResource(Res.string.rate_us),
-                topMargin = 5.dp,
-                showDescription = false,
-                modifier = Modifier,
-                darkMode = darkMode,
-                onClick = {
 
-                },
-            )
+                    },
+                )
 
-            RenderCustomButton(
-                showSwitch = false,
-                icon = painterResource(Res.drawable.ic_envelop),
-                title = stringResource(Res.string.contact_us),
-                description = stringResource(Res.string.contact_us),
-                topMargin = 5.dp,
-                showDescription = false,
-                modifier = Modifier,
-                darkMode = darkMode,
-                onClick = {
+                RenderCustomButton(
+                    showSwitch = false,
+                    icon = painterResource(Res.drawable.ic_share),
+                    title = stringResource(Res.string.share_app),
+                    description = stringResource(Res.string.share_app),
+                    topMargin = 24.dp,
+                    showDescription = false,
+                    modifier = Modifier,
+                    darkMode = darkMode,
+                    onClick = {
+                        shareApp(
+                            "Refer and make your friend pure \n" +
+                                    "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
+                            context
+                        )
+                    },
+                )
 
-                },
-            )
+                RenderCustomButton(
+                    showSwitch = false,
+                    icon = painterResource(Res.drawable.ic_rate),
+                    title = stringResource(Res.string.rate_us),
+                    description = stringResource(Res.string.rate_us),
+                    topMargin = 5.dp,
+                    showDescription = false,
+                    modifier = Modifier,
+                    darkMode = darkMode,
+                    onClick = {
+                        openUrl(
+                            "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
+                            context
+                        )
+                    },
+                )
 
-            RenderCustomButton(
-                showSwitch = false,
-                icon = painterResource(Res.drawable.ic_document),
-                title = stringResource(Res.string.terms),
-                description = stringResource(Res.string.terms),
-                topMargin = 24.dp,
-                showDescription = false,
-                modifier = Modifier,
-                darkMode = darkMode,
-                onClick = {
+                RenderCustomButton(
+                    showSwitch = false,
+                    icon = painterResource(Res.drawable.ic_envelop),
+                    title = stringResource(Res.string.contact_us),
+                    description = stringResource(Res.string.contact_us),
+                    topMargin = 5.dp,
+                    showDescription = false,
+                    modifier = Modifier,
+                    darkMode = darkMode,
+                    onClick = {
+                        openUrl("https://app.footballquiz.app/support ", context)
+                    },
+                )
 
-                },
-            )
+                RenderCustomButton(
+                    showSwitch = false,
+                    icon = painterResource(Res.drawable.ic_document),
+                    title = stringResource(Res.string.terms),
+                    description = stringResource(Res.string.terms),
+                    topMargin = 24.dp,
+                    showDescription = false,
+                    modifier = Modifier,
+                    darkMode = darkMode,
+                    onClick = {
+                        openUrl("https://app.footballquiz.app/terms_of_services", context)
+                    },
+                )
 
-            RenderCustomButton(
-                showSwitch = false,
-                icon = painterResource(Res.drawable.ic_lock),
-                title = stringResource(Res.string.privacy),
-                description = stringResource(Res.string.privacy),
-                topMargin = 5.dp,
-                showDescription = false,
-                modifier = Modifier,
-                darkMode = darkMode,
-                onClick = {
+                RenderCustomButton(
+                    showSwitch = false,
+                    icon = painterResource(Res.drawable.ic_lock),
+                    title = stringResource(Res.string.privacy),
+                    description = stringResource(Res.string.privacy),
+                    topMargin = 5.dp,
+                    showDescription = false,
+                    modifier = Modifier,
+                    darkMode = darkMode,
+                    onClick = {
+                        openUrl("https://app.footballquiz.app/privacy_policy ", context)
+                    },
+                )
 
-                },
-            )
-
-            Image(
-                painter = painterResource(if(darkMode) Res.drawable.ic_coretechies_white else Res.drawable.ic_coretechies),
-                contentDescription = "CoreTechies Icon",
-                modifier = Modifier.fillMaxWidth().height(140.dp)
-                    .padding(top = 54.dp, bottom = 24.dp),
-                contentScale = ContentScale.FillBounds,
-            )
+                Image(
+                    painter = painterResource(if (darkMode) Res.drawable.ic_coretechies_white else Res.drawable.ic_coretechies),
+                    contentDescription = "CoreTechies Icon",
+                    modifier = Modifier.fillMaxWidth().height(140.dp)
+                        .padding(top = 54.dp, bottom = 24.dp),
+                    contentScale = ContentScale.FillBounds,
+                )
+            }
         }
+
+
     }
 }
-
 @Composable
 fun profileButtons(icon: DrawableResource) {
 
@@ -239,4 +268,5 @@ fun profileButtons(icon: DrawableResource) {
         )
     }
 }
+
 

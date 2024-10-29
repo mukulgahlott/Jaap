@@ -37,6 +37,8 @@ ksp = "2.0.20-1.0.24"
 datastore = "1.1.1"
 sqlite = "2.5.0-SNAPSHOT"
 androidx-room = "2.7.0-alpha10"
+firebaseCrashlytics = "19.2.1"
+googleFirebaseCrashlytics = "3.0.2"
 
 [libraries]
 
@@ -72,6 +74,7 @@ sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sql
 
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 
 
 [plugins]
@@ -83,3 +86,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "androidx-room" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }

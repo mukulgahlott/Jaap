@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "926716319602",
+    "project_id": "digital-jaap",
+    "storage_bucket": "digital-jaap.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926716319602:android:92260c1c97da2a20c56feb",
+        "android_client_info": {
+          "package_name": "com.coretechies.jaap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ3FO8jLlbObXZ8ubi__HO6nxYfuCEJw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

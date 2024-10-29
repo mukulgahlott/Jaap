@@ -37,6 +37,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import com.coretechies.jaap.room.counter.CountingDao
+import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.utils.playBeep
 import com.coretechies.jaap.utils.triggerVibration
 import com.example.jetpackCompose.ui.theme.Orange
@@ -49,9 +50,6 @@ import japp.composeapp.generated.resources.palette
 import japp.composeapp.generated.resources.save
 import japp.composeapp.generated.resources.vibrate
 import japp.composeapp.generated.resources.volume
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
@@ -59,14 +57,17 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HomeScreen(context: Any?, prefs: DataStore<Preferences>, countingDao: CountingDao) {
-
-
+fun HomeScreen(
+    context: Any?,
+    prefs: DataStore<Preferences>,
+    countingDao: CountingDao,
+    countingDetails: CountingDetails?,
+    onDiscontinue: () -> Unit
+) {
     val volumeBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val vibrationBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val theamBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val darkModBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
-
 
     var showSaveBottomSheet by remember { mutableStateOf(false) }
     var showResetBottomSheet by remember { mutableStateOf(false) }
@@ -108,7 +109,7 @@ fun HomeScreen(context: Any?, prefs: DataStore<Preferences>, countingDao: Counti
     // For Coroutine Scope
     val scope = rememberCoroutineScope()
 
-    FullScreenBackground(prefs){
+    FullScreenBackground(prefs) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -118,7 +119,7 @@ fun HomeScreen(context: Any?, prefs: DataStore<Preferences>, countingDao: Counti
                 modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(vertical = 20.dp),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = if(darkMode) Color.White else Color(0XFF87490c),
+                color = if (darkMode) Color.White else Color(0XFF87490c),
                 text = "Digital Mala Jaap",
                 textAlign = TextAlign.Center
             )
@@ -129,7 +130,10 @@ fun HomeScreen(context: Any?, prefs: DataStore<Preferences>, countingDao: Counti
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                customButtons(volumeBackgroundColor, Res.drawable.volume, beepSoundEnabled,darkMode= darkMode,
+                customButtons(volumeBackgroundColor,
+                    Res.drawable.volume,
+                    beepSoundEnabled,
+                    darkMode = darkMode,
                     onClick = {
                         scope.launch {
                             prefs.edit { dataStore ->
@@ -140,7 +144,10 @@ fun HomeScreen(context: Any?, prefs: DataStore<Preferences>, countingDao: Counti
                     }
                 )
 
-                customButtons(vibrationBackgroundColor, Res.drawable.vibrate, vibrationEnabled,darkMode= darkMode,
+                customButtons(vibrationBackgroundColor,
+                    Res.drawable.vibrate,
+                    vibrationEnabled,
+                    darkMode = darkMode,
                     onClick = {
                         scope.launch {
                             prefs.edit { dataStore ->
@@ -150,140 +157,159 @@ fun HomeScreen(context: Any?, prefs: DataStore<Preferences>, countingDao: Counti
                         }
                     })
 
-                customButtons(theamBackgroundColor, Res.drawable.palette, false,darkMode= darkMode,
+                customButtons(theamBackgroundColor,
+                    Res.drawable.palette,
+                    false,
+                    darkMode = darkMode,
                     onClick = {})
 
-                customButtons(darkModBackgroundColor, Res.drawable.moon_stars, darkMode,darkMode= darkMode,
+                customButtons(darkModBackgroundColor,
+                    Res.drawable.moon_stars,
+                    darkMode,
+                    darkMode = darkMode,
                     onClick = {
-                    scope.launch {
-                        prefs.edit { dataStore ->
-                            val darkModeKey = booleanPreferencesKey("DarkMode")
-                            dataStore[darkModeKey] = !darkMode
-                        }
-                    }
-                })
-            }
-
-                Box(
-                    modifier = Modifier.wrapContentSize().padding(top = 50.dp),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Box(
-                            contentAlignment = Alignment.TopCenter,
-                            modifier = Modifier.wrapContentSize()
-                        ) {
-                            Image(
-                                painter = painterResource(if(darkMode) Res.drawable.ic_device_dark else Res.drawable.device_1),
-                                contentDescription = "device",
-                                modifier = Modifier.size(350.dp)
-
-                            )
-
-                            Text(
-                                text = if (counter == 0) "0000" else "$counter",
-                                modifier = Modifier.padding(top = 70.dp),
-                                fontSize = 70.sp,
-                                fontFamily = FontFamily(
-                                    Font(Res.font.DS_DIGI)
-                                ),
-                                textAlign = TextAlign.End,
-                            )
-
-                            Button(
-                                onClick = {
-                                    if (vibrationEnabled) triggerVibration(context, 100)
-                                    if (beepSoundEnabled) playBeep(context)
-                                    if (defaultCounterCount <= 9999)
-                                        defaultCounterCount++
-                                    scope.launch {
-                                        prefs.edit { dataStore ->
-                                            val counterKey = intPreferencesKey("counter")
-                                            dataStore[counterKey] = counter + 1
-                                        }
-                                    }
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = Color.Transparent,
-                                    contentColor = Color.Transparent
-                                ),
-                                modifier = Modifier
-                                    .padding(top = 170.dp)
-                                    .size(width = 120.dp, height = 120.dp)
-                                    .clip(RoundedCornerShape(130.dp)),
-                            ) {}
-
-                            // Counter Reset Button
-                            Button(
-                                onClick = {
-                                    showResetBottomSheet = true
-
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = Color.Transparent,
-                                    contentColor = Color.Transparent
-                                ),
-                                modifier = Modifier
-                                    .padding(top = 148.dp, start = 150.dp)
-                                    .wrapContentSize(),
-                            ) {
+                        scope.launch {
+                            prefs.edit { dataStore ->
+                                val darkModeKey = booleanPreferencesKey("DarkMode")
+                                dataStore[darkModeKey] = !darkMode
                             }
                         }
+                    })
+            }
+
+            Box(
+                modifier = Modifier.wrapContentSize().padding(top = 50.dp),
+                contentAlignment = Alignment.TopCenter
+            ) {
+
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        contentAlignment = Alignment.TopCenter,
+                        modifier = Modifier.wrapContentSize()
+                    ) {
+                        Image(
+                            painter = painterResource(if (darkMode) Res.drawable.ic_device_dark else Res.drawable.device_1),
+                            contentDescription = "device",
+                            modifier = Modifier.size(350.dp)
+
+                        )
+
+                        Text(
+                            text = if (counter == 0) "0000" else "$counter",
+                            modifier = Modifier.padding(top = 70.dp),
+                            fontSize = 70.sp,
+                            fontFamily = FontFamily(
+                                Font(Res.font.DS_DIGI)
+                            ),
+                            textAlign = TextAlign.End,
+                        )
 
                         Button(
                             onClick = {
-                                showSaveBottomSheet = true
-
+                                if (vibrationEnabled) triggerVibration(context, 100)
+                                if (beepSoundEnabled) playBeep(context)
+                                if (defaultCounterCount <= 9999)
+                                    defaultCounterCount++
+                                scope.launch {
+                                    prefs.edit { dataStore ->
+                                        val counterKey = intPreferencesKey("counter")
+                                        dataStore[counterKey] = counter + 1
+                                    }
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Orange,
-                                contentColor = Color.White
+                                backgroundColor = Color.Transparent,
+                                contentColor = Color.Transparent
                             ),
                             modifier = Modifier
-                                .padding(top = 28.dp).height(60.dp)
-                                .fillMaxWidth(fraction = 0.7f),
-                            shape = RoundedCornerShape(16.dp)
+                                .padding(top = 170.dp)
+                                .size(width = 120.dp, height = 120.dp)
+                                .clip(RoundedCornerShape(130.dp)),
+                        ) {}
+
+                        // Counter Reset Button
+                        Button(
+                            onClick = {
+                                showResetBottomSheet = true
+                                showSaveBottomSheet = false
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = Color.Transparent,
+                                contentColor = Color.Transparent
+                            ),
+                            modifier = Modifier
+                                .padding(top = 148.dp, start = 150.dp)
+                                .wrapContentSize(),
                         ) {
-                            Text(
-                                text = stringResource(Res.string.save),
-                                modifier = Modifier.padding(8.dp),
-                                fontSize = 22.sp,
-                            )
                         }
+                    }
+
+                    Button(
+                        onClick = {
+                            showSaveBottomSheet = true
+
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = if(darkMode)Color.Black else Orange,
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .padding(top = 28.dp).height(60.dp)
+                            .fillMaxWidth(fraction = 0.7f),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.save),
+                            modifier = Modifier.padding(8.dp),
+                            fontSize = 22.sp,
+                        )
                     }
                 }
             }
-            Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-                SaveBottomSheet(
-                    totalCount = counter,
-                    countingDao = countingDao,
-                    onDismiss = { showSaveBottomSheet = false },
-                    onSave = { showSaveBottomSheet = false },
-                    showBottomSheet = showSaveBottomSheet
-                )
-
-            }
-
-            Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-                resetBottomSheet(
-                    onDismiss = { showResetBottomSheet = false },
-                    onReset = {
-                        showResetBottomSheet = false
-                        scope.launch {
-                            prefs.edit { dataStore ->
-                                val counterKey = intPreferencesKey("counter")
-                                dataStore[counterKey] = 0
-                            }
+        }
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
+            SaveBottomSheet(
+                totalCount = counter,
+                darkMode = darkMode,
+                countingDao = countingDao,
+                countingDetails = countingDetails,
+                onDismiss = { showSaveBottomSheet = false },
+                onSave = {
+                    scope.launch {
+                        prefs.edit { dataStore ->
+                            val counterKey = intPreferencesKey("counter")
+                            dataStore[counterKey] = 0
                         }
-                    },
-                    showBottomSheet = showResetBottomSheet
-                )
+                    }
+                    onDiscontinue()
+                    showSaveBottomSheet = false
+                },
+                showBottomSheet = showSaveBottomSheet
+            )
 
-            }
+        }
+
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
+            resetBottomSheet(
+                onDismiss = { showResetBottomSheet = false },
+                darkMode = darkMode,
+                onReset = {
+                    showResetBottomSheet = false
+                    scope.launch {
+                        prefs.edit { dataStore ->
+                            val counterKey = intPreferencesKey("counter")
+                            dataStore[counterKey] = 0
+                        }
+                    }
+                    onDiscontinue()
+                },
+                showBottomSheet = showResetBottomSheet
+            )
+
+        }
 
     }
 }

@@ -35,12 +35,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
-import com.example.jetpackCompose.ui.theme.Orange
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.no
 import japp.composeapp.generated.resources.reset_counter
@@ -59,11 +57,19 @@ import org.jetbrains.compose.resources.stringResource
 fun SaveBottomSheet(
     onDismiss: () -> Unit,
     countingDao: CountingDao,
+    countingDetails: CountingDetails?,
+    darkMode: Boolean,
     onSave: () -> Unit,
     totalCount: Int,
     showBottomSheet: Boolean
 ) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
+
+    if (countingDetails != null) {
+        textState.value = TextFieldValue(countingDetails.countTitle)
+    }else{
+        textState.value = TextFieldValue("")
+    }
 
     AnimatedVisibility(
         visible = showBottomSheet, enter = slideInVertically(
@@ -75,7 +81,7 @@ fun SaveBottomSheet(
         Surface(
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            color = Color.White
+            color = if (darkMode) Color.Black  else Color.White
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -91,8 +97,8 @@ fun SaveBottomSheet(
 
                     Box(contentAlignment = Alignment.Center,
                         modifier = Modifier.size(50.dp).clickable {
-                                onDismiss()
-                            }) {
+                            onDismiss()
+                        }) {
                         Surface(
                             shape = CircleShape,
                             color = Color(0xFFb7926d),
@@ -117,22 +123,36 @@ fun SaveBottomSheet(
 
                     Box(contentAlignment = Alignment.Center,
                         modifier = Modifier.size(50.dp).clickable {
-                                onDismiss()
-                            }) {
+                            onDismiss()
+                        }) {
                         Surface(
                             shape = CircleShape,
                             color = Color(0xFFe28b2a),
                             modifier = Modifier.size(40.dp)
                         ) {}
                         IconButton(onClick = {
-                            insertList(
-                                totalCount,
-                                textState.value.text,
-                                "Jajman0900",
-                                "Jajman-0900",
-                                countingDao
-                            )
+
+                            if (countingDetails != null) {
+                                updateCounter(
+                                    totalCount = totalCount,
+                                    countTitle = textState.value.text,
+                                    countingDao = countingDao,
+                                    id = countingDetails.id
+                                )
+                            }
+                            else {
+                                insertList(
+                                    totalCount,
+                                    textState.value.text,
+                                    "Jajman0900",
+                                    "Jajman-0900",
+                                    countingDao
+                                )
+                            }
                             onSave()
+                            textState.value = TextFieldValue("")
+
+
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Check,
@@ -144,15 +164,19 @@ fun SaveBottomSheet(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
                 // Text Field for Name input
-                TextField(value = textState.value,
-                    onValueChange = { textState.value = it },
+
+                TextField(
+                    value = textState.value,
+                    onValueChange = { if (it.text.length <= 16) textState.value = it },
                     placeholder = { Text(text = "Name") },
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color(0xFFF1EAE2), // Light background color
-                        placeholderColor = Color(0xFF9D8E80) // Placeholder color
+                        placeholderColor = Color(0xFF9D8E80),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
                     ),
+                    singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth().height(56.dp)
                 )
@@ -195,12 +219,24 @@ fun insertList(
     }
 }
 
+fun updateCounter(
+    countingDao: CountingDao, totalCount: Int,
+    countTitle: String, id: Int
+) {
+    if (countTitle.isNotBlank()) {
+        CoroutineScope(Dispatchers.IO).launch {
+            countingDao.updateById(id, totalCount, countTitle, getCurrentDateTime())
+        }
+    }
+}
+
+
 fun getCurrentDateTime(): String {
     val currentMoment = Clock.System.now()
     val dateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
 
-    // Format date as "YYYY-MM-DD"
-    val date = "${dateTime.year}-${dateTime.monthNumber}-${dateTime.dayOfMonth}"
+    // Format date as "DD-MM-YYYY"
+    val date = "${dateTime.dayOfMonth}-${dateTime.month.name.take(3).capitalize()}-${dateTime.year}"
 
     val hour = dateTime.hour % 12
     val amPm = if (dateTime.hour >= 12) "PM" else "AM"
@@ -211,13 +247,13 @@ fun getCurrentDateTime(): String {
     val weekOfTheDay = dateTime.dayOfWeek.name
     val firstThreeChars = weekOfTheDay.substring(0, 3).toLowerCase()
 
-    return "${firstThreeChars} , $date . $time"
+    return "${firstThreeChars} . $date . $time"
 }
 
 
 @Composable
 fun resetBottomSheet(
-    onDismiss: () -> Unit, onReset: () -> Unit, showBottomSheet: Boolean
+    onDismiss: () -> Unit, onReset: () -> Unit, showBottomSheet: Boolean, darkMode : Boolean
 ) {
 
 
@@ -231,7 +267,7 @@ fun resetBottomSheet(
         Surface(
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            color = Color.White
+            color = if (darkMode) Color.Black  else Color.White
         ) {
             Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                 Row(
@@ -244,16 +280,16 @@ fun resetBottomSheet(
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF8C4B26)
+                            color = if (darkMode) Color.White else Color(0xFF8C4B26)
                         )
                     )
                     Box(contentAlignment = Alignment.Center,
                         modifier = Modifier.size(50.dp).clickable {
-                                onDismiss()
-                            }) {
+                            onDismiss()
+                        }) {
                         Surface(
                             shape = CircleShape,
-                            color = Color(0xFFcfb69e),
+                            color = if (darkMode) Color(0XFF361d05) else Color(0xFFcfb69e),
                             modifier = Modifier.size(40.dp)
                         ) {}
                         IconButton(onClick = onDismiss) {
@@ -270,7 +306,7 @@ fun resetBottomSheet(
                         text = stringResource(Res.string.reset_description), style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF8C4B26)
+                            color = if (darkMode) Color.White else Color(0xFF8C4B26)
                         )
                     )
 
@@ -281,10 +317,10 @@ fun resetBottomSheet(
                         onReset()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Orange, contentColor = Color.White
+                        backgroundColor = Color(0XFFf36464), contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.7f),
+                        .fillMaxWidth(fraction = 0.9f),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
@@ -297,14 +333,16 @@ fun resetBottomSheet(
                 Button(
                     onClick = onDismiss,
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Orange, contentColor = Color.White
+                        backgroundColor = if (darkMode) Color.Black else Color.White,
+                        contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.7f),
+                        .fillMaxWidth(fraction = 0.9f),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
                         text = stringResource(Res.string.no),
+                        color = if (darkMode) Color.White else Color(0xFF87490c),
                         modifier = Modifier.padding(8.dp),
                         fontSize = 18.sp,
                     )

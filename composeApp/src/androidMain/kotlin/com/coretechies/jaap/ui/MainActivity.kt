@@ -12,15 +12,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.coretechies.jaap.dataStore.createDataStore
 import com.coretechies.jaap.dataStore.room.getDatabaseHelper
 import com.coretechies.jaap.screens.App
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.initialize
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
         val countingDao = getDatabaseHelper(applicationContext).countingDao()
 
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        Firebase.initialize(this)
 
         setContent {
             MainScreen(prefs = remember {

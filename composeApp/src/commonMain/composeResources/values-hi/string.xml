@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_title">डिजिटल जाप</string>
+    <string name="save_button">सहेजें</string>
+    <string name="counter_default_count">0000</string>
+    <string name="menu_title">मेनू</string>
+    <string name="notification">सूचनाएँ</string>
+    <string name="notification_enabled">सक्षम</string>
+    <string name="language">भाषा</string>
+    <string name="language_name">हिन्दी</string>
+    <string name="share_app">ऐप साझा करें</string>
+    <string name="rate_us">हमारी रेटिंग करें</string>
+    <string name="contact_us">हमसे संपर्क करें</string>
+    <string name="terms">उपयोग की शर्तें</string>
+    <string name="list">सूची</string>
+    <string name="privacy">गोपनीयता नीति</string>
+    <string name="yes">हाँ</string>
+    <string name="no">नहीं</string>
+    <string name="reset_counter">क्या आप काउंटर रीसेट करना चाहते हैं?</string>
+    <string name="reset_description">यह काउंटर को 0 बना देगा, क्या आप सुनिश्चित हैं कि आप काउंटर को रीसेट करना चाहते हैं?</string>
+    <string name="save">सहेजें</string>
+</resources>

@@ -1,20 +1,28 @@
 package com.coretechies.jaap.cardview
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,11 +31,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.coretechies.jaap.room.counter.CountingDetails
-import com.coretechies.jaap.screens.JaapData
 import com.example.jetpackCompose.ui.theme.Orange
+import com.example.jetpackCompose.ui.theme.PureOrange
+import japp.composeapp.generated.resources.Res
+import japp.composeapp.generated.resources.ic_delete
+import japp.composeapp.generated.resources.ic_plus
+import japp.composeapp.generated.resources.ic_recycle
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun CardViewJaap(item: CountingDetails, darkMode: Boolean) {
+fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit , onContinue: () -> Unit) {
+    val isMenuExpanded = remember { mutableStateOf(false) }
+
     Card(
         elevation = 0.dp,
         shape = RoundedCornerShape(8.dp),
@@ -43,10 +58,13 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Left part - Rounded box with number
+
             Box(
                 modifier = Modifier
-                    .background(color = if(darkMode) Color(0XFF2c2c2c) else Orange, shape = RoundedCornerShape(8.dp))
+                    .background(
+                        color = if (darkMode) Color(0XFF2c2c2c) else Orange,
+                        shape = RoundedCornerShape(8.dp)
+                    )
                     .padding(12.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -59,7 +77,6 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean) {
                 )
             }
 
-            // Middle part - Text information
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -70,7 +87,7 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean) {
                     text = item.countTitle,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (!darkMode)Color(0xFF87490C) else Color.White
+                    color = if (!darkMode) Color(0xFF87490C) else Color.White
                 )
                 Text(
                     text = item.countDate,
@@ -79,13 +96,65 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean) {
                 )
             }
 
-            // Right part - Three dots icon
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "More Options",
-                modifier = Modifier.size(24.dp),
-                tint = if (!darkMode)Color(0xFF87490C)else Color.Gray
-            )
+            Box {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "More Options",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { isMenuExpanded.value = true },
+                    tint = if (!darkMode) Color(0xFF87490C) else Color.Gray
+                )
+
+                DropdownMenu(
+                    modifier = Modifier.background(if (darkMode) Color.DarkGray else Color.White),
+                    expanded = isMenuExpanded.value,
+                    onDismissRequest = { isMenuExpanded.value = false }
+                ) {
+                    DropdownMenuItem(onClick = {
+                        onContinue()
+                        isMenuExpanded.value = false
+                    }) {
+                        Row(modifier = Modifier.fillMaxSize()) {
+                            Box(modifier = Modifier.wrapContentSize().padding(end = 8.dp)) {
+                                Image(
+                                modifier = Modifier.size(24.dp),
+                                    contentDescription = "Plus",
+                                painter = painterResource(Res.drawable.ic_plus)
+                            )
+                                Image(
+                                    modifier = Modifier.size(24.dp),
+                                    contentDescription = "recycle",
+                                    painter = painterResource(Res.drawable.ic_recycle)
+                                )
+                            }
+
+                            Text(
+                                modifier = Modifier.padding(end = 15.dp), color = PureOrange,
+                                text = "Continue"
+                            )
+                        }
+                    }
+                    DropdownMenuItem(onClick = {
+                        // Handle delete action
+                        isMenuExpanded.value = false
+                        onDelete()
+                    }) {
+                        Row(modifier = Modifier.fillMaxSize()) {
+
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                contentDescription = "Plus",
+                                painter = painterResource(Res.drawable.ic_delete)
+                            )
+                            Text(
+                                modifier = Modifier.padding(start = 8.dp , end = 15.dp), color = Color(0xFFf36464),
+                                text = "Delete"
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

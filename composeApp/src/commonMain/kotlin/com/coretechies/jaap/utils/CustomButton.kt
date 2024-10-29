@@ -58,8 +58,7 @@ fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource, 
     ) {
         Surface(
             shape = CircleShape,
-            color = if (enabled) PureOrange else
-                Color(0xFFb7926d),
+            color = if (enabled) PureOrange else if(darkMode) Color(0XFF4a4a4a) else Color(0xFFb7926d),
             modifier = Modifier.size(50.dp)
         ) {
         }
