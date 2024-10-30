@@ -2,6 +2,7 @@ package com.coretechies.jaap.utils
 
 import platform.UIKit.UIAlertController
 import platform.UIKit.UIAlertAction
+import platform.UIKit.*
 import platform.UIKit.UIApplication
 import platform.UIKit.UIWindow
 import platform.UIKit.UIViewController
@@ -10,11 +11,11 @@ actual fun showToast(message: String, context: Any?) {
     val alertController = UIAlertController.alertControllerWithTitle(
         title = null,
         message = message,
-        preferredStyle = UIAlertController.StyleAlert
+        preferredStyle = UIAlertControllerStyleAlert
     )
     alertController.addAction(UIAlertAction.actionWithTitle(
         title = "OK",
-        style = UIAlertAction.StyleDefault,
+        style = UIAlertActionStyleDefault,
         handler = null
     ))
 

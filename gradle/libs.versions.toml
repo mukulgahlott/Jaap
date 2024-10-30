@@ -45,6 +45,7 @@ androidx-room = "2.7.0-alpha10"
 firebaseCrashlytics = "19.2.1"
 googleFirebaseCrashlytics = "3.0.2"
 firebaseAnalytics = "22.1.2"
+uiVersion = "1.6.11"
 
 [libraries]
 
@@ -78,9 +79,9 @@ lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "
 material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
 androidx-datastore-preferences-core-jvm = { group = "androidx.datastore", name = "datastore-preferences-core-jvm", version.ref = "datastorePreferencesCoreJvm" }
+
 # For room dtabase and multiplatform
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
-
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
@@ -89,6 +90,7 @@ datastore = { module = "androidx.datastore:datastore", version.ref = "datastore"
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
+ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "uiVersion" }
 
 
 [plugins]
