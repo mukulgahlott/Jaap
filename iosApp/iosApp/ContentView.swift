@@ -18,7 +18,7 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             ComposeView(viewController: {
-                MainViewControllerKt.HomeScreenViewController() // Kotlin function for HomeScreen
+                MainViewControllerKt.MainScreenView(tab: "home") // Kotlin function for HomeScreen
             })
             .tabItem {
                 Image(systemName: "house.fill")
@@ -27,7 +27,7 @@ struct ContentView: View {
             .tag(Tab.home)
             
             ComposeView(viewController: {
-                MainViewControllerKt.ListScreenViewController() // Kotlin function for ListScreen
+                MainViewControllerKt.MainScreenView(tab: "list") // Kotlin function for ListScreen
             })
             .tabItem {
                 Image(systemName: "list.bullet")
@@ -36,7 +36,7 @@ struct ContentView: View {
             .tag(Tab.list)
             
             ComposeView(viewController: {
-                MainViewControllerKt.MenuScreenViewController() // Kotlin function for MenuScreen
+                MainViewControllerKt.MainScreenView(tab: "menu") // Kotlin function for MenuScreen
             })
             .tabItem {
                 Image(systemName: "menucard.fill")
