@@ -39,6 +39,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.utils.playBeep
+import com.coretechies.jaap.utils.showToast
 import com.coretechies.jaap.utils.triggerVibration
 import com.example.jetpackCompose.ui.theme.Orange
 import japp.composeapp.generated.resources.DS_DIGI
@@ -287,7 +288,11 @@ fun HomeScreen(
                     onDiscontinue()
                     showSaveBottomSheet = false
                 },
-                showBottomSheet = showSaveBottomSheet
+                showBottomSheet = showSaveBottomSheet,
+
+                onFail = {
+                    showToast("Please Enter Name ", context)
+                }
             )
 
         }

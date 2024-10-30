@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -49,112 +52,116 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit
         backgroundColor = if (darkMode) Color.Black else Color.White,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Box(
+        Column {
+            Row(
                 modifier = Modifier
-                    .background(
-                        color = if (darkMode) Color(0XFF2c2c2c) else Orange,
-                        shape = RoundedCornerShape(8.dp)
-                    )
-                    .padding(12.dp),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = item.totalCount.toString(),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 12.dp),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = item.countTitle,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (!darkMode) Color(0xFF87490C) else Color.White
-                )
-                Text(
-                    text = item.countDate,
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
-            }
-
-            Box {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "More Options",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable { isMenuExpanded.value = true },
-                    tint = if (!darkMode) Color(0xFF87490C) else Color.Gray
-                )
-
-                DropdownMenu(
-                    modifier = Modifier.background(if (darkMode) Color.DarkGray else Color.White),
-                    expanded = isMenuExpanded.value,
-                    onDismissRequest = { isMenuExpanded.value = false }
+                Box(
+                    modifier = Modifier.width(80.dp)
+                        .background(
+                            color = if (darkMode) Color(0XFF2c2c2c) else Orange,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(12.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    DropdownMenuItem(onClick = {
-                        onContinue()
-                        isMenuExpanded.value = false
-                    }) {
-                        Row(modifier = Modifier.fillMaxSize()) {
-                            Box(modifier = Modifier.wrapContentSize().padding(end = 8.dp)) {
-                                Image(
-                                modifier = Modifier.size(24.dp),
-                                    contentDescription = "Plus",
-                                painter = painterResource(Res.drawable.ic_plus)
-                            )
-                                Image(
-                                    modifier = Modifier.size(24.dp),
-                                    contentDescription = "recycle",
-                                    painter = painterResource(Res.drawable.ic_recycle)
+                    Text(
+                        text = item.totalCount.toString(),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 12.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = item.countTitle,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (!darkMode) Color(0xFF87490C) else Color.White
+                    )
+                    Text(
+                        text = item.countDate,
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
+
+                Box {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "More Options",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable { isMenuExpanded.value = true },
+                        tint = if (!darkMode) Color(0xFF87490C) else Color.Gray
+                    )
+
+                    DropdownMenu(
+                        modifier = Modifier.background(if (darkMode) Color.DarkGray else Color.White),
+                        expanded = isMenuExpanded.value,
+                        onDismissRequest = { isMenuExpanded.value = false }
+                    ) {
+                        DropdownMenuItem(onClick = {
+                            onContinue()
+                            isMenuExpanded.value = false
+                        }) {
+                            Row(modifier = Modifier.fillMaxSize()) {
+                                Box(modifier = Modifier.wrapContentSize().padding(end = 8.dp)) {
+                                    Image(
+                                        modifier = Modifier.size(24.dp),
+                                        contentDescription = "Plus",
+                                        painter = painterResource(Res.drawable.ic_plus)
+                                    )
+                                    Image(
+                                        modifier = Modifier.size(24.dp),
+                                        contentDescription = "recycle",
+                                        painter = painterResource(Res.drawable.ic_recycle)
+                                    )
+                                }
+
+                                Text(
+                                    modifier = Modifier.padding(end = 15.dp), color = PureOrange,
+                                    text = "Continue"
                                 )
                             }
-
-                            Text(
-                                modifier = Modifier.padding(end = 15.dp), color = PureOrange,
-                                text = "Continue"
-                            )
                         }
-                    }
-                    DropdownMenuItem(onClick = {
-                        // Handle delete action
-                        isMenuExpanded.value = false
-                        onDelete()
-                    }) {
-                        Row(modifier = Modifier.fillMaxSize()) {
+                        DropdownMenuItem(onClick = {
+                            // Handle delete action
+                            isMenuExpanded.value = false
+                            onDelete()
+                        }) {
+                            Row(modifier = Modifier.fillMaxSize()) {
 
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                contentDescription = "Plus",
-                                painter = painterResource(Res.drawable.ic_delete)
-                            )
-                            Text(
-                                modifier = Modifier.padding(start = 8.dp , end = 15.dp), color = Color(0xFFf36464),
-                                text = "Delete"
-                            )
+                                Image(
+                                    modifier = Modifier.size(24.dp),
+                                    contentDescription = "Plus",
+                                    painter = painterResource(Res.drawable.ic_delete)
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp, end = 15.dp),
+                                    color = Color(0xFFf36464),
+                                    text = "Delete"
+                                )
+                            }
                         }
                     }
                 }
             }
+            Spacer(modifier = Modifier.fillMaxWidth().height(10.dp).background(Color.Transparent))
+            Spacer(modifier = Modifier.fillMaxWidth().height(0.4.dp).background(Color.DarkGray))
         }
     }
 }

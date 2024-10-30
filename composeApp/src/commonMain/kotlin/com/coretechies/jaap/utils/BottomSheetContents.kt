@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.coretechies.jaap.room.counter.CountingDao
@@ -60,6 +61,7 @@ fun SaveBottomSheet(
     countingDetails: CountingDetails?,
     darkMode: Boolean,
     onSave: () -> Unit,
+    onFail: () -> Unit,
     totalCount: Int,
     showBottomSheet: Boolean
 ) {
@@ -137,7 +139,10 @@ fun SaveBottomSheet(
                                     totalCount = totalCount,
                                     countTitle = textState.value.text,
                                     countingDao = countingDao,
-                                    id = countingDetails.id
+                                    id = countingDetails.id,
+                                    onFail = {
+                                        onFail()
+                                    }
                                 )
                             }
                             else {
@@ -146,7 +151,9 @@ fun SaveBottomSheet(
                                     textState.value.text,
                                     "Jajman0900",
                                     "Jajman-0900",
-                                    countingDao
+                                    countingDao, onFail={
+                                        onFail()
+                                    }
                                 )
                             }
                             onSave()
@@ -202,6 +209,7 @@ fun insertList(
     countingDetailsUserId: String,
     countingDetailsUserNane: String,
     countingDao: CountingDao,
+    onFail: () -> Unit
 ) {
 
     if (countTitle.isNotBlank()) {
@@ -217,16 +225,22 @@ fun insertList(
         }
 
     }
+    else{
+        onFail()
+    }
 }
 
 fun updateCounter(
     countingDao: CountingDao, totalCount: Int,
-    countTitle: String, id: Int
+    countTitle: String, id: Int, onFail: () -> Unit
 ) {
     if (countTitle.isNotBlank()) {
         CoroutineScope(Dispatchers.IO).launch {
             countingDao.updateById(id, totalCount, countTitle, getCurrentDateTime())
         }
+    }
+    else{
+        onFail()
     }
 }
 
@@ -236,16 +250,16 @@ fun getCurrentDateTime(): String {
     val dateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
 
     // Format date as "DD-MM-YYYY"
-    val date = "${dateTime.dayOfMonth}-${dateTime.month.name.take(3).capitalize()}-${dateTime.year}"
+    val date = "${dateTime.dayOfMonth}-${dateTime.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() } }-${dateTime.year}"
 
     val hour = dateTime.hour % 12
-    val amPm = if (dateTime.hour >= 12) "PM" else "AM"
+    val amPm = if (dateTime.hour >= 12) "pm" else "am"
     val minute = dateTime.minute.toString().padStart(2, '0')
 
     val time = "${if (hour == 0) 12 else hour}:$minute $amPm"
 
     val weekOfTheDay = dateTime.dayOfWeek.name
-    val firstThreeChars = weekOfTheDay.substring(0, 3).toLowerCase()
+    val firstThreeChars = weekOfTheDay.substring(0, 3).lowercase().replaceFirstChar { it.uppercaseChar() }
 
     return "${firstThreeChars} . $date . $time"
 }
@@ -269,7 +283,7 @@ fun resetBottomSheet(
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             color = if (darkMode) Color.Black  else Color.White
         ) {
-            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween

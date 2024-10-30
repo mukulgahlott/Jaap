@@ -36,9 +36,10 @@ kotlin {
         
         androidMain.dependencies {
             implementation(compose.preview)
-            implementation(platform("com.google.firebase:firebase-bom:30.0.1"))
-            implementation("com.google.firebase:firebase-crashlytics")
-            implementation("com.google.firebase:firebase-analytics")
+            implementation(libs.firebase.bom)
+            implementation(libs.google.firebase.crashlytics)
+            implementation (libs.lottie.compose)
+            implementation(libs.google.firebase.analytics)
 
 
         }
@@ -61,7 +62,7 @@ kotlin {
             api(libs.datastore)
 
             // Current Date time
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+            implementation(libs.kotlinx.datetime)
 
 
             // For shared viewmodels, can be used with iOS too
@@ -74,7 +75,7 @@ kotlin {
         }
         getByName("commonMain") {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
 
@@ -119,8 +120,9 @@ dependencies {
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.androidx.datastore.preferences.core.jvm)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
     debugImplementation(compose.uiTooling)
     ksp(libs.androidx.room.compiler)
-    implementation("com.google.firebase:firebase-common-ktx:21.0.0")
+    implementation(libs.firebase.common.ktx)
 }
 

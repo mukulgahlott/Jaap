@@ -34,7 +34,6 @@ import com.example.jetpackCompose.ui.theme.Orange
 import kotlinx.coroutines.flow.map
 
 
-
 @Composable
 fun MainScreen(prefs: DataStore<Preferences>, countingDao: CountingDao) {
 
@@ -45,9 +44,15 @@ fun MainScreen(prefs: DataStore<Preferences>, countingDao: CountingDao) {
             .background(Color.Gray),
         bottomBar = { BottomNavigationBar(navController = navController, prefs) }
     ) { innerPadding ->
-        NavigationGraph(navController = navController, modifier = Modifier.padding(innerPadding),prefs = prefs, countingDao)
+        NavigationGraph(
+            navController = navController,
+            modifier = Modifier.padding(innerPadding),
+            prefs = prefs,
+            countingDao
+        )
     }
 }
+
 sealed class BottomNavItem(val route: String, val iconRes: Int, val title: String) {
     object Home : BottomNavItem("home", R.drawable.home, "Home")
     object List : BottomNavItem("list", R.drawable.list, "List")
@@ -55,7 +60,7 @@ sealed class BottomNavItem(val route: String, val iconRes: Int, val title: Strin
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavHostController,prefs: DataStore<Preferences>) {
+fun BottomNavigationBar(navController: NavHostController, prefs: DataStore<Preferences>) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.List,
@@ -74,48 +79,66 @@ fun BottomNavigationBar(navController: NavHostController,prefs: DataStore<Prefer
             it[darkModeKey] ?: false
         }.collectAsState(false)
 
-    NavigationBar( modifier = Modifier.wrapContentHeight(), containerColor = if (darkMode) Color.Black else Color.White) {
-        items.forEach { item ->
-            val isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true
 
-            NavigationBarItem(
 
-                icon = {
-                    Image(
-                        painter = painterResource(id = item.iconRes),
-                        contentDescription = item.title,
-                        // Apply tint based on selection state
-                        colorFilter = ColorFilter.tint(
-                            if (isSelected) Orange else Color(0XFF2c2c2c)
+    Column {
+        // Thin line at the top of the bottom bar
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(0.3.dp)
+                .background(if(!darkMode)Color(0xFFcfb69e) else Color(0XFF2c2c2c))
+        )
+
+        NavigationBar(
+            modifier = Modifier.wrapContentHeight(),
+            containerColor = if (darkMode) Color.Black else Color.White
+        ) {
+            items.forEach { item ->
+                val isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true
+
+                NavigationBarItem(
+                    icon = {
+                        Image(
+                            painter = painterResource(id = item.iconRes),
+                            contentDescription = item.title,
+                            colorFilter = ColorFilter.tint(
+                                if (isSelected) Orange else Color(0XFF2c2c2c)
+                            )
                         )
+                    },
+                    label = {
+                        Text(
+                            text = item.title,
+                            color = if (isSelected) Orange else Color(0XFF2c2c2c)
+                        )
+                    },
+                    selected = isSelected,
+                    onClick = {
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Orange,
+                        unselectedIconColor = Color(0XFF2c2c2c),
+                        indicatorColor = Color.Transparent
                     )
-                },
-                label = {
-                    Text(
-                        text = item.title,
-                        color = if (isSelected) Orange else Color(0XFF2c2c2c) // Change text color on selection
-                    )
-                },
-                selected = isSelected,
-                onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Orange,       // Selected icon color
-                    unselectedIconColor = Color(0XFF2c2c2c),    // Unselected icon color
-                    indicatorColor = Color.Transparent   // Transparent indicator color
                 )
-            )
+            }
         }
     }
 }
 
 @Composable
-fun NavigationGraph(navController: NavHostController, modifier: Modifier, prefs: DataStore<Preferences>, countingDao: CountingDao) {
+fun NavigationGraph(
+    navController: NavHostController,
+    modifier: Modifier,
+    prefs: DataStore<Preferences>,
+    countingDao: CountingDao
+) {
 
     var countingData by remember { mutableStateOf<CountingDetails?>(null) }
 
@@ -132,18 +155,18 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier, prefs:
         modifier = modifier.background(if (darkMode) Color.Black else Color.White)
     ) {
         composable(BottomNavItem.Home.route) {
-            HomeScreen(LocalContext.current,prefs,countingDao, countingData , onDiscontinue = {
+            HomeScreen(LocalContext.current, prefs, countingDao, countingData, onDiscontinue = {
                 countingData = null
             })
         }
         composable(BottomNavItem.List.route) {
-            ListScreen(prefs,countingDao) {
-                data -> countingData = data
+            ListScreen(prefs, countingDao) { data ->
+                countingData = data
                 navController.navigate(BottomNavItem.Home.route)
             }
         }
         composable(BottomNavItem.Menu.route) {
-            MenuScreen(LocalContext.current,prefs)
+            MenuScreen(LocalContext.current, prefs)
         }
     }
 }

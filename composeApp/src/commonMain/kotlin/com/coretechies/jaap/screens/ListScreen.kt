@@ -89,7 +89,7 @@ fun ListScreen(
                 onClick = {
                     scope.launch {
                         prefs.edit { dataStore ->
-                            val volumeKey = booleanPreferencesKey("Volume")
+                            val volumeKey = booleanPreferencesKey("BeepSoundEnabled")
                             dataStore[volumeKey] = !volumeEnabled
                         }
                     }
