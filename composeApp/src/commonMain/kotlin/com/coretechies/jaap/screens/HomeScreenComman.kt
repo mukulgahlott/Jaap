@@ -183,10 +183,7 @@ fun HomeScreen(
                                 if (defaultCounterCount <= 9999)
                                     defaultCounterCount++
                                 scope.launch {
-                                    prefs.edit { dataStore ->
-                                        val counterKey = intPreferencesKey("counter")
-                                        dataStore[counterKey] = counter + 1
-                                    }
+                                    dataStoreManager.setCounter(counter + 1)
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -248,10 +245,7 @@ fun HomeScreen(
                 onDismiss = { showSaveBottomSheet = false },
                 onSave = {
                     scope.launch {
-                        prefs.edit { dataStore ->
-                            val counterKey = intPreferencesKey("counter")
-                            dataStore[counterKey] = 0
-                        }
+                            dataStoreManager.setCounter(counter + 1)
                     }
                     onDiscontinue()
                     showSaveBottomSheet = false
@@ -272,10 +266,7 @@ fun HomeScreen(
                 onReset = {
                     showResetBottomSheet = false
                     scope.launch {
-                        prefs.edit { dataStore ->
-                            val counterKey = intPreferencesKey("counter")
-                            dataStore[counterKey] = 0
-                        }
+                        dataStoreManager.setCounter(0)
                     }
                     onDiscontinue()
                 },

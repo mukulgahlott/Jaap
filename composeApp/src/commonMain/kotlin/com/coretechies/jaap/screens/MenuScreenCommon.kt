@@ -35,6 +35,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.localization.Language
 import com.coretechies.jaap.localization.LocalizedApp
 import com.coretechies.jaap.shareApp.shareApp
@@ -71,15 +72,12 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
 
     val moonBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val scrollState = rememberScrollState()
+
     val scope = rememberCoroutineScope()
+    val dataStoreManager = DataStoreManager(prefs, scope)
 
-
-    val darkMode by prefs
-        .data
-        .map {
-            val darkModeKey = booleanPreferencesKey("DarkMode")
-            it[darkModeKey] ?: false
-        }.collectAsState(false)
+    // Shared Pref For Dark Mode
+    val darkMode by dataStoreManager.darkMode.collectAsState(false)
 
     val localization by prefs
         .data
@@ -117,10 +115,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
 
                 customButtons(moonBackgroundColor, Res.drawable.moon_stars, darkMode, onClick = {
                     scope.launch {
-                        prefs.edit { dataStore ->
-                            val darkModeKey = booleanPreferencesKey("DarkMode")
-                            dataStore[darkModeKey] = !darkMode
-                        }
+                     dataStoreManager.setDarkMode(!darkMode)
                     }
                 }, darkMode)
             }

@@ -30,6 +30,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.coretechies.jaap.cardview.CardViewJaap
+import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import customButtons
@@ -55,23 +56,14 @@ fun ListScreen(
     val moonBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val volumeBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
 
-    val darkMode by prefs.data.map {
-        val darkModeKey = booleanPreferencesKey("DarkMode")
-        it[darkModeKey] ?: false
-    }.collectAsState(false)
-
-    val volumeEnabled by prefs.data.map {
-        val volumeKey = booleanPreferencesKey("BeepSoundEnabled")
-        it[volumeKey] ?: false
-    }.collectAsState(false)
-
-    val name by prefs.data.map {
-        val nameKey = stringPreferencesKey("name")
-        it[nameKey] ?: "none"
-    }.collectAsState("none")
-
-
     val scope = rememberCoroutineScope()
+    val dataStoreManager = DataStoreManager(prefs, scope)
+
+    // Shared Pref For Dark Mode
+    val darkMode by dataStoreManager.darkMode.collectAsState(false)
+
+    // Shared Pref For Beep Tone Sound
+    val beepSoundEnabled by dataStoreManager.beepSoundEnabled.collectAsState(false)
 
     Column(
         modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
@@ -84,14 +76,11 @@ fun ListScreen(
         ) {
             customButtons(volumeBackgroundColor,
                 Res.drawable.volume,
-                volumeEnabled,
+                beepSoundEnabled,
                 darkMode = darkMode,
                 onClick = {
                     scope.launch {
-                        prefs.edit { dataStore ->
-                            val volumeKey = booleanPreferencesKey("BeepSoundEnabled")
-                            dataStore[volumeKey] = !volumeEnabled
-                        }
+                      dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled)
                     }
                 })
 
@@ -110,10 +99,7 @@ fun ListScreen(
                 darkMode = darkMode,
                 onClick = {
                     scope.launch {
-                        prefs.edit { dataStore ->
-                            val darkModeKey = booleanPreferencesKey("DarkMode")
-                            dataStore[darkModeKey] = !darkMode
-                        }
+                      dataStoreManager.setDarkMode(!darkMode)
                     }
                 })
         }
@@ -130,10 +116,7 @@ fun ListScreen(
                         }
                     }, onContinue = {
                         scope.launch {
-                            prefs.edit { dataStore ->
-                                val counterKey = intPreferencesKey("counter")
-                                dataStore[counterKey] = item.totalCount
-                            }
+                           dataStoreManager.setCounter(item.totalCount)
                         }
                         onRoute(item)
                     })
