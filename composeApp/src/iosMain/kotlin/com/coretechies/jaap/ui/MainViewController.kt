@@ -18,38 +18,49 @@ fun MainScreenView(tab: String) = ComposeUIViewController {
     var countingData by remember { mutableStateOf<CountingDetails?>(null) }
     val prefs = remember { createDataStore() }
     val countingDao = getDatabaseHelper().countingDao()
+    var isSplashScreenVisible by remember { mutableStateOf(true) } // State for splash screen visibility
 
-    // Use mutableStateOf to keep track of the current tab
-    var currentTab by remember { mutableStateOf(tab) }
-    // Function to determine which screen to show based on the current tab
-    @Composable
-    fun CurrentScreen() {
-        when (currentTab) {
-            "home" -> HomeScreen(
-                context = null,
-                prefs = prefs,
-                countingDao = countingDao,
-                countingDetails = countingData,
-                onDiscontinue = {
-                    countingData = null
-                }
-            )
-            "list" -> ListScreen(prefs = prefs, countingDao = countingDao) { data ->
-                countingData = data
-                currentTab = "home"
-            }
-            "menu" -> MenuScreen(prefs = prefs, context = null)
-            else -> HomeScreen(
-                context = null,
-                prefs = prefs,
-                countingDao = countingDao,
-                countingDetails = countingData,
-                onDiscontinue = {
-                    countingData = null
-                }
-            )
+    // Show splash screen
+    if (isSplashScreenVisible) {
+        SplashScreen {
+            isSplashScreenVisible = false
         }
-    }
+    } else {
+        // Use mutableStateOf to keep track of the current tab
+        var currentTab by remember { mutableStateOf(tab) }
 
-    CurrentScreen()
+        // Function to determine which screen to show based on the current tab
+        @Composable
+        fun CurrentScreen() {
+            when (currentTab) {
+                "home" -> HomeScreen(
+                    context = null,
+                    prefs = prefs,
+                    countingDao = countingDao,
+                    countingDetails = countingData,
+                    onDiscontinue = {
+                        countingData = null
+                    }
+                )
+
+                "list" -> ListScreen(prefs = prefs, countingDao = countingDao) { data ->
+                    countingData = data
+                    currentTab = "home"
+                }
+
+                "menu" -> MenuScreen(prefs = prefs, context = null)
+                else -> HomeScreen(
+                    context = null,
+                    prefs = prefs,
+                    countingDao = countingDao,
+                    countingDetails = countingData,
+                    onDiscontinue = {
+                        countingData = null
+                    }
+                )
+            }
+        }
+
+        CurrentScreen()
+    }
 }
