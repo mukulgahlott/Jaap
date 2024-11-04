@@ -36,6 +36,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.utils.playBeep
@@ -72,43 +73,25 @@ fun HomeScreen(
 
     var showSaveBottomSheet by remember { mutableStateOf(false) }
     var showResetBottomSheet by remember { mutableStateOf(false) }
+
     // counter state
     var defaultCounterCount by remember { mutableStateOf(0) }
 
-    // Shad Pref Variables
-    val counter by prefs
-        .data
-        .map {
-            val counterKey = intPreferencesKey("counter")
-            it[counterKey] ?: 0
-        }.collectAsState(0)
-
-    // Shared Pref For Dark Mode
-    val darkMode by prefs
-        .data
-        .map {
-            val darkModeKey = booleanPreferencesKey("DarkMode")
-            it[darkModeKey] ?: false
-        }.collectAsState(false)
-
-    // Shared Pref For Beep Tone Sound
-    val beepSoundEnabled by prefs
-        .data
-        .map {
-            val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
-            it[beepSoundKey] ?: true
-        }.collectAsState(true)
-
-    // Shared Pref For Vibration
-    val vibrationEnabled by prefs
-        .data
-        .map {
-            val vibrationKey = booleanPreferencesKey("VibrationEnabled")
-            it[vibrationKey] ?: true
-        }.collectAsState(true)
-
     // For Coroutine Scope
     val scope = rememberCoroutineScope()
+    val dataStoreManager = DataStoreManager(prefs, scope)
+
+    // Shad Pref Variables
+    val counter by dataStoreManager.counter.collectAsState(0)
+
+    // Shared Pref For Dark Mode
+    val darkMode by dataStoreManager.darkMode.collectAsState(false)
+
+    // Shared Pref For Beep Tone Sound
+    val beepSoundEnabled by dataStoreManager.beepSoundEnabled.collectAsState(false)
+
+    // Shared Pref For Vibration
+    val vibrationEnabled by dataStoreManager.vibrationEnabled.collectAsState(true)
 
     FullScreenBackground(prefs) {
         Column(
@@ -136,12 +119,7 @@ fun HomeScreen(
                     beepSoundEnabled,
                     darkMode = darkMode,
                     onClick = {
-                        scope.launch {
-                            prefs.edit { dataStore ->
-                                val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
-                                dataStore[beepSoundKey] = !beepSoundEnabled
-                            }
-                        }
+                        scope.launch { dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled) }
                     }
                 )
 
@@ -150,12 +128,7 @@ fun HomeScreen(
                     vibrationEnabled,
                     darkMode = darkMode,
                     onClick = {
-                        scope.launch {
-                            prefs.edit { dataStore ->
-                                val vibrationKey = booleanPreferencesKey("VibrationEnabled")
-                                dataStore[vibrationKey] = !vibrationEnabled
-                            }
-                        }
+                        scope.launch { dataStoreManager.setVibrationEnabled(!vibrationEnabled) }
                     })
 
                 customButtons(theamBackgroundColor,
@@ -169,12 +142,7 @@ fun HomeScreen(
                     darkMode,
                     darkMode = darkMode,
                     onClick = {
-                        scope.launch {
-                            prefs.edit { dataStore ->
-                                val darkModeKey = booleanPreferencesKey("DarkMode")
-                                dataStore[darkModeKey] = !darkMode
-                            }
-                        }
+                        scope.launch { dataStoreManager.setDarkMode(!darkMode)}
                     })
             }
 
