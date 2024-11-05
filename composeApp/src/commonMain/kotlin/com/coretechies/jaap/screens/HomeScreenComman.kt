@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +44,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
+import com.coretechies.jaap.utils.hideKeyboard
 import com.coretechies.jaap.utils.playBeep
 import com.coretechies.jaap.utils.showToast
 import com.coretechies.jaap.utils.triggerVibration
@@ -56,6 +58,8 @@ import japp.composeapp.generated.resources.palette
 import japp.composeapp.generated.resources.save
 import japp.composeapp.generated.resources.vibrate
 import japp.composeapp.generated.resources.volume
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
@@ -88,7 +92,7 @@ fun HomeScreen(
     val dataStoreManager = DataStoreManager(prefs, scope)
 
     // Shad Pref Variables
-    val counter by dataStoreManager.counter.collectAsState(0)
+    val counter by dataStoreManager.counter.collectAsState(initial = 0)
 
     // Shared Pref For Dark Mode
     val darkMode by dataStoreManager.darkMode.collectAsState(false)
@@ -102,7 +106,7 @@ fun HomeScreen(
     FullScreenBackground(prefs) {
         Column(
             modifier = Modifier
-                .fillMaxSize().padding(top = 15.dp),
+                .fillMaxSize().padding(top = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -159,7 +163,8 @@ fun HomeScreen(
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
                 ) {
                     Box(
                         contentAlignment = Alignment.TopCenter,
@@ -168,7 +173,8 @@ fun HomeScreen(
                         Image(
                             painter = painterResource(if (darkMode) Res.drawable.ic_device_dark else Res.drawable.device_1),
                             contentDescription = "device",
-                            modifier = Modifier.size(350.dp)
+                            modifier = Modifier.size(350.dp),
+                            contentScale = ContentScale.Fit
 
                         )
 
@@ -205,8 +211,13 @@ fun HomeScreen(
                         // Counter Reset Button
                         Button(
                             onClick = {
-                                showResetBottomSheet = true
-                                showSaveBottomSheet = false
+                                if (counter!=0) {
+                                    showResetBottomSheet = true
+                                    showSaveBottomSheet = false
+                                }
+                                else{
+                                    showToast("Your counter is already 0", context)
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
@@ -248,19 +259,25 @@ fun HomeScreen(
                 darkMode = darkMode,
                 countingDao = countingDao,
                 countingDetails = countingDetails,
-                onDismiss = { showSaveBottomSheet = false },
+                onDismiss = { hideKeyboard(context)
+                    showSaveBottomSheet = false },
                 onSave = {
+                    hideKeyboard(context)
                     scope.launch {
                             dataStoreManager.setCounter(0)
+                        showToast("Your data saved successfully in list", context)
                     }
                     onDiscontinue()
                     showSaveBottomSheet = false
+                    dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled)
+                    dataStoreManager.setBeepSoundEnabled(beepSoundEnabled)
                 },
                 showBottomSheet = showSaveBottomSheet,
 
                 onFail = {
+                    hideKeyboard(context)
                     showToast("Please Enter Name ", context)
-                }
+                }, noCount = {showToast("Please Perform Some Jaap", context)}
             )
 
         }
@@ -270,18 +287,17 @@ fun HomeScreen(
                 onDismiss = { showResetBottomSheet = false },
                 darkMode = darkMode,
                 onReset = {
-
-                    scope.launch {
-                        onDiscontinue()
-                        dataStoreManager.setCounter(0)
-                        showResetBottomSheet = false
-                    }
+                    CoroutineScope(Dispatchers.Main).launch {
+                     dataStoreManager.setCounter(0) }
+                    showResetBottomSheet = false
+                    onDiscontinue()
+                    dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled)
+                    dataStoreManager.setBeepSoundEnabled(beepSoundEnabled)
                 },
                 showBottomSheet = showResetBottomSheet
             )
 
         }
-
     }
 }
 

@@ -50,6 +50,12 @@ kotlin {
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.sqlite.bundled)
 
+                // For shared viewmodels, can be used with iOS too
+                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.androidx.lifecycle.runtime.compose)
+
+                implementation (libs.androidx.lifecycle.livedata.ktx.v261)
+
                 // For shared viewmodels and other common libraries
                 api(libs.datastore.preferences)
                 api(libs.datastore)
@@ -116,6 +122,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences.core.jvm)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 
     debugImplementation(compose.uiTooling)
     ksp(libs.androidx.room.compiler)

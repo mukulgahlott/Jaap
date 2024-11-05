@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,8 +17,8 @@ interface CountingDao {
     @Delete
     suspend fun delete(countingDetails: CountingDetails)
 
-    @Query("UPDATE CountingDetails SET countTitle = :countTitle, totalCount = :totalCount , countDate = :countDate WHERE id = :id")
-    suspend fun updateById(id: Int, totalCount: Int, countTitle : String, countDate : String)
+    @Upsert
+    suspend fun updateById(countingDetails: CountingDetails)
 
     @Query("SELECT * FROM CountingDetails")
     fun getAllCountingDetails(): Flow<List<CountingDetails>>

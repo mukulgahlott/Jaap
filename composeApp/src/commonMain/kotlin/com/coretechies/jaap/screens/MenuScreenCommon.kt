@@ -64,6 +64,7 @@ import japp.composeapp.generated.resources.rate_us
 import japp.composeapp.generated.resources.share_app
 import japp.composeapp.generated.resources.terms
 import japp.composeapp.generated.resources.user_3__1
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
@@ -94,7 +95,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
         LocalizedApp(language = localization) {
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(top = 18.dp)
+                modifier = Modifier.fillMaxSize().padding(top = 10.dp)
                     .background(if (darkMode) Color.Black else Color.White)
                     .verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally

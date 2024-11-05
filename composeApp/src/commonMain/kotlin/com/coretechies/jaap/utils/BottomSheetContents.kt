@@ -1,3 +1,4 @@
+import androidx.collection.emptyLongSet
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -63,6 +64,7 @@ fun SaveBottomSheet(
     darkMode: Boolean,
     onSave: () -> Unit,
     onFail: () -> Unit,
+    noCount: () -> Unit,
     totalCount: Int,
     showBottomSheet: Boolean
 ) {
@@ -78,11 +80,11 @@ fun SaveBottomSheet(
         visible = showBottomSheet, enter = slideInVertically(
             initialOffsetY = { it }, animationSpec = tween(durationMillis = 300)
         ), exit = slideOutVertically(
-            targetOffsetY = { it }, animationSpec = tween(durationMillis = 300)
+            targetOffsetY = { it }, animationSpec = tween(durationMillis = 700)
         )
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth().height(260.dp).padding(),
+            modifier = Modifier.fillMaxWidth().padding(),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             color = if (darkMode) Color.Black  else Color.White
         ) {
@@ -99,9 +101,8 @@ fun SaveBottomSheet(
                 ) {
 
                     Box(contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp).clickable {
-                            onDismiss()
-                        }) {
+                        modifier = Modifier.size(50.dp)
+                    ) {
                         Surface(
                             shape = CircleShape,
                             color = Color(0xFFb7926d),
@@ -125,9 +126,7 @@ fun SaveBottomSheet(
                     )
 
                     Box(contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp).clickable {
-                            onDismiss()
-                        }) {
+                        modifier = Modifier.size(50.dp)){
                         Surface(
                             shape = CircleShape,
                             color = Color(0xFFe28b2a),
@@ -137,13 +136,14 @@ fun SaveBottomSheet(
 
                             if (countingDetails != null) {
                                 updateCounter(
+                                    countingDetails= countingDetails,
                                     totalCount = totalCount,
                                     countTitle = textState.value.text,
                                     countingDao = countingDao,
                                     id = countingDetails.id,
                                     onFail = {
                                         onFail()
-                                    }
+                                    }, onSave = onSave
                                 )
                             }
                             else {
@@ -153,13 +153,11 @@ fun SaveBottomSheet(
                                     "Jajman0900",
                                     "Jajman-0900",
                                     countingDao, onFail={
-                                        onFail()
-                                    }
+                                        onFail() },
+                                    onSave = onSave, noCount = noCount
                                 )
-                            }
-                            onSave()
-                            textState.value = TextFieldValue("")
 
+                            }
 
                         }) {
                             Icon(
@@ -176,7 +174,7 @@ fun SaveBottomSheet(
 
                 TextField(
                     value = textState.value,
-                    onValueChange = { if (it.text.length <= 16) textState.value = it },
+                    onValueChange = { textState.value = it },
                     placeholder = { Text(text = "Name") },
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color(0xFFF1EAE2), // Light background color
@@ -198,7 +196,7 @@ fun SaveBottomSheet(
                         fontSize = 16.sp
                     )
                 )
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(60.dp))
             }
         }
     }
@@ -211,19 +209,27 @@ fun insertList(
     countingDetailsUserId: String,
     countingDetailsUserNane: String,
     countingDao: CountingDao,
-    onFail: () -> Unit
+    onFail: () -> Unit,
+    noCount: () -> Unit,
+    onSave: () -> Unit
 ) {
 
     if (countTitle.isNotBlank()) {
-        val countingTempObj = CountingDetails(
-            totalCount = totalCount,
-            countTitle = countTitle,
-            countDate = getCurrentDateTime(),
-            countingDetailsUserId = countingDetailsUserId,
-            countingDetailsUserName = countingDetailsUserNane
-        )
-        CoroutineScope(Dispatchers.IO).launch {
-            countingDao.insert(countingTempObj)
+        if (totalCount!=0) {
+            val countingTempObj = CountingDetails(
+                totalCount = totalCount,
+                countTitle = countTitle,
+                countDate = getCurrentDateTime(),
+                countingDetailsUserId = countingDetailsUserId,
+                countingDetailsUserName = countingDetailsUserNane
+            )
+            CoroutineScope(Dispatchers.IO).launch {
+                countingDao.insert(countingTempObj)
+                onSave()
+            }
+        }
+        else{
+            noCount()
         }
 
     }
@@ -233,12 +239,26 @@ fun insertList(
 }
 
 fun updateCounter(
+    countingDetails: CountingDetails,
     countingDao: CountingDao, totalCount: Int,
-    countTitle: String, id: Int, onFail: () -> Unit
+    countTitle: String, id: Int, onFail: () -> Unit, onSave: () -> Unit
 ) {
+
+
     if (countTitle.isNotBlank()) {
         CoroutineScope(Dispatchers.IO).launch {
-            countingDao.updateById(id, totalCount, countTitle, getCurrentDateTime())
+
+            val countingDetailsTemp = CountingDetails(
+            countingDetails.id,
+            totalCount,
+            countTitle,
+            getCurrentDateTime(),
+            countingDetails.countingDetailsUserId,
+            countingDetails.countingDetailsUserName
+            )
+
+            countingDao.updateById(countingDetailsTemp)
+            onSave()
         }
     }
     else{
@@ -300,9 +320,7 @@ fun resetBottomSheet(
                         )
                     )
                     Box(contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp).clickable {
-                            onDismiss()
-                        }) {
+                        modifier = Modifier.size(50.dp)) {
                         Surface(
                             shape = CircleShape,
                             color = if (darkMode) Color(0XFF361d05) else Color(0xFFcfb69e),
@@ -335,8 +353,8 @@ fun resetBottomSheet(
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = Color(0XFFf36464), contentColor = Color.White
                     ),
-                    modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.9f),
+                    modifier = Modifier.padding(top = 20.dp).align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(fraction = 0.95f),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
@@ -353,7 +371,7 @@ fun resetBottomSheet(
                         contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.9f),
+                        .fillMaxWidth(fraction = 0.9f), elevation =  ButtonDefaults.elevation(0.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(

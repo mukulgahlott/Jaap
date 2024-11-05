@@ -7,6 +7,11 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.*
@@ -16,15 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
+import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.utils.AppConstants
+import com.example.jetpackCompose.ui.theme.DarkOrange
 import com.example.jetpackCompose.ui.theme.Orange
 import com.example.jetpackCompose.ui.theme.gray
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.*
-import kotlinx.coroutines.flow.map
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -51,52 +56,58 @@ fun MainScreen(
         var countingDetailsObject by remember { mutableStateOf<CountingDetails?>(null) }
 
         // Shared Pref For Dark Mode
-        val DarkMode by prefs
-            .data
-            .map {
-                val darkModeKey = booleanPreferencesKey("DarkMode")
-                it[darkModeKey] ?: false
-            }.collectAsState(false)
-
+        val scope = rememberCoroutineScope()
+        val dataStoreManager = DataStoreManager(prefs, scope)
+        // Shared Pref For Dark Mode
+        val darkMode by dataStoreManager.darkMode.collectAsState(false)
         // Show splash screen
 
         Scaffold(
             bottomBar = {
-                BottomNavigation( modifier = Modifier.wrapContentHeight(),
-                    backgroundColor = if (!DarkMode) bottomBarColor else bottomBarDarkColor
-                ) {
-                    tabs.forEachIndexed { index, tab ->
-                        val isActive = selectedTab == index // Determine if tab is active
-                        val currentIcon = when (tab) {
-                            AppConstants.HOME -> painterResource(Res.drawable.home)
-                            AppConstants.LIST -> painterResource(Res.drawable.list)
-                            AppConstants.MENU -> painterResource(Res.drawable.menu)
-                            else -> throw IllegalArgumentException("Unknown tab: $tab")
-                        }
-                        println("Selected Tab: $tab, Active: $isActive") // Debug output
+                Column {
+                    Divider(
+                        color = if (darkMode)Color.DarkGray else DarkOrange,
+                        thickness = 0.8.dp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp).fillMaxWidth().background(if (!darkMode) bottomBarColor else bottomBarDarkColor))
 
-                        BottomNavigationItem(
-                            icon = {
-                                Icon(
-                                    currentIcon,
-                                    contentDescription = tab,
-                                    modifier = iconModifier,
-                                    tint = if (isActive) activeBottomTabIconColor else inActiveBottomTabIconColor
-                                )
-                            },
-                            label = {
-                                Text(
-                                    tab,
-                                    color = if (isActive) activeBottomTabIconColor else inActiveBottomTabIconColor
-                                )
-                            },
-                            selected = isActive,
-                            onClick = { selectedTab = index },
-                        )
+                    BottomNavigation(
+                        modifier = Modifier.wrapContentHeight(),
+                        backgroundColor = if (!darkMode) bottomBarColor else bottomBarDarkColor
+                    ) {
+                        tabs.forEachIndexed { index, tab ->
+                            val isActive = selectedTab == index // Determine if tab is active
+                            val currentIcon = when (tab) {
+                                AppConstants.HOME -> painterResource(Res.drawable.home)
+                                AppConstants.LIST -> painterResource(Res.drawable.list)
+                                AppConstants.MENU -> painterResource(Res.drawable.menu)
+                                else -> throw IllegalArgumentException("Unknown tab: $tab")
+                            }
+                            println("Selected Tab: $tab, Active: $isActive") // Debug output
+
+                            BottomNavigationItem(
+                                icon = {
+                                    Icon(
+                                        currentIcon,
+                                        contentDescription = tab,
+                                        modifier = iconModifier,
+                                        tint = if (isActive) activeBottomTabIconColor else inActiveBottomTabIconColor
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        tab,
+                                        color = if (isActive) activeBottomTabIconColor else inActiveBottomTabIconColor
+                                    )
+                                },
+                                selected = isActive,
+                                onClick = { selectedTab = index },
+                            )
+                        }
                     }
                 }
             }
-        ) {
+        ){
             AnimatedContent(
                 targetState = selectedTab,
                 transitionSpec = {
@@ -117,6 +128,7 @@ fun MainScreen(
                     1 -> ListScreen(prefs, countingDao) { countObject ->
                         countingDetailsObject = countObject
                         selectedTab = 0
+
                     }
 
                     2 -> MenuScreen(prefs = prefs, context = context)

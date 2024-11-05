@@ -19,6 +19,7 @@ junit = "4.13.2"
 kotlin = "2.0.20"
 kotlinxCoroutinesCore = "1.8.1"
 kotlinxDatetime = "0.4.0"
+lifecycleLivedataKtxVersion = "2.6.1"
 lottieCompose = "6.0.0"
 material = "1.7.4"
 animation = "1.7.4"
@@ -46,11 +47,13 @@ firebaseCrashlytics = "19.2.1"
 googleFirebaseCrashlytics = "3.0.2"
 firebaseAnalytics = "22.1.2"
 uiVersion = "1.6.11"
+lifecycleLivedataKtx = "2.8.7"
 
 [libraries]
 
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
+androidx-lifecycle-livedata-ktx-v261 = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtxVersion" }
 androidx-material-v154 = { module = "androidx.compose.material:material", version.ref = "materialVersion" }
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
@@ -91,6 +94,7 @@ datastore-preferences = { module = "androidx.datastore:datastore-preferences", v
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "uiVersion" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 
 
 [plugins]

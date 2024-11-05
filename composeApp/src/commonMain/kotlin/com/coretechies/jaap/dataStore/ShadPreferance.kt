@@ -13,11 +13,11 @@ import kotlinx.coroutines.launch
 class DataStoreManager(private val dataStore: DataStore<Preferences>, private val scope: CoroutineScope) {
 
     //Data Store Preference Keys
-    private val counterKey = intPreferencesKey("counter")
-    private val themeKey = booleanPreferencesKey("ThemeKey")
-    private val darkModeKey = booleanPreferencesKey("DarkMode")
-    private val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
-    private val vibrationKey = booleanPreferencesKey("VibrationEnabled")
+     val counterKey = intPreferencesKey("counter")
+     val themeKey = booleanPreferencesKey("ThemeKey")
+     val darkModeKey = booleanPreferencesKey("DarkMode")
+     val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
+     val vibrationKey = booleanPreferencesKey("VibrationEnabled")
 
     // Getter for counter
     val counter: Flow<Int> = dataStore.data

@@ -2,6 +2,7 @@ package com.coretechies.jaap.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +43,8 @@ import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.list
 import japp.composeapp.generated.resources.moon_stars
 import japp.composeapp.generated.resources.volume
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -54,7 +57,6 @@ fun ListScreen(
     countingDao: CountingDao,
     onRoute: (countingData: CountingDetails) -> Unit
 ) {
-
     val countingData by countingDao.getAllCountingDetails().collectAsState(initial = emptyList())
 
     val moonBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
@@ -71,7 +73,7 @@ fun ListScreen(
 
     ListMenuBackground(prefs = prefs) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(top = 18.dp),
+            modifier = Modifier.fillMaxSize().padding(top = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Fixed Header
@@ -110,26 +112,52 @@ fun ListScreen(
                     })
             }
 
-            // LazyColumn to display the list of Jaap cards
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            // LazyColumn to display the list of Jaap cards or a message when no data is available
+            Box(modifier = Modifier.fillMaxSize()) {
                 if (countingData.isNotEmpty()) {
-                    items(countingData) { item ->
-                        CardViewJaap(item, darkMode, onDelete = {
-                            scope.launch {
-                                countingDao.delete(item)
-                            }
-                        }, onContinue = {
-                            scope.launch {
-                                dataStoreManager.setCounter(item.totalCount)
-                            }
-                            onRoute(item)
-                        })
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(countingData.reversed()) { item ->
+                            CardViewJaap(
+                                item,
+                                darkMode,
+                                onDelete = {
+                                    scope.launch {
+                                        countingDao.delete(item)
+                                    }
+                                },
+                                onContinue = {
+                                    scope.launch(Dispatchers.IO) {
+                                        dataStoreManager.setCounter(item.totalCount)
+                                        launch(Dispatchers.Main) {
+                                            onRoute(item)
+                                            dataStoreManager.setCounter(item.totalCount)
+                                        }
+                                    }
+                                }
+                            )
+                        }
+
+                        // Add a Spacer at the bottom
+                        item {
+                            Spacer(modifier = Modifier.height(60.dp)) // Spacer height can be adjusted
+                        }
                     }
+                } else {
+                    // Display "No data available" message when no data is found
+                    Text(
+                        text = "No data available",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (darkMode) Color.White else Color.Black,
+                        modifier = Modifier
+                            .align(Alignment.Center) // Center the text
+                            .padding(16.dp) // Optional padding
+                    )
                 }
             }
         }
     }
-
 }

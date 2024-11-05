@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import com.coretechies.jaap.dataStore.DataStoreManager
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.bg_dark
 import japp.composeapp.generated.resources.bg_light
@@ -29,12 +31,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ListMenuBackground( prefs : DataStore<Preferences> ,content: @Composable () -> Unit) {
 
     // Shared Pref For Dark Mode
-    val darkMode by prefs
-        .data
-        .map {
-            val darkModeKey = booleanPreferencesKey("DarkMode")
-            it[darkModeKey] ?: false
-        }.collectAsState(false)
+    val scope = rememberCoroutineScope()
+    val dataStoreManager = DataStoreManager(prefs, scope)
+    // Shared Pref For Dark Mode
+    val darkMode by dataStoreManager.darkMode.collectAsState(false)
 
     Box(
         modifier = Modifier.fillMaxSize().imePadding(),

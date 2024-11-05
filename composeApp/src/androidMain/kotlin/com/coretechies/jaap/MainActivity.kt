@@ -43,7 +43,6 @@ class MainActivity : ComponentActivity() {
                     createDataStore(applicationContext)
                 }, countingDao = countingDao)
             }
-            window.statusBarColor = 0xFF00FFFFFF.toInt()
         }
     }
 }

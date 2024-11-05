@@ -18,9 +18,12 @@ import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +40,7 @@ import androidx.datastore.preferences.core.Preferences
 import com.example.jetpackCompose.ui.theme.PureOrange
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.ic_right_arrow
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -72,7 +76,6 @@ fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource, 
 }
 
 
-
 @Composable
 fun RenderCustomButton(
     showSwitch: Boolean,
@@ -84,8 +87,17 @@ fun RenderCustomButton(
     modifier: Modifier = Modifier,
     darkMode: Boolean,
     onClick: () -> Unit
-)  {
+) {
     val isChecked = remember { mutableStateOf(true) }
+    var isButtonEnabled by remember { mutableStateOf(true) } // Control for button enable/disable
+
+    // LaunchedEffect to handle 1-second delay
+    LaunchedEffect(isButtonEnabled) {
+        if (!isButtonEnabled) {
+            delay(1000) // Wait for 1 second
+            isButtonEnabled = true // Re-enable button
+        }
+    }
 
     Row(
         modifier = modifier
@@ -96,12 +108,15 @@ fun RenderCustomButton(
                 .wrapContentHeight()
                 .padding(top = topMargin)
                 .clip(RoundedCornerShape(10.dp))
-                .background(if (darkMode) Color (0XFF2c2c2c) else Color(0XFFf3ede7)),
+                .background(if (darkMode) Color(0XFF2c2c2c) else Color(0XFFf3ede7)),
             contentAlignment = Alignment.CenterStart
         ) {
-
             Row(
-                modifier = Modifier.clickable(onClick = onClick)
+                modifier = Modifier
+                    .clickable(enabled = isButtonEnabled) { // Use isButtonEnabled here
+                        isButtonEnabled = false // Disable button
+                        onClick()
+                    }
                     .fillMaxWidth()
                     .padding(
                         start = 20.dp,
@@ -123,8 +138,7 @@ fun RenderCustomButton(
                 )
 
                 Column(
-                    modifier = Modifier
-                        .wrapContentWidth(),
+                    modifier = Modifier.wrapContentWidth(),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -148,17 +162,16 @@ fun RenderCustomButton(
                     }
                 }
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     if (showSwitch) {
                         Switch(
-
                             checked = isChecked.value,
-                            onCheckedChange = { isChecked.value = it},
+                            onCheckedChange = { isChecked.value = it },
                             colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color(0XFFe28b2a))
+                                checkedThumbColor = Color(0XFFe28b2a)
+                            )
                         )
                     } else {
                         Image(
