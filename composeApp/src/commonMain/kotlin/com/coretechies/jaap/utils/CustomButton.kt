@@ -88,7 +88,7 @@ fun RenderCustomButton(
     val isChecked = remember { mutableStateOf(true) }
 
     Row(
-        modifier = modifier.clickable(onClick = onClick)
+        modifier = modifier
     ) {
         Box(
             modifier = Modifier
@@ -101,7 +101,7 @@ fun RenderCustomButton(
         ) {
 
             Row(
-                modifier = Modifier
+                modifier = Modifier.clickable(onClick = onClick)
                     .fillMaxWidth()
                     .padding(
                         start = 20.dp,

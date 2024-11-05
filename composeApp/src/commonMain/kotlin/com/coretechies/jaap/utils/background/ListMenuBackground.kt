@@ -1,7 +1,10 @@
+package com.coretechies.jaap.utils.background
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material.Text
@@ -22,11 +25,8 @@ import japp.composeapp.generated.resources.bg_light
 import kotlinx.coroutines.flow.map
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-
-
 @Composable
-fun FullScreenBackground( prefs : DataStore<Preferences> ,content: @Composable () -> Unit) {
+fun ListMenuBackground( prefs : DataStore<Preferences> ,content: @Composable () -> Unit) {
 
     // Shared Pref For Dark Mode
     val darkMode by prefs
@@ -40,14 +40,11 @@ fun FullScreenBackground( prefs : DataStore<Preferences> ,content: @Composable (
         modifier = Modifier.fillMaxSize().imePadding(),
     ) {
         // Background Image
-        Image(
-            painter = if(darkMode) painterResource(Res.drawable.bg_dark)
-            else painterResource(Res.drawable.bg_light),
-            contentScale = ContentScale.FillBounds,
+        Column(
+            modifier= Modifier.background(if(darkMode)Color.Black else Color.White).fillMaxSize()
+        ){
 
-            contentDescription = "Background Image",
-            modifier = Modifier.fillMaxSize()
-        )
+        }
 
         // Content overlay
         Box(

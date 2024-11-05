@@ -1,10 +1,13 @@
 package com.coretechies.jaap.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -33,6 +36,7 @@ import com.coretechies.jaap.cardview.CardViewJaap
 import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
+import com.coretechies.jaap.utils.background.ListMenuBackground
 import customButtons
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.list
@@ -65,64 +69,67 @@ fun ListScreen(
     // Shared Pref For Beep Tone Sound
     val beepSoundEnabled by dataStoreManager.beepSoundEnabled.collectAsState(false)
 
-    Column(
-        modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Fixed Header
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp, horizontal = 15.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+    ListMenuBackground(prefs = prefs) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(top = 18.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            customButtons(volumeBackgroundColor,
-                Res.drawable.volume,
-                beepSoundEnabled,
-                darkMode = darkMode,
-                onClick = {
-                    scope.launch {
-                      dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled)
-                    }
-                })
-
-            Text(
-                modifier = Modifier.wrapContentHeight(),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (darkMode) Color.White else Color(0XFF87490c),
-                text = stringResource(Res.string.list),
-                textAlign = TextAlign.Center
-            )
-
-            customButtons(moonBackgroundColor,
-                Res.drawable.moon_stars,
-                darkMode,
-                darkMode = darkMode,
-                onClick = {
-                    scope.launch {
-                      dataStoreManager.setDarkMode(!darkMode)
-                    }
-                })
-        }
-
-        // LazyColumn to display the list of Jaap cards
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (countingData.isNotEmpty()) {
-                items(countingData) { item ->
-                    CardViewJaap(item, darkMode, onDelete = {
+            // Fixed Header
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp, horizontal = 15.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                customButtons(volumeBackgroundColor,
+                    Res.drawable.volume,
+                    beepSoundEnabled,
+                    darkMode = darkMode,
+                    onClick = {
                         scope.launch {
-                            countingDao.delete(item)
+                            dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled)
                         }
-                    }, onContinue = {
-                        scope.launch {
-                           dataStoreManager.setCounter(item.totalCount)
-                        }
-                        onRoute(item)
                     })
+
+                Text(
+                    modifier = Modifier.wrapContentHeight(),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (darkMode) Color.White else Color(0XFF87490c),
+                    text = stringResource(Res.string.list),
+                    textAlign = TextAlign.Center
+                )
+
+                customButtons(moonBackgroundColor,
+                    Res.drawable.moon_stars,
+                    darkMode,
+                    darkMode = darkMode,
+                    onClick = {
+                        scope.launch {
+                            dataStoreManager.setDarkMode(!darkMode)
+                        }
+                    })
+            }
+
+            // LazyColumn to display the list of Jaap cards
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (countingData.isNotEmpty()) {
+                    items(countingData) { item ->
+                        CardViewJaap(item, darkMode, onDelete = {
+                            scope.launch {
+                                countingDao.delete(item)
+                            }
+                        }, onContinue = {
+                            scope.launch {
+                                dataStoreManager.setCounter(item.totalCount)
+                            }
+                            onRoute(item)
+                        })
+                    }
                 }
             }
         }
     }
-}
 
+}

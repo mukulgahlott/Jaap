@@ -1,8 +1,10 @@
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,6 +41,7 @@ import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.localization.Language
 import com.coretechies.jaap.localization.LocalizedApp
 import com.coretechies.jaap.shareApp.shareApp
+import com.coretechies.jaap.utils.background.ListMenuBackground
 import com.coretechies.jaap.utils.openUrl
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.contact_us
@@ -87,46 +90,53 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
         }.collectAsState("hi")
 
 
-
-    LocalizedApp(language = localization) {
-
-        Column(
-            modifier = Modifier.fillMaxSize()
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight()
-                    .padding(vertical = 20.dp, horizontal = 15.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                profileButtons(Res.drawable.user_3__1)
-
-                Text(
-                    modifier = Modifier.wrapContentHeight(),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (darkMode) Color.White else Color(0XFF87490c),
-                    text = "Menu",
-                    textAlign = TextAlign.Center
-                )
-
-                customButtons(moonBackgroundColor, Res.drawable.moon_stars, darkMode, onClick = {
-                    scope.launch {
-                     dataStoreManager.setDarkMode(!darkMode)
-                    }
-                }, darkMode)
-            }
+    ListMenuBackground(prefs = prefs) {
+        LocalizedApp(language = localization) {
 
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top
+                modifier = Modifier.fillMaxSize().padding(top = 18.dp)
+                    .background(if (darkMode) Color.Black else Color.White)
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                        .padding(vertical = 20.dp, horizontal = 15.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    profileButtons(Res.drawable.user_3__1)
+
+                    Text(
+                        modifier = Modifier.wrapContentHeight(),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (darkMode) Color.White else Color(0XFF87490c),
+                        text = "Menu",
+                        textAlign = TextAlign.Center
+                    )
+
+                    customButtons(
+                        moonBackgroundColor,
+                        Res.drawable.moon_stars,
+                        darkMode,
+                        onClick = {
+                            scope.launch {
+                                dataStoreManager.setDarkMode(!darkMode)
+                            }
+                        },
+                        darkMode
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 12.dp, end = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top
+                ) {
 
 //            RenderCustomButton(
 //                showSwitch = true,
@@ -142,109 +152,112 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
 //                },
 //            )
 
-                RenderCustomButton(
-                    showSwitch = false,
-                    icon = painterResource(Res.drawable.ic_language),
-                    title = stringResource(Res.string.language),
-                    description = stringResource(Res.string.language_name),
-                    topMargin = 5.dp,
-                    showDescription = true,
-                    modifier = Modifier,
-                    darkMode = darkMode,
-                    onClick = {
+                    RenderCustomButton(
+                        showSwitch = false,
+                        icon = painterResource(Res.drawable.ic_language),
+                        title = stringResource(Res.string.language),
+                        description = stringResource(Res.string.language_name),
+                        topMargin = 5.dp,
+                        showDescription = true,
+                        modifier = Modifier,
+                        darkMode = darkMode,
+                        onClick = {
 
 
-                    },
-                )
+                        },
+                    )
 
-                RenderCustomButton(
-                    showSwitch = false,
-                    icon = painterResource(Res.drawable.ic_share),
-                    title = stringResource(Res.string.share_app),
-                    description = stringResource(Res.string.share_app),
-                    topMargin = 24.dp,
-                    showDescription = false,
-                    modifier = Modifier,
-                    darkMode = darkMode,
-                    onClick = {
-                        shareApp(
-                            "Refer and make your friend pure \n" +
-                                    "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
-                            context
-                        )
-                    },
-                )
+                    RenderCustomButton(
+                        showSwitch = false,
+                        icon = painterResource(Res.drawable.ic_share),
+                        title = stringResource(Res.string.share_app),
+                        description = stringResource(Res.string.share_app),
+                        topMargin = 24.dp,
+                        showDescription = false,
+                        modifier = Modifier,
+                        darkMode = darkMode,
+                        onClick = {
+                            shareApp(
+                                "Refer and make your friend pure \n" +
+                                        "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
+                                context
+                            )
+                        },
+                    )
 
-                RenderCustomButton(
-                    showSwitch = false,
-                    icon = painterResource(Res.drawable.ic_rate),
-                    title = stringResource(Res.string.rate_us),
-                    description = stringResource(Res.string.rate_us),
-                    topMargin = 5.dp,
-                    showDescription = false,
-                    modifier = Modifier,
-                    darkMode = darkMode,
-                    onClick = {
-                        openUrl(
-                            "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
-                            context
-                        )
-                    },
-                )
+                    RenderCustomButton(
+                        showSwitch = false,
+                        icon = painterResource(Res.drawable.ic_rate),
+                        title = stringResource(Res.string.rate_us),
+                        description = stringResource(Res.string.rate_us),
+                        topMargin = 5.dp,
+                        showDescription = false,
+                        modifier = Modifier,
+                        darkMode = darkMode,
+                        onClick = {
+                            openUrl(
+                                "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
+                                context
+                            )
+                        },
+                    )
 
-                RenderCustomButton(
-                    showSwitch = false,
-                    icon = painterResource(Res.drawable.ic_envelop),
-                    title = stringResource(Res.string.contact_us),
-                    description = stringResource(Res.string.contact_us),
-                    topMargin = 5.dp,
-                    showDescription = false,
-                    modifier = Modifier,
-                    darkMode = darkMode,
-                    onClick = {
-                        openUrl("https://app.footballquiz.app/support ", context)
-                    },
-                )
+                    RenderCustomButton(
+                        showSwitch = false,
+                        icon = painterResource(Res.drawable.ic_envelop),
+                        title = stringResource(Res.string.contact_us),
+                        description = stringResource(Res.string.contact_us),
+                        topMargin = 5.dp,
+                        showDescription = false,
+                        modifier = Modifier,
+                        darkMode = darkMode,
+                        onClick = {
+                            openUrl("https://app.footballquiz.app/support ", context)
+                        },
+                    )
 
-                RenderCustomButton(
-                    showSwitch = false,
-                    icon = painterResource(Res.drawable.ic_document),
-                    title = stringResource(Res.string.terms),
-                    description = stringResource(Res.string.terms),
-                    topMargin = 24.dp,
-                    showDescription = false,
-                    modifier = Modifier,
-                    darkMode = darkMode,
-                    onClick = {
-                        openUrl("https://app.footballquiz.app/terms_of_services", context)
-                    },
-                )
+                    RenderCustomButton(
+                        showSwitch = false,
+                        icon = painterResource(Res.drawable.ic_document),
+                        title = stringResource(Res.string.terms),
+                        description = stringResource(Res.string.terms),
+                        topMargin = 24.dp,
+                        showDescription = false,
+                        modifier = Modifier,
+                        darkMode = darkMode,
+                        onClick = {
+                            openUrl("https://app.footballquiz.app/terms_of_services", context)
+                        },
+                    )
 
-                RenderCustomButton(
-                    showSwitch = false,
-                    icon = painterResource(Res.drawable.ic_lock),
-                    title = stringResource(Res.string.privacy),
-                    description = stringResource(Res.string.privacy),
-                    topMargin = 5.dp,
-                    showDescription = false,
-                    modifier = Modifier,
-                    darkMode = darkMode,
-                    onClick = {
-                        openUrl("https://app.footballquiz.app/privacy_policy ", context)
-                    },
-                )
+                    RenderCustomButton(
+                        showSwitch = false,
+                        icon = painterResource(Res.drawable.ic_lock),
+                        title = stringResource(Res.string.privacy),
+                        description = stringResource(Res.string.privacy),
+                        topMargin = 5.dp,
+                        showDescription = false,
+                        modifier = Modifier,
+                        darkMode = darkMode,
+                        onClick = {
+                            openUrl("https://app.footballquiz.app/privacy_policy ", context)
+                        },
+                    )
 
-                Image(
-                    painter = painterResource(if (darkMode) Res.drawable.ic_coretechies_white else Res.drawable.ic_coretechies),
-                    contentDescription = "CoreTechies Icon",
-                    modifier = Modifier.fillMaxWidth().height(140.dp)
-                        .padding(top = 54.dp, bottom = 24.dp),
-                    contentScale = ContentScale.FillBounds,
-                )
+                    Image(
+                        painter = painterResource(if (darkMode) Res.drawable.ic_coretechies_white else Res.drawable.ic_coretechies),
+                        contentDescription = "CoreTechies Icon",
+                        modifier = Modifier.fillMaxWidth().height(140.dp)
+                            .padding(top = 54.dp, bottom = 24.dp),
+                        contentScale = ContentScale.FillBounds,
+                    )
+
+                    Spacer(modifier = Modifier.height(60.dp))
+                }
             }
+
+
         }
-
-
     }
 }
 @Composable

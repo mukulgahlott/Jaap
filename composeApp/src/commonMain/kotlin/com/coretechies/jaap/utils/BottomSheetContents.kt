@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -81,14 +82,14 @@ fun SaveBottomSheet(
         )
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier.fillMaxWidth().height(260.dp).padding(),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             color = if (darkMode) Color.Black  else Color.White
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
+                verticalArrangement = Arrangement.Top
             ) {
                 // Header with close and check buttons
                 Row(
@@ -197,6 +198,7 @@ fun SaveBottomSheet(
                         fontSize = 16.sp
                     )
                 )
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }
@@ -361,6 +363,8 @@ fun resetBottomSheet(
                         fontSize = 18.sp,
                     )
                 }
+
+                Spacer(modifier = Modifier.height(60.dp))
 
 
             }

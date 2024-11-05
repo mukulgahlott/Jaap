@@ -3,12 +3,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,6 +75,8 @@ fun HomeScreen(
     val theamBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
     val darkModBackgroundColor = remember { mutableStateOf(Color(0xFFb7926d)) }
 
+    val insets = WindowInsets.systemBars.asPaddingValues()
+
     var showSaveBottomSheet by remember { mutableStateOf(false) }
     var showResetBottomSheet by remember { mutableStateOf(false) }
 
@@ -96,7 +102,7 @@ fun HomeScreen(
     FullScreenBackground(prefs) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize().padding(top = 15.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -245,7 +251,7 @@ fun HomeScreen(
                 onDismiss = { showSaveBottomSheet = false },
                 onSave = {
                     scope.launch {
-                            dataStoreManager.setCounter(counter + 1)
+                            dataStoreManager.setCounter(0)
                     }
                     onDiscontinue()
                     showSaveBottomSheet = false
@@ -264,11 +270,12 @@ fun HomeScreen(
                 onDismiss = { showResetBottomSheet = false },
                 darkMode = darkMode,
                 onReset = {
-                    showResetBottomSheet = false
+
                     scope.launch {
+                        onDiscontinue()
                         dataStoreManager.setCounter(0)
+                        showResetBottomSheet = false
                     }
-                    onDiscontinue()
                 },
                 showBottomSheet = showResetBottomSheet
             )

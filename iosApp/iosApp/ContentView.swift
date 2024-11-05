@@ -1,55 +1,18 @@
 import UIKit
 import SwiftUI
-import ComposeApp // Ensure your shared Kotlin module is imported correctly
+import ComposeApp
 
 struct ComposeView: UIViewControllerRepresentable {
-    let viewController: () -> UIViewController
-
     func makeUIViewController(context: Context) -> UIViewController {
-        return viewController()
+        MainViewControllerKt.MainScreenView()
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
 struct ContentView: View {
-    @State private var selectedTab: Tab = .home
-    
     var body: some View {
-        TabView(selection: $selectedTab) {
-            ComposeView(viewController: {
-                MainViewControllerKt.MainScreenView(tab: "home") // Kotlin function for HomeScreen
-            })
-            .tabItem {
-                Image(systemName: "house.fill")
-                Text("Home")
-            }
-            .tag(Tab.home)
-            
-            ComposeView(viewController: {
-                MainViewControllerKt.MainScreenView(tab: "list") // Kotlin function for ListScreen
-            })
-            .tabItem {
-                Image(systemName: "list.bullet")
-                Text("List")
-            }
-            .tag(Tab.list)
-            
-            ComposeView(viewController: {
-                MainViewControllerKt.MainScreenView(tab: "menu") // Kotlin function for MenuScreen
-            })
-            .tabItem {
-                Image(systemName: "menucard.fill")
-                Text("Menu")
-            }
-            .tag(Tab.menu)
-        }
-        .accentColor(.orange) // Optional color customization
-    }
-    
-    enum Tab {
-        case home
-        case list
-        case menu
+        ComposeView()
+                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
     }
 }
