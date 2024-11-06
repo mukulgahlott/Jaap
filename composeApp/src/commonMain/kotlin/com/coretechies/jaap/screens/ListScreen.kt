@@ -148,7 +148,7 @@ fun ListScreen(
                 } else {
                     // Display "No data available" message when no data is found
                     Text(
-                        text = "No data available",
+                        text = "No Records Here Yet",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (darkMode) Color.White else Color.Black,

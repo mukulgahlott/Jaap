@@ -105,8 +105,7 @@ fun HomeScreen(
 
     FullScreenBackground(prefs) {
         Column(
-            modifier = Modifier
-                .fillMaxSize().padding(top = 10.dp),
+            modifier = Modifier.fillMaxSize().padding(top = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -114,7 +113,7 @@ fun HomeScreen(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (darkMode) Color.White else Color(0XFF87490c),
-                text = "Digital Mala Jaap",
+                text = "Digital Jaap",
                 textAlign = TextAlign.Center
             )
 
@@ -130,8 +129,7 @@ fun HomeScreen(
                     darkMode = darkMode,
                     onClick = {
                         scope.launch { dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled) }
-                    }
-                )
+                    })
 
                 customButtons(vibrationBackgroundColor,
                     Res.drawable.vibrate,
@@ -152,7 +150,7 @@ fun HomeScreen(
                     darkMode,
                     darkMode = darkMode,
                     onClick = {
-                        scope.launch { dataStoreManager.setDarkMode(!darkMode)}
+                        scope.launch { dataStoreManager.setDarkMode(!darkMode) }
                     })
             }
 
@@ -164,7 +162,7 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top
+                    verticalArrangement = Arrangement.Top
                 ) {
                     Box(
                         contentAlignment = Alignment.TopCenter,
@@ -192,8 +190,7 @@ fun HomeScreen(
                             onClick = {
                                 if (vibrationEnabled) triggerVibration(context, 100)
                                 if (beepSoundEnabled) playBeep(context)
-                                if (defaultCounterCount <= 9999)
-                                    defaultCounterCount++
+                                if (defaultCounterCount <= 9999) defaultCounterCount++
                                 scope.launch {
                                     dataStoreManager.setCounter(counter + 1)
                                 }
@@ -202,8 +199,7 @@ fun HomeScreen(
                                 backgroundColor = Color.Transparent,
                                 contentColor = Color.Transparent
                             ),
-                            modifier = Modifier
-                                .padding(top = 170.dp)
+                            modifier = Modifier.padding(top = 170.dp)
                                 .size(width = 120.dp, height = 120.dp)
                                 .clip(RoundedCornerShape(130.dp)),
                         ) {}
@@ -211,23 +207,20 @@ fun HomeScreen(
                         // Counter Reset Button
                         Button(
                             onClick = {
-                                if (counter!=0) {
+                                if (counter != 0) {
                                     showResetBottomSheet = true
                                     showSaveBottomSheet = false
-                                }
-                                else{
-                                    showToast("Your counter is already 0", context)
+                                } else {
+                                    showToast("Your jaap counter is already empty", context)
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color.Transparent,
                                 contentColor = Color.Transparent
                             ),
-                            modifier = Modifier
-                                .padding(top = 148.dp, start = 150.dp)
+                            modifier = Modifier.padding(top = 148.dp, start = 150.dp)
                                 .wrapContentSize(),
-                        ) {
-                        }
+                        ) {}
                     }
 
                     Button(
@@ -236,11 +229,10 @@ fun HomeScreen(
 
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = if(darkMode)Color.Black else Orange,
+                            backgroundColor = if (darkMode) Color.Black else Orange,
                             contentColor = Color.White
                         ),
-                        modifier = Modifier
-                            .padding(top = 28.dp).height(60.dp)
+                        modifier = Modifier.padding(top = 28.dp).height(60.dp)
                             .fillMaxWidth(fraction = 0.7f),
                         shape = RoundedCornerShape(16.dp)
                     ) {
@@ -254,18 +246,19 @@ fun HomeScreen(
             }
         }
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-            SaveBottomSheet(
-                totalCount = counter,
+            SaveBottomSheet(totalCount = counter,
                 darkMode = darkMode,
                 countingDao = countingDao,
                 countingDetails = countingDetails,
-                onDismiss = { hideKeyboard(context)
-                    showSaveBottomSheet = false },
+                onDismiss = {
+                    hideKeyboard(context)
+                    showSaveBottomSheet = false
+                },
                 onSave = {
                     hideKeyboard(context)
                     scope.launch {
-                            dataStoreManager.setCounter(0)
-                        showToast("Your data saved successfully in list", context)
+                        dataStoreManager.setCounter(0)
+                        showToast("Your jaap count has been saved successfully", context)
                     }
                     onDiscontinue()
                     showSaveBottomSheet = false
@@ -276,19 +269,19 @@ fun HomeScreen(
 
                 onFail = {
                     hideKeyboard(context)
-                    showToast("Please Enter Name ", context)
-                }, noCount = {showToast("Please Perform Some Jaap", context)}
-            )
+                    showToast("Please enter a name to save your counter ", context)
+                },
+                noCount = { showToast("Your jaap counter is empty. Start counting first !", context) })
 
         }
 
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-            resetBottomSheet(
-                onDismiss = { showResetBottomSheet = false },
+            resetBottomSheet(onDismiss = { showResetBottomSheet = false },
                 darkMode = darkMode,
                 onReset = {
                     CoroutineScope(Dispatchers.Main).launch {
-                     dataStoreManager.setCounter(0) }
+                        dataStoreManager.setCounter(0)
+                    }
                     showResetBottomSheet = false
                     onDiscontinue()
                     dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled)

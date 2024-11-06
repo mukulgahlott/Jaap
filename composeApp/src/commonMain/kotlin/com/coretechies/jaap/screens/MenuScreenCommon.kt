@@ -179,7 +179,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         darkMode = darkMode,
                         onClick = {
                             shareApp(
-                                "Refer and make your friend pure \n" +
+                                "Hey! Download and join [App Name] now to track your Jaap, stay mindful, and improve your spiritual practice. Keep count of your progress, set daily goals, and stay focused. Download it now from Play Store / App Store or visit  \n" +
                                         "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
                                 context
                             )
