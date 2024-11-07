@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import com.coretechies.jaap.BannerAd.BannerAdView
 import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
@@ -65,6 +66,9 @@ fun MainScreen(
         Scaffold(
             bottomBar = {
                 Column {
+
+
+                    BannerAdView("ca-app-pub-3940256099942544/9214589741")
                     Divider(
                         color = if (darkMode)Color.DarkGray else DarkOrange,
                         thickness = 0.8.dp

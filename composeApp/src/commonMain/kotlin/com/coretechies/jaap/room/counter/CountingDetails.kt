@@ -8,7 +8,7 @@ data class CountingDetails(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val totalCount: Int,
-    val countTitle: String,
+    var countTitle: String,
     val countDate: String,
     val countingDetailsUserId: String,
     val countingDetailsUserName: String

@@ -1,4 +1,3 @@
-import androidx.collection.emptyLongSet
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -29,8 +28,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MovableContent
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -66,13 +67,23 @@ fun SaveBottomSheet(
     onFail: () -> Unit,
     noCount: () -> Unit,
     totalCount: Int,
-    showBottomSheet: Boolean
+    showBottomSheet: Boolean,
 ) {
+
     val textState = remember { mutableStateOf(TextFieldValue("")) }
+    val performUpdate = remember { mutableStateOf(true) }
+    var previousName = ""
 
     if (countingDetails != null) {
         textState.value = TextFieldValue(countingDetails.countTitle)
-    }else{
+        previousName = countingDetails.countTitle
+        if (countingDetails.totalCount == totalCount) {
+            performUpdate.value = false
+        }
+        else{
+            performUpdate.value = true
+        }
+    } else {
         textState.value = TextFieldValue("")
     }
 
@@ -86,7 +97,7 @@ fun SaveBottomSheet(
         Surface(
             modifier = Modifier.fillMaxWidth().padding(),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            color = if (darkMode) Color.Black  else Color.White
+            color = if (darkMode) Color.Black else Color.White
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -100,7 +111,8 @@ fun SaveBottomSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Box(contentAlignment = Alignment.Center,
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier.size(50.dp)
                     ) {
                         Surface(
@@ -125,18 +137,19 @@ fun SaveBottomSheet(
                         )
                     )
 
-                    Box(contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp)){
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(50.dp)
+                    ) {
                         Surface(
                             shape = CircleShape,
-                            color = Color(0xFFe28b2a),
+                            color = if (performUpdate.value) Color(0xFFe28b2a) else Color.Gray,
                             modifier = Modifier.size(40.dp)
                         ) {}
-                        IconButton(onClick = {
-
+                        IconButton(enabled = performUpdate.value, onClick = {
                             if (countingDetails != null) {
                                 updateCounter(
-                                    countingDetails= countingDetails,
+                                    countingDetails = countingDetails,
                                     totalCount = totalCount,
                                     countTitle = textState.value.text,
                                     countingDao = countingDao,
@@ -145,15 +158,15 @@ fun SaveBottomSheet(
                                         onFail()
                                     }, onSave = onSave
                                 )
-                            }
-                            else {
+                            } else {
                                 insertList(
                                     totalCount,
                                     textState.value.text,
                                     "Jajman0900",
                                     "Jajman-0900",
-                                    countingDao, onFail={
-                                        onFail() },
+                                    countingDao, onFail = {
+                                        onFail()
+                                    },
                                     onSave = onSave, noCount = noCount
                                 )
 
@@ -174,7 +187,17 @@ fun SaveBottomSheet(
 
                 TextField(
                     value = textState.value,
-                    onValueChange = { textState.value = it },
+                    onValueChange = {
+                        textState.value = it
+                        if (countingDetails != null) {
+                            if(previousName == it.text){
+                                performUpdate.value= true
+                            }
+                            else{
+                                countingDetails.countTitle = it.text
+                            }
+                        }
+                    },
                     placeholder = { Text(text = "Name") },
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color(0xFFF1EAE2), // Light background color
@@ -196,7 +219,7 @@ fun SaveBottomSheet(
                         fontSize = 16.sp
                     )
                 )
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }
@@ -215,7 +238,7 @@ fun insertList(
 ) {
 
     if (countTitle.isNotBlank()) {
-        if (totalCount!=0) {
+        if (totalCount != 0) {
             val countingTempObj = CountingDetails(
                 totalCount = totalCount,
                 countTitle = countTitle,
@@ -227,13 +250,11 @@ fun insertList(
                 countingDao.insert(countingTempObj)
                 onSave()
             }
-        }
-        else{
+        } else {
             noCount()
         }
 
-    }
-    else{
+    } else {
         onFail()
     }
 }
@@ -249,19 +270,18 @@ fun updateCounter(
         CoroutineScope(Dispatchers.IO).launch {
 
             val countingDetailsTemp = CountingDetails(
-            countingDetails.id,
-            totalCount,
-            countTitle,
-            getCurrentDateTime(),
-            countingDetails.countingDetailsUserId,
-            countingDetails.countingDetailsUserName
+                countingDetails.id,
+                totalCount,
+                countTitle,
+                getCurrentDateTime(),
+                countingDetails.countingDetailsUserId,
+                countingDetails.countingDetailsUserName
             )
 
             countingDao.updateById(countingDetailsTemp)
             onSave()
         }
-    }
-    else{
+    } else {
         onFail()
     }
 }
@@ -272,7 +292,9 @@ fun getCurrentDateTime(): String {
     val dateTime = currentMoment.toLocalDateTime(TimeZone.currentSystemDefault())
 
     // Format date as "DD-MM-YYYY"
-    val date = "${dateTime.dayOfMonth}-${dateTime.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() } }-${dateTime.year}"
+    val date = "${dateTime.dayOfMonth}-${
+        dateTime.month.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }
+    }-${dateTime.year}"
 
     val hour = dateTime.hour % 12
     val amPm = if (dateTime.hour >= 12) "pm" else "am"
@@ -281,7 +303,8 @@ fun getCurrentDateTime(): String {
     val time = "${if (hour == 0) 12 else hour}:$minute $amPm"
 
     val weekOfTheDay = dateTime.dayOfWeek.name
-    val firstThreeChars = weekOfTheDay.substring(0, 3).lowercase().replaceFirstChar { it.uppercaseChar() }
+    val firstThreeChars =
+        weekOfTheDay.substring(0, 3).lowercase().replaceFirstChar { it.uppercaseChar() }
 
     return "${firstThreeChars} . $date . $time"
 }
@@ -289,7 +312,7 @@ fun getCurrentDateTime(): String {
 
 @Composable
 fun resetBottomSheet(
-    onDismiss: () -> Unit, onReset: () -> Unit, showBottomSheet: Boolean, darkMode : Boolean
+    onDismiss: () -> Unit, onReset: () -> Unit, showBottomSheet: Boolean, darkMode: Boolean
 ) {
 
 
@@ -303,7 +326,7 @@ fun resetBottomSheet(
         Surface(
             modifier = Modifier.fillMaxWidth().wrapContentHeight(),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-            color = if (darkMode) Color.Black  else Color.White
+            color = if (darkMode) Color.Black else Color.White
         ) {
             Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
                 Row(
@@ -319,8 +342,10 @@ fun resetBottomSheet(
                             color = if (darkMode) Color.White else Color(0xFF8C4B26)
                         )
                     )
-                    Box(contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp)) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(50.dp)
+                    ) {
                         Surface(
                             shape = CircleShape,
                             color = if (darkMode) Color(0XFF361d05) else Color(0xFFcfb69e),
@@ -371,7 +396,7 @@ fun resetBottomSheet(
                         contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.9f), elevation =  ButtonDefaults.elevation(0.dp),
+                        .fillMaxWidth(fraction = 0.9f), elevation = ButtonDefaults.elevation(0.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
@@ -382,7 +407,7 @@ fun resetBottomSheet(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(80.dp))
 
 
             }

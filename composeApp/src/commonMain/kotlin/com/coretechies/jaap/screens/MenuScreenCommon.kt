@@ -253,7 +253,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         contentScale = ContentScale.FillBounds,
                     )
 
-                    Spacer(modifier = Modifier.height(60.dp))
+                    Spacer(modifier = Modifier.height(100.dp))
                 }
             }
 

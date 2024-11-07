@@ -73,6 +73,9 @@ kotlin {
                 implementation("androidx.activity:activity-compose:1.9.2")
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.sqlite.bundled)
+
+                // AdMob
+                implementation(libs.play.services.ads)
             }
         }
 

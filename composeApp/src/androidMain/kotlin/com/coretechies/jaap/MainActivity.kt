@@ -15,6 +15,7 @@ import com.coretechies.jaap.dataStore.room.getDatabaseHelper
 import com.coretechies.jaap.screens.App
 import com.coretechies.jaap.screens.MainScreen
 import com.coretechies.jaap.ui.SplashScreen
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     isSplashScreenVisible = false
                 }
             } else {
-
+                MobileAds.initialize(this)
                 MainScreen(context = LocalContext.current, prefs = remember {
                     createDataStore(applicationContext)
                 }, countingDao = countingDao)

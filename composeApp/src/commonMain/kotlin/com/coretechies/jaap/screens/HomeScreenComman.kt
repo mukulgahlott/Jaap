@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
@@ -33,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +44,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import com.coretechies.jaap.BannerAd.BannerAdView
 import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
@@ -103,9 +107,20 @@ fun HomeScreen(
     // Shared Pref For Vibration
     val vibrationEnabled by dataStoreManager.vibrationEnabled.collectAsState(true)
 
+    // For Scroll View
+    val scrollState = rememberScrollState()
+
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
+
+    if (countingDetails != null) {
+        textState.value = TextFieldValue(countingDetails.countTitle)
+    } else {
+        textState.value = TextFieldValue("")
+    }
+
     FullScreenBackground(prefs) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(top = 10.dp),
+            modifier = Modifier.fillMaxSize().padding(top = 10.dp).verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -143,7 +158,12 @@ fun HomeScreen(
                     Res.drawable.palette,
                     false,
                     darkMode = darkMode,
-                    onClick = {})
+                    onClick = {
+                        showToast(
+                            "Theme is on it's way, Will be launched in next version!!",
+                            context
+                        )
+                    })
 
                 customButtons(darkModBackgroundColor,
                     Res.drawable.moon_stars,
@@ -244,6 +264,7 @@ fun HomeScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(90.dp))
         }
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
             SaveBottomSheet(totalCount = counter,
@@ -271,12 +292,18 @@ fun HomeScreen(
                     hideKeyboard(context)
                     showToast("Please enter a name to save your counter ", context)
                 },
-                noCount = { showToast("Your jaap counter is empty. Start counting first !", context) })
+                noCount = {
+                    showToast(
+                        "Your jaap counter is empty. Start counting first !",
+                        context
+                    )
+                })
 
         }
 
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-            resetBottomSheet(onDismiss = { showResetBottomSheet = false },
+            resetBottomSheet(
+                onDismiss = { showResetBottomSheet = false },
                 darkMode = darkMode,
                 onReset = {
                     CoroutineScope(Dispatchers.Main).launch {

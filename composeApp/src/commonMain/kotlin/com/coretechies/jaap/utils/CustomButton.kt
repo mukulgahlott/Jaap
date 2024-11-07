@@ -46,32 +46,34 @@ import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
-fun customButtons(backgroundColor: MutableState<Color>, icon: DrawableResource, enabled : Boolean , onClick: () -> Unit, darkMode : Boolean) {
+fun customButtons(
+    backgroundColor: MutableState<Color>,
+    icon: DrawableResource,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    darkMode: Boolean
+) {
     Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.size(50.dp)
-            .clickable {
-               backgroundColor.value = if (enabled) {
-                    PureOrange
-                } else {
-                    Color(0xFFb7926d)
-                }
-                onClick()
-
-            }
+        contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp).clip(RoundedCornerShape(60.dp))
     ) {
-        Surface(
-            shape = CircleShape,
-            color = if (enabled) PureOrange else if(darkMode) Color(0XFF4a4a4a) else Color(0xFFb7926d),
-            modifier = Modifier.size(50.dp)
-        ) {
-        }
-        Image(
-            painter = painterResource(icon),
-            colorFilter = ColorFilter.tint(if (!darkMode) Color.White else Color.Black),
-            contentDescription = "Circular Image",
-            modifier = Modifier.size(30.dp)
-        )
+        Surface(shape = CircleShape,
+            color = if (enabled) PureOrange else if (darkMode) Color(0XFF4a4a4a) else Color(
+                0xFFb7926d
+            ),
+            modifier = Modifier.size(50.dp).clickable {
+                    backgroundColor.value = if (enabled) {
+                        PureOrange
+                    } else {
+                        Color(0xFFb7926d)
+                    }
+                    onClick()
+                }) {}
+            Image(
+                painter = painterResource(icon),
+                colorFilter = ColorFilter.tint(if (!darkMode) Color.White else Color.Black),
+                contentDescription = "Circular Image",
+                modifier = Modifier.size(30.dp)
+            )
     }
 }
 
@@ -103,30 +105,22 @@ fun RenderCustomButton(
         modifier = modifier
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(top = topMargin)
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = topMargin)
                 .clip(RoundedCornerShape(10.dp))
                 .background(if (darkMode) Color(0XFF2c2c2c) else Color(0XFFf3ede7)),
             contentAlignment = Alignment.CenterStart
         ) {
-            Row(
-                modifier = Modifier
-                    .clickable(enabled = isButtonEnabled) { // Use isButtonEnabled here
-                        isButtonEnabled = false // Disable button
-                        onClick()
-                    }
-                    .fillMaxWidth()
-                    .padding(
-                        start = 20.dp,
-                        end = 20.dp,
-                        top = if (showDescription) 14.dp else 22.dp,
-                        bottom = if (showDescription) 14.dp else 22.dp
-                    ),
+            Row(modifier = Modifier.clickable(enabled = isButtonEnabled) { // Use isButtonEnabled here
+                    isButtonEnabled = false // Disable button
+                    onClick()
+                }.fillMaxWidth().padding(
+                    start = 20.dp,
+                    end = 20.dp,
+                    top = if (showDescription) 14.dp else 22.dp,
+                    bottom = if (showDescription) 14.dp else 22.dp
+                ),
                 horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+                verticalAlignment = Alignment.CenterVertically) {
 
                 Image(
                     painter = icon,
@@ -147,8 +141,7 @@ fun RenderCustomButton(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Medium,
                         color = if (darkMode) Color.White else Color(0XFF87490c),
-                        modifier = Modifier.wrapContentSize()
-                            .padding(start = 24.dp)
+                        modifier = Modifier.wrapContentSize().padding(start = 24.dp)
                     )
                     if (showDescription) {
                         Text(
@@ -156,14 +149,12 @@ fun RenderCustomButton(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Normal,
                             color = if (darkMode) Color.Gray else Color(0XFF87490c),
-                            modifier = Modifier.wrapContentSize()
-                                .padding(start = 24.dp)
+                            modifier = Modifier.wrapContentSize().padding(start = 24.dp)
                         )
                     }
                 }
                 Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd
+                    modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd
                 ) {
                     if (showSwitch) {
                         Switch(

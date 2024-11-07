@@ -139,14 +139,12 @@ fun ListScreen(
                                 }
                             )
                         }
-
                         // Add a Spacer at the bottom
                         item {
-                            Spacer(modifier = Modifier.height(60.dp)) // Spacer height can be adjusted
+                            Spacer(modifier = Modifier.height(90.dp))
                         }
                     }
                 } else {
-                    // Display "No data available" message when no data is found
                     Text(
                         text = "No Records Here Yet",
                         fontSize = 20.sp,
