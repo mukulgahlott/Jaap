@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     isSplashScreenVisible = false
                 }
             } else {
-                MobileAds.initialize(this)
+//                MobileAds.initialize(this)
                 MainScreen(context = LocalContext.current, prefs = remember {
                     createDataStore(applicationContext)
                 }, countingDao = countingDao)

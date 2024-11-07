@@ -66,9 +66,7 @@ fun MainScreen(
         Scaffold(
             bottomBar = {
                 Column {
-
-
-                    BannerAdView("ca-app-pub-3940256099942544/9214589741")
+//                    BannerAdView("ca-app-pub-3940256099942544/9214589741")
                     Divider(
                         color = if (darkMode)Color.DarkGray else DarkOrange,
                         thickness = 0.8.dp

@@ -6,7 +6,6 @@ struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {
         MainViewControllerKt.MainScreenView()
     }
-
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
