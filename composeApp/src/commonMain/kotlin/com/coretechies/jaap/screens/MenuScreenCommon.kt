@@ -107,7 +107,14 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    profileButtons(Res.drawable.user_3__1)
+                    customButtons(
+                        moonBackgroundColor,
+                        Res.drawable.user_3__1,
+                        false,
+                        onClick = {
+                        },
+                        darkMode
+                    )
 
                     Text(
                         modifier = Modifier.wrapContentHeight(),
