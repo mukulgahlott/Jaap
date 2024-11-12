@@ -5,6 +5,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -17,16 +18,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import japp.composeapp.generated.resources.*
@@ -41,6 +50,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SaveBottomSheet(
+    prefs: DataStore<Preferences>,
     onDismiss: () -> Unit,
     countingDao: CountingDao,
     countingDetails: CountingDetails?,
@@ -53,18 +63,21 @@ fun SaveBottomSheet(
 ) {
 
     val textState = remember { mutableStateOf(TextFieldValue("")) }
+    val target = remember { mutableStateOf(TextFieldValue("")) }
     val performUpdate = remember { mutableStateOf(true) }
     var previousName = ""
+
+    val scope = rememberCoroutineScope()
+    val dataStoreManager = DataStoreManager(prefs, scope)
+
+    val targetCount by dataStoreManager.target.collectAsState(108)
+
+
 
     if (countingDetails != null) {
         textState.value = TextFieldValue(countingDetails.countTitle)
         previousName = countingDetails.countTitle
-        if (countingDetails.totalCount == totalCount) {
-            performUpdate.value = false
-        }
-        else{
-            performUpdate.value = true
-        }
+        performUpdate.value = countingDetails.totalCount != totalCount
     } else {
         textState.value = TextFieldValue("")
     }
@@ -77,7 +90,7 @@ fun SaveBottomSheet(
         )
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth().padding(bottom=50.dp),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp),
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             color = if (darkMode) Color.Black else Color.White
         ) {
@@ -94,8 +107,7 @@ fun SaveBottomSheet(
                 ) {
 
                     Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp)
+                        contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
                     ) {
                         Surface(
                             shape = CircleShape,
@@ -120,8 +132,7 @@ fun SaveBottomSheet(
                     )
 
                     Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp)
+                        contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
                     ) {
                         Surface(
                             shape = CircleShape,
@@ -135,10 +146,10 @@ fun SaveBottomSheet(
                                     totalCount = totalCount,
                                     countTitle = textState.value.text,
                                     countingDao = countingDao,
-                                    id = countingDetails.id,
                                     onFail = {
                                         onFail()
-                                    }, onSave = onSave
+                                    },
+                                    onSave = onSave
                                 )
                             } else {
                                 insertList(
@@ -146,10 +157,18 @@ fun SaveBottomSheet(
                                     textState.value.text,
                                     "Jajman0900",
                                     "Jajman-0900",
-                                    countingDao, onFail = {
-                                        onFail()
+                                    countingDao,
+                                    onFail = {
                                     },
-                                    onSave = onSave, noCount = noCount
+                                    onSave = {
+                                        onSave()
+                                        scope.launch {
+                                            dataStoreManager.setTarget(target.value.text)
+                                            dataStoreManager.setTitle(textState.value.text)
+                                        }
+                                    },
+                                    noCount = noCount,
+                                    target = "108"
                                 )
 
                             }
@@ -172,10 +191,9 @@ fun SaveBottomSheet(
                     onValueChange = {
                         textState.value = it
                         if (countingDetails != null) {
-                            if(previousName != it.text){
-                                performUpdate.value= true
-                            }
-                            else{
+                            if (previousName != it.text) {
+                                performUpdate.value = true
+                            } else {
                                 countingDetails.countTitle = it.text
                             }
                         }
@@ -190,6 +208,30 @@ fun SaveBottomSheet(
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth().height(56.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                TextField(
+                    value = target.value,
+                    onValueChange = { newText ->
+                        // Create a new TextFieldValue that preserves the cursor position
+                        target.value = TextFieldValue(
+                            text = newText.text.filter { it != '.' },
+                            selection = TextRange(newText.text.length) // Set cursor at the end
+                        )
+                    },
+                    placeholder = { Text(text = "Set target default target is (108) ") },
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color(0xFFF1EAE2), // Light background color
+                        placeholderColor = Color(0xFF9D8E80),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    singleLine = true,
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -216,7 +258,8 @@ fun insertList(
     countingDao: CountingDao,
     onFail: () -> Unit,
     noCount: () -> Unit,
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    target: String
 ) {
 
     if (countTitle.isNotBlank()) {
@@ -226,7 +269,8 @@ fun insertList(
                 countTitle = countTitle,
                 countDate = getCurrentDateTime(),
                 countingDetailsUserId = countingDetailsUserId,
-                countingDetailsUserName = countingDetailsUserNane
+                countingDetailsUserName = countingDetailsUserNane,
+                target = target
             )
             CoroutineScope(Dispatchers.IO).launch {
                 countingDao.insert(countingTempObj)
@@ -243,8 +287,11 @@ fun insertList(
 
 fun updateCounter(
     countingDetails: CountingDetails,
-    countingDao: CountingDao, totalCount: Int,
-    countTitle: String, id: Int, onFail: () -> Unit, onSave: () -> Unit
+    countingDao: CountingDao,
+    totalCount: Int,
+    countTitle: String,
+    onFail: () -> Unit,
+    onSave: () -> Unit
 ) {
 
 
@@ -252,12 +299,13 @@ fun updateCounter(
         CoroutineScope(Dispatchers.IO).launch {
 
             val countingDetailsTemp = CountingDetails(
-                countingDetails.id,
-                totalCount,
-                countTitle,
-                getCurrentDateTime(),
-                countingDetails.countingDetailsUserId,
-                countingDetails.countingDetailsUserName
+                id = countingDetails.id,
+                totalCount = totalCount,
+                countTitle = countTitle,
+                countDate = getCurrentDateTime(),
+                countingDetailsUserId = countingDetails.countingDetailsUserId,
+                countingDetailsUserName = countingDetails.countingDetailsUserName,
+                target = "108"
             )
 
             countingDao.updateById(countingDetailsTemp)
@@ -325,8 +373,7 @@ fun resetBottomSheet(
                         )
                     )
                     Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(50.dp)
+                        contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
                     ) {
                         Surface(
                             shape = CircleShape,
@@ -378,7 +425,8 @@ fun resetBottomSheet(
                         contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.9f), elevation = ButtonDefaults.elevation(0.dp),
+                        .fillMaxWidth(fraction = 0.9f),
+                    elevation = ButtonDefaults.elevation(0.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(

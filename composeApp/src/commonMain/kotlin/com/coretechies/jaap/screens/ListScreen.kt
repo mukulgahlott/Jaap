@@ -111,8 +111,6 @@ fun ListScreen(
                         }
                     })
             }
-
-            // LazyColumn to display the list of Jaap cards or a message when no data is available
             Box(modifier = Modifier.fillMaxSize()) {
                 if (countingData.isNotEmpty()) {
                     LazyColumn(

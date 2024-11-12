@@ -5,19 +5,25 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class DataStoreManager(private val dataStore: DataStore<Preferences>, private val scope: CoroutineScope) {
+class DataStoreManager(
+    private val dataStore: DataStore<Preferences>,
+    private val scope: CoroutineScope
+) {
 
     //Data Store Preference Keys
-     val counterKey = intPreferencesKey("counter")
-     val themeKey = booleanPreferencesKey("ThemeKey")
-     val darkModeKey = booleanPreferencesKey("DarkMode")
-     val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
-     val vibrationKey = booleanPreferencesKey("VibrationEnabled")
+    private val counterKey = intPreferencesKey("Counter")
+    private val titleKey = stringPreferencesKey("Title")
+    private val targetKey = intPreferencesKey("Target")
+    private val themeKey = booleanPreferencesKey("ThemeKey")
+    private val darkModeKey = booleanPreferencesKey("DarkMode")
+    private val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
+    private val vibrationKey = booleanPreferencesKey("VibrationEnabled")
 
     // Getter for counter
     val counter: Flow<Int> = dataStore.data
@@ -34,6 +40,36 @@ class DataStoreManager(private val dataStore: DataStore<Preferences>, private va
         }
     }
 
+    // Getter for counter
+    val title: Flow<String> = dataStore.data
+        .map { preferences ->
+            preferences[titleKey] ?: "Digital Jaap"
+        }
+
+    // Setter for counter
+    fun setTitle(value: String) {
+        scope.launch {
+            dataStore.edit { preferences ->
+                preferences[titleKey] = value
+            }
+        }
+    }
+
+    // Getter for target
+    val target: Flow<Int> = dataStore.data
+        .map { preferences ->
+            preferences[targetKey] ?: 108
+        }
+
+    // Setter for target
+    fun setTarget(value: String) {
+        val intValue = value.toInt()
+        scope.launch {
+            dataStore.edit { preferences ->
+                preferences[targetKey] = intValue
+            }
+        }
+    }
 
     // Getter for manageThemeImage
     val manageThemeImage: Flow<Boolean> = dataStore.data

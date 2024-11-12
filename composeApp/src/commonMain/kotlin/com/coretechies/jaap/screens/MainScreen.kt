@@ -36,8 +36,7 @@ import org.jetbrains.compose.resources.painterResource
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
-    prefs: DataStore<Preferences>, countingDao: CountingDao,
-    context: Any?
+    prefs: DataStore<Preferences>, countingDao: CountingDao, context: Any?
 ) {
     MaterialTheme {
         var selectedTab by remember { mutableStateOf(0) }
@@ -63,59 +62,56 @@ fun MainScreen(
         val darkMode by dataStoreManager.darkMode.collectAsState(false)
         // Show splash screen
 
-        Scaffold(
-            bottomBar = {
-                Column {
+        Scaffold(bottomBar = {
+            Column {
 //                    BannerAdView("ca-app-pub-3940256099942544/9214589741")
-                    Divider(
-                        color = if (darkMode)Color.DarkGray else DarkOrange,
-                        thickness = 0.8.dp
-                    )
-                    Spacer(modifier = Modifier.height(4.dp).fillMaxWidth().background(if (!darkMode) bottomBarColor else bottomBarDarkColor))
+                Divider(
+                    color = if (darkMode) Color.DarkGray else DarkOrange, thickness = 0.8.dp
+                )
+                Spacer(
+                    modifier = Modifier.height(4.dp).fillMaxWidth()
+                        .background(if (!darkMode) bottomBarColor else bottomBarDarkColor)
+                )
 
-                    BottomNavigation(
-                        modifier = Modifier.wrapContentHeight(),
-                        backgroundColor = if (!darkMode) bottomBarColor else bottomBarDarkColor
-                    ) {
-                        tabs.forEachIndexed { index, tab ->
-                            val isActive = selectedTab == index // Determine if tab is active
-                            val currentIcon = when (tab) {
-                                AppConstants.HOME -> painterResource(Res.drawable.home)
-                                AppConstants.LIST -> painterResource(Res.drawable.list)
-                                AppConstants.MENU -> painterResource(Res.drawable.menu)
-                                else -> throw IllegalArgumentException("Unknown tab: $tab")
-                            }
-                            println("Selected Tab: $tab, Active: $isActive") // Debug output
-
-                            BottomNavigationItem(
-                                icon = {
-                                    Icon(
-                                        currentIcon,
-                                        contentDescription = tab,
-                                        modifier = iconModifier,
-                                        tint = if (isActive) activeBottomTabIconColor else inActiveBottomTabIconColor
-                                    )
-                                },
-                                label = {
-                                    Text(
-                                        tab,
-                                        color = if (isActive) activeBottomTabIconColor else inActiveBottomTabIconColor
-                                    )
-                                },
-                                selected = isActive,
-                                onClick = { selectedTab = index },
-                            )
+                BottomNavigation(
+                    modifier = Modifier.height(70.dp),
+                    backgroundColor = if (!darkMode) bottomBarColor else bottomBarDarkColor
+                ) {
+                    tabs.forEachIndexed { index, tab ->
+                        val isActive = selectedTab == index
+                        val currentIcon = when (tab) {
+                            AppConstants.HOME -> painterResource(Res.drawable.home)
+                            AppConstants.LIST -> painterResource(Res.drawable.list)
+                            AppConstants.MENU -> painterResource(Res.drawable.menu)
+                            else -> throw IllegalArgumentException("Unknown tab: $tab")
                         }
+                        println("Selected Tab: $tab, Active: $isActive") // Debug output
+
+                        BottomNavigationItem(
+                            icon = {
+                                Icon(
+                                    currentIcon,
+                                    contentDescription = tab,
+                                    modifier = iconModifier,
+                                    tint = if (isActive) activeBottomTabIconColor else inActiveBottomTabIconColor
+                                )
+                            },
+                            label = {
+                                Text(
+                                    tab,
+                                    color = if (isActive) activeBottomTabIconColor else inActiveBottomTabIconColor
+                                )
+                            },
+                            selected = isActive,
+                            onClick = { selectedTab = index },
+                        )
                     }
                 }
             }
-        ){
-            AnimatedContent(
-                targetState = selectedTab,
-                transitionSpec = {
-                    fadeIn() with fadeOut()
-                }
-            ) { targetState ->
+        }) {
+            AnimatedContent(targetState = selectedTab, transitionSpec = {
+                fadeIn() with fadeOut()
+            }) { targetState ->
                 when (targetState) {
                     0 -> HomeScreen(
                         context,
@@ -124,13 +120,11 @@ fun MainScreen(
                         countingDetailsObject,
                         onDiscontinue = {
                             countingDetailsObject = null
-                        }
-                    )
+                        })
 
                     1 -> ListScreen(prefs, countingDao) { countObject ->
                         countingDetailsObject = countObject
                         selectedTab = 0
-
                     }
 
                     2 -> MenuScreen(prefs = prefs, context = context)

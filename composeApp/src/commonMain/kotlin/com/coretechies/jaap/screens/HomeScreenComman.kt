@@ -101,6 +101,9 @@ fun HomeScreen(
     // Shared Pref For Dark Mode
     val darkMode by dataStoreManager.darkMode.collectAsState(false)
 
+    // Shared Pref For Digital Jaap
+    val title by dataStoreManager.title.collectAsState("Digital Jaap")
+
     // Shared Pref For Beep Tone Sound
     val beepSoundEnabled by dataStoreManager.beepSoundEnabled.collectAsState(false)
 
@@ -128,7 +131,7 @@ fun HomeScreen(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (darkMode) Color.White else Color(0XFF87490c),
-                text = "Digital Jaap",
+                text = title,
                 textAlign = TextAlign.Center
             )
 
@@ -267,7 +270,9 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(90.dp))
         }
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-            SaveBottomSheet(totalCount = counter,
+            SaveBottomSheet(
+                prefs= prefs,
+                totalCount = counter,
                 darkMode = darkMode,
                 countingDao = countingDao,
                 countingDetails = countingDetails,

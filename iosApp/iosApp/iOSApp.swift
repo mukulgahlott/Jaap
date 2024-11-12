@@ -14,6 +14,7 @@ struct iOSApp: App {
             if isActive {
                      // Replace with your main content view
                      ContentView()
+                    .edgesIgnoringSafeArea(.all)
                  } else {
                      // The splash screen view
                      VStack {
