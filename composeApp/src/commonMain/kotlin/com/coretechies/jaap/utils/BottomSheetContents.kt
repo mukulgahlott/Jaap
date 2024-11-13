@@ -53,6 +53,7 @@ fun SaveBottomSheet(
     prefs: DataStore<Preferences>,
     onDismiss: () -> Unit,
     countingDao: CountingDao,
+    id: Int,
     countingDetails: CountingDetails?,
     darkMode: Boolean,
     onSave: () -> Unit,
@@ -69,17 +70,15 @@ fun SaveBottomSheet(
 
     val scope = rememberCoroutineScope()
     val dataStoreManager = DataStoreManager(prefs, scope)
-
     val targetCount by dataStoreManager.target.collectAsState(108)
+    val title by dataStoreManager.title.collectAsState("Digital Jaap")
 
 
 
+        textState.value = TextFieldValue(title)
+        previousName = title
     if (countingDetails != null) {
-        textState.value = TextFieldValue(countingDetails.countTitle)
-        previousName = countingDetails.countTitle
         performUpdate.value = countingDetails.totalCount != totalCount
-    } else {
-        textState.value = TextFieldValue("")
     }
 
     AnimatedVisibility(
@@ -149,7 +148,8 @@ fun SaveBottomSheet(
                                     onFail = {
                                         onFail()
                                     },
-                                    onSave = onSave
+                                    onSave = onSave,
+                                    target = targetCount
                                 )
                             } else {
                                 insertList(
@@ -168,7 +168,7 @@ fun SaveBottomSheet(
                                         }
                                     },
                                     noCount = noCount,
-                                    target = "108"
+                                    target = targetCount
                                 )
 
                             }
@@ -216,10 +216,11 @@ fun SaveBottomSheet(
                     value = target.value,
                     onValueChange = { newText ->
                         // Create a new TextFieldValue that preserves the cursor position
-                        target.value = TextFieldValue(
-                            text = newText.text.filter { it != '.' },
-                            selection = TextRange(newText.text.length) // Set cursor at the end
-                        )
+                        if (newText.text.length<=4)
+                            target.value = TextFieldValue(
+                                text = newText.text.filter { it != '.' },
+                                selection = TextRange(newText.text.length) // Set cursor at the end
+                            )
                     },
                     placeholder = { Text(text = "Set target default target is (108) ") },
                     colors = TextFieldDefaults.textFieldColors(
@@ -259,7 +260,7 @@ fun insertList(
     onFail: () -> Unit,
     noCount: () -> Unit,
     onSave: () -> Unit,
-    target: String
+    target: Int
 ) {
 
     if (countTitle.isNotBlank()) {
@@ -291,7 +292,8 @@ fun updateCounter(
     totalCount: Int,
     countTitle: String,
     onFail: () -> Unit,
-    onSave: () -> Unit
+    onSave: () -> Unit,
+    target: Int
 ) {
 
 
@@ -305,7 +307,7 @@ fun updateCounter(
                 countDate = getCurrentDateTime(),
                 countingDetailsUserId = countingDetails.countingDetailsUserId,
                 countingDetailsUserName = countingDetails.countingDetailsUserName,
-                target = "108"
+                target = target
             )
 
             countingDao.updateById(countingDetailsTemp)

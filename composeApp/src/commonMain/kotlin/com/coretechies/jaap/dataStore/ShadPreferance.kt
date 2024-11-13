@@ -17,13 +17,46 @@ class DataStoreManager(
 ) {
 
     //Data Store Preference Keys
+    private  val idKey = intPreferencesKey("IdKey")
     private val counterKey = intPreferencesKey("Counter")
+    private val malaKey = intPreferencesKey("MalaKey")
     private val titleKey = stringPreferencesKey("Title")
     private val targetKey = intPreferencesKey("Target")
     private val themeKey = booleanPreferencesKey("ThemeKey")
     private val darkModeKey = booleanPreferencesKey("DarkMode")
     private val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
     private val vibrationKey = booleanPreferencesKey("VibrationEnabled")
+
+
+    // Getter for id
+    val id: Flow<Int> = dataStore.data
+        .map { preferences ->
+            preferences[malaKey] ?: 0
+        }
+
+    // Setter for Id
+    fun setId(value: Int) {
+        scope.launch {
+            dataStore.edit { preferences ->
+                preferences[malaKey] = value
+            }
+        }
+    }
+
+    // Getter for mala
+    val mala: Flow<Int> = dataStore.data
+        .map { preferences ->
+            preferences[malaKey] ?: 0
+        }
+
+    // Setter for mala
+    fun setMala(value: Int) {
+        scope.launch {
+            dataStore.edit { preferences ->
+                preferences[malaKey] = value
+            }
+        }
+    }
 
     // Getter for counter
     val counter: Flow<Int> = dataStore.data
@@ -63,7 +96,7 @@ class DataStoreManager(
 
     // Setter for target
     fun setTarget(value: String) {
-        val intValue = value.toInt()
+        val intValue = if (value.isNotBlank()) value.toInt() else 108
         scope.launch {
             dataStore.edit { preferences ->
                 preferences[targetKey] = intValue

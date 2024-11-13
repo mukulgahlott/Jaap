@@ -129,9 +129,17 @@ fun ListScreen(
                                 onContinue = {
                                     scope.launch(Dispatchers.IO) {
                                         dataStoreManager.setCounter(item.totalCount)
+                                        dataStoreManager.setId(item.id)
+                                        dataStoreManager.setTitle(item.countTitle)
+                                        dataStoreManager.setTarget(item.target.toString())
+                                        dataStoreManager.setCounter(item.totalCount % item.target )
+//                                        dataStoreManager.setMala(item.totalCount / item.target)
+
                                         launch(Dispatchers.Main) {
                                             onRoute(item)
-                                            dataStoreManager.setCounter(item.totalCount)
+                                            dataStoreManager.setCounter(item.totalCount % item.target )
+                                            dataStoreManager.setId(item.id)
+                                            dataStoreManager.setMala(item.totalCount / item.target)
                                         }
                                     }
                                 }

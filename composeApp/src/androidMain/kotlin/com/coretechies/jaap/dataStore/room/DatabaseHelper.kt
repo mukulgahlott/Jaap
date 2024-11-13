@@ -11,6 +11,7 @@ fun getDatabaseHelper(context: Context): DatabaseHelper {
         context = context.applicationContext,
         name = dbFile.absolutePath
     )
+        .fallbackToDestructiveMigration()
         .setDriver(BundledSQLiteDriver())
         .build()
 }
