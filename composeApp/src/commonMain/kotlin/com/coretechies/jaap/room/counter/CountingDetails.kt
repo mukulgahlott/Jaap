@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "CountingDetails")
 data class CountingDetails(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
     val totalCount: Int,
     val target: Int,
     var countTitle: String,

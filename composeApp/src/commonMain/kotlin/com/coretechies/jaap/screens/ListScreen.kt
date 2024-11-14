@@ -133,12 +133,13 @@ fun ListScreen(
                                         dataStoreManager.setTitle(item.countTitle)
                                         dataStoreManager.setTarget(item.target.toString())
                                         dataStoreManager.setCounter(item.totalCount % item.target )
-//                                        dataStoreManager.setMala(item.totalCount / item.target)
+                                        dataStoreManager.setMala(item.totalCount / item.target)
 
                                         launch(Dispatchers.Main) {
                                             onRoute(item)
                                             dataStoreManager.setCounter(item.totalCount % item.target )
                                             dataStoreManager.setId(item.id)
+                                            dataStoreManager.setTarget(item.target.toString())
                                             dataStoreManager.setMala(item.totalCount / item.target)
                                         }
                                     }

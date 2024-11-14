@@ -83,6 +83,8 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
     // Shared Pref For Dark Mode
     val darkMode by dataStoreManager.darkMode.collectAsState(false)
 
+    val bellEnabled by dataStoreManager.bellSoundEnabled.collectAsState(false)
+
     val localization by prefs
         .data
         .map {
@@ -162,6 +164,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
 
                     RenderCustomButton(
                         showSwitch = false,
+                        switchState = false,
                         icon = painterResource(Res.drawable.ic_language),
                         title = stringResource(Res.string.language),
                         description = stringResource(Res.string.language_name),
@@ -170,13 +173,13 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         modifier = Modifier,
                         darkMode = darkMode,
                         onClick = {
-
-
                         },
+                        onSwitch = {}
                     )
 
                     RenderCustomButton(
                         showSwitch = false,
+                        switchState = false,
                         icon = painterResource(Res.drawable.ic_share),
                         title = stringResource(Res.string.share_app),
                         description = stringResource(Res.string.share_app),
@@ -191,10 +194,12 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                                 context
                             )
                         },
+                        onSwitch = {}
                     )
 
                     RenderCustomButton(
                         showSwitch = false,
+                        switchState = false,
                         icon = painterResource(Res.drawable.ic_rate),
                         title = stringResource(Res.string.rate_us),
                         description = stringResource(Res.string.rate_us),
@@ -207,11 +212,12 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                                 "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
                                 context
                             )
-                        },
+                        },onSwitch = {}
                     )
 
                     RenderCustomButton(
                         showSwitch = false,
+                        switchState = false,
                         icon = painterResource(Res.drawable.ic_envelop),
                         title = stringResource(Res.string.contact_us),
                         description = stringResource(Res.string.contact_us),
@@ -221,11 +227,12 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         darkMode = darkMode,
                         onClick = {
                             openUrl("https://app.footballquiz.app/support ", context)
-                        },
+                        },onSwitch = {}
                     )
 
                     RenderCustomButton(
                         showSwitch = false,
+                        switchState = false,
                         icon = painterResource(Res.drawable.ic_document),
                         title = stringResource(Res.string.terms),
                         description = stringResource(Res.string.terms),
@@ -235,11 +242,12 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         darkMode = darkMode,
                         onClick = {
                             openUrl("https://app.footballquiz.app/terms_of_services", context)
-                        },
+                        },onSwitch = {}
                     )
 
                     RenderCustomButton(
                         showSwitch = false,
+                        switchState = false,
                         icon = painterResource(Res.drawable.ic_lock),
                         title = stringResource(Res.string.privacy),
                         description = stringResource(Res.string.privacy),
@@ -249,8 +257,27 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         darkMode = darkMode,
                         onClick = {
                             openUrl("https://app.footballquiz.app/privacy_policy ", context)
-                        },
+                        },onSwitch = {}
                     )
+
+                    RenderCustomButton(
+                        showSwitch = true,
+                        switchState = bellEnabled,
+                        icon = painterResource(Res.drawable.ic_bell),
+                        title = "play bell Sound",
+                        description = stringResource(Res.string.privacy),
+                        topMargin = 5.dp,
+                        showDescription = false,
+                        modifier = Modifier,
+                        darkMode = darkMode,
+                        onClick = {
+                        },onSwitch= {isChecked ->
+                            dataStoreManager.setBellSoundEnabled(isChecked)
+                        }
+                    )
+
+
+
 
                     Image(
                         painter = painterResource(if (darkMode) Res.drawable.ic_coretechies_white else Res.drawable.ic_coretechies),

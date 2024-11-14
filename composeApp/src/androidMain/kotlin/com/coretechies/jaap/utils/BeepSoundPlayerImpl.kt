@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.MediaPlayer
 import com.coretechies.jaap.R
 
+    @SuppressLint("SuspiciousIndentation")
     actual fun playBeep(context :Any?) {
         val androidContext = context as? Context
         if (androidContext != null) {
@@ -12,6 +13,18 @@ import com.coretechies.jaap.R
             mediaPlayer.setOnCompletionListener {
                 it.release()
             }
+        mediaPlayer.start()
+    }
+}
+
+@SuppressLint("SuspiciousIndentation")
+actual fun playBell(context :Any?) {
+    val androidContext = context as? Context
+    if (androidContext != null) {
+        val mediaPlayer = MediaPlayer.create(context, R.raw.temple_bell)
+        mediaPlayer.setOnCompletionListener {
+            it.release()
+        }
         mediaPlayer.start()
     }
 }

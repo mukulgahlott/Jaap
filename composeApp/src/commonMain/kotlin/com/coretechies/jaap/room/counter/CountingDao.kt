@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 interface CountingDao {
 
     @Insert
-    suspend fun insert(countingDetails: CountingDetails)
+    suspend fun insert(countingDetails: CountingDetails): Long
 
     @Delete
     suspend fun delete(countingDetails: CountingDetails)

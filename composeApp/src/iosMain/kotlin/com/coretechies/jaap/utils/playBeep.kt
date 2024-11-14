@@ -18,3 +18,19 @@ actual fun playBeep(context :Any?){
     }
 
 }
+
+
+@OptIn(ExperimentalForeignApi::class)
+actual fun playBell(context :Any?){
+    var audioPlayer: AVAudioPlayer? = null
+
+    val url = NSBundle.mainBundle().URLForResource("temple_bell", "mp3")
+    if (url != null) {
+        audioPlayer = AVAudioPlayer(contentsOfURL = url, error = null)
+        audioPlayer.play()
+    } else {
+        // Handle the case where the URL is null (e.g., file not found)
+        println("Bell sound file not found.")
+    }
+
+}

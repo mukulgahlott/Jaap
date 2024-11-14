@@ -76,11 +76,10 @@ fun customButtons(
             )
     }
 }
-
-
 @Composable
 fun RenderCustomButton(
     showSwitch: Boolean,
+    switchState :Boolean,
     icon: Painter,
     title: String,
     description: String,
@@ -88,9 +87,11 @@ fun RenderCustomButton(
     showDescription: Boolean,
     modifier: Modifier = Modifier,
     darkMode: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onSwitch: (Boolean) -> Unit
 ) {
     val isChecked = remember { mutableStateOf(true) }
+    isChecked.value = switchState
     var isButtonEnabled by remember { mutableStateOf(true) } // Control for button enable/disable
 
     // LaunchedEffect to handle 1-second delay
@@ -159,7 +160,8 @@ fun RenderCustomButton(
                     if (showSwitch) {
                         Switch(
                             checked = isChecked.value,
-                            onCheckedChange = { isChecked.value = it },
+                            onCheckedChange = { isChecked.value = it
+                                              onSwitch(isChecked.value) },
                             colors = SwitchDefaults.colors(
                                 checkedThumbColor = Color(0XFFe28b2a)
                             )

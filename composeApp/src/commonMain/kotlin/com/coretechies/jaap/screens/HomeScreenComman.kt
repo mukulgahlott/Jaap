@@ -47,6 +47,7 @@ import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.utils.hideKeyboard
 import com.coretechies.jaap.utils.playBeep
+import com.coretechies.jaap.utils.playBell
 import com.coretechies.jaap.utils.showToast
 import com.coretechies.jaap.utils.triggerVibration
 import com.example.jetpackCompose.ui.theme.Orange
@@ -63,6 +64,7 @@ import japp.composeapp.generated.resources.vibrate
 import japp.composeapp.generated.resources.volume
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
@@ -84,6 +86,7 @@ fun HomeScreen(
 
     var showSaveBottomSheet by remember { mutableStateOf(false) }
     var showResetBottomSheet by remember { mutableStateOf(false) }
+    var showDiscontinueBottomSheet by remember { mutableStateOf(false) }
 
     // For Coroutine Scope
     val scope = rememberCoroutineScope()
@@ -103,6 +106,8 @@ fun HomeScreen(
 
     // Shared Pref For Dark Mode
     val darkMode by dataStoreManager.darkMode.collectAsState(false)
+
+    val bellEnabled by dataStoreManager.bellSoundEnabled.collectAsState(true)
 
     // Shared Pref For Digital Jaap
     val title by dataStoreManager.title.collectAsState("Digital Jaap")
@@ -127,15 +132,15 @@ fun HomeScreen(
         }
     }
 
-    val textState = remember { mutableStateOf(TextFieldValue("")) }
-
-    if (countingDetails != null) {
-        textState.value = TextFieldValue(countingDetails.countTitle)
-
-
-    } else {
-        textState.value = TextFieldValue("")
-    }
+//    val textState = remember { mutableStateOf(TextFieldValue("")) }
+//
+//    if (countingDetails != null) {
+//        textState.value = TextFieldValue(countingDetails.countTitle)
+//
+//
+//    } else {
+//        textState.value = TextFieldValue("")
+//    }
 
     FullScreenBackground(prefs) {
         Column(
@@ -257,10 +262,21 @@ fun HomeScreen(
                                 isButtonEnabled = false
                                 if (vibrationEnabled) triggerVibration(context, 100)
                                 if (beepSoundEnabled) playBeep(context)
-                                if (counter < 9999) { scope.launch { dataStoreManager.setCounter(counter + 1) }
-                                    if (counter == target){
+                                if (counter < 9999) {
+                                    if(id.toInt() ==0){ showSaveBottomSheet = true }
+                                    scope.launch { dataStoreManager.setCounter(counter + 1) }
+                                    if (counter == target - 1){
                                         scope.launch { dataStoreManager.setMala(mala + 1)
-                                        dataStoreManager.setCounter(0)}
+                                        dataStoreManager.setCounter(0)
+                                            updateCounter(countingDao= countingDao,
+                                                totalCount = target * mala + counter,
+                                                id= id,
+                                                countTitle = title,
+                                                target = target,
+                                                onFail = {},
+                                                onSave = {if (bellEnabled) playBell(context) }
+                                                )
+                                        }
                                     }
                                 }
                             },
@@ -296,8 +312,8 @@ fun HomeScreen(
 
                     Button(
                         onClick = {
+                            showDiscontinueBottomSheet = true
                             showSaveBottomSheet = true
-
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = if (darkMode) Color.Black else Orange,
@@ -308,7 +324,7 @@ fun HomeScreen(
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Text(
-                            text = stringResource(Res.string.save),
+                            text = "New Jaap",
                             modifier = Modifier.padding(8.dp),
                             fontSize = 22.sp,
                         )
@@ -332,7 +348,6 @@ fun HomeScreen(
                 onSave = {
                     hideKeyboard(context)
                     scope.launch {
-                        dataStoreManager.setCounter(0)
                         showToast("Your jaap count has been saved successfully", context)
                     }
                     onDiscontinue()
@@ -372,6 +387,26 @@ fun HomeScreen(
             )
 
         }
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
+            discontinueBottomSheet(
+                onDismiss = { showDiscontinueBottomSheet = false },
+                darkMode = darkMode,
+                onReset = {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        dataStoreManager.setCounter(0)
+                        dataStoreManager.setId(0)
+                        dataStoreManager.setMala(0)
+                        dataStoreManager.setTarget("108")
+                        dataStoreManager.setTitle("Digital Jaap")
+                    }
+                    showDiscontinueBottomSheet = false
+                    onDiscontinue()
+                    dataStoreManager.setBeepSoundEnabled(!beepSoundEnabled)
+                    dataStoreManager.setBeepSoundEnabled(beepSoundEnabled)
+                },
+                showBottomSheet = showDiscontinueBottomSheet
+            )
+
+        }
     }
 }
-

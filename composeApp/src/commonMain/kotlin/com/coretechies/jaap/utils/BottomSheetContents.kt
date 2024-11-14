@@ -53,7 +53,7 @@ fun SaveBottomSheet(
     prefs: DataStore<Preferences>,
     onDismiss: () -> Unit,
     countingDao: CountingDao,
-    id: Int,
+    id: Long,
     countingDetails: CountingDetails?,
     darkMode: Boolean,
     onSave: () -> Unit,
@@ -70,7 +70,6 @@ fun SaveBottomSheet(
 
     val scope = rememberCoroutineScope()
     val dataStoreManager = DataStoreManager(prefs, scope)
-    val targetCount by dataStoreManager.target.collectAsState(108)
     val title by dataStoreManager.title.collectAsState("Digital Jaap")
 
 
@@ -135,40 +134,40 @@ fun SaveBottomSheet(
                     ) {
                         Surface(
                             shape = CircleShape,
-                            color = if (performUpdate.value) Color(0xFFe28b2a) else Color.Gray,
+                            color = Color(0xFFe28b2a),
                             modifier = Modifier.size(40.dp)
                         ) {}
-                        IconButton(enabled = performUpdate.value, onClick = {
-                            if (countingDetails != null) {
-                                updateCounter(
-                                    countingDetails = countingDetails,
-                                    totalCount = totalCount,
-                                    countTitle = textState.value.text,
-                                    countingDao = countingDao,
-                                    onFail = {
-                                        onFail()
-                                    },
-                                    onSave = onSave,
-                                    target = targetCount
-                                )
+                        IconButton(onClick = {
+                            if (id.toInt() != 0 || countingDetails != null) {
+                                    updateCounter(
+                                        totalCount = totalCount,
+                                        countTitle = textState.value.text,
+                                        countingDao = countingDao,
+                                        onFail = {
+                                            onFail()
+                                        },
+                                        onSave = onSave,
+                                        target =  if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text.toInt() else 108,
+                                        id = id
+                                    )
                             } else {
                                 insertList(
                                     totalCount,
                                     textState.value.text,
-                                    "Jajman0900",
-                                    "Jajman-0900",
                                     countingDao,
                                     onFail = {
                                     },
                                     onSave = {
                                         onSave()
                                         scope.launch {
-                                            dataStoreManager.setTarget(target.value.text)
+                                            dataStoreManager.setTarget(if(target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text else "108")
                                             dataStoreManager.setTitle(textState.value.text)
                                         }
                                     },
                                     noCount = noCount,
-                                    target = targetCount
+                                    target = if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text.toInt() else 108,
+                                    scope = scope,
+                                    dataStoreManager = dataStoreManager
                                 )
 
                             }
@@ -254,13 +253,13 @@ fun SaveBottomSheet(
 fun insertList(
     totalCount: Int,
     countTitle: String,
-    countingDetailsUserId: String,
-    countingDetailsUserNane: String,
     countingDao: CountingDao,
     onFail: () -> Unit,
     noCount: () -> Unit,
     onSave: () -> Unit,
-    target: Int
+    target: Int,
+    scope: CoroutineScope,
+    dataStoreManager: DataStoreManager
 ) {
 
     if (countTitle.isNotBlank()) {
@@ -269,27 +268,27 @@ fun insertList(
                 totalCount = totalCount,
                 countTitle = countTitle,
                 countDate = getCurrentDateTime(),
-                countingDetailsUserId = countingDetailsUserId,
-                countingDetailsUserName = countingDetailsUserNane,
+                countingDetailsUserId = "Jajman0900",
+                countingDetailsUserName =  "Jajman-0900",
                 target = target
             )
             CoroutineScope(Dispatchers.IO).launch {
-                countingDao.insert(countingTempObj)
                 onSave()
+                val id = countingDao.insert(countingTempObj)
+                scope.launch {
+                    dataStoreManager.setId(id)
+                }
             }
         } else {
             noCount()
         }
-
     } else {
-        onFail()
-    }
-}
+        onFail() }}
 
 fun updateCounter(
-    countingDetails: CountingDetails,
     countingDao: CountingDao,
     totalCount: Int,
+    id: Long,
     countTitle: String,
     onFail: () -> Unit,
     onSave: () -> Unit,
@@ -301,15 +300,14 @@ fun updateCounter(
         CoroutineScope(Dispatchers.IO).launch {
 
             val countingDetailsTemp = CountingDetails(
-                id = countingDetails.id,
+                id = id,
                 totalCount = totalCount,
                 countTitle = countTitle,
                 countDate = getCurrentDateTime(),
-                countingDetailsUserId = countingDetails.countingDetailsUserId,
-                countingDetailsUserName = countingDetails.countingDetailsUserName,
+                countingDetailsUserId = "Jajman0900",
+                countingDetailsUserName = "Jajman0900",
                 target = target
             )
-
             countingDao.updateById(countingDetailsTemp)
             onSave()
         }
@@ -442,6 +440,112 @@ fun resetBottomSheet(
                 Spacer(modifier = Modifier.height(80.dp))
 
 
+            }
+        }
+
+    }
+}
+
+
+
+@Composable
+fun discontinueBottomSheet(
+    onDismiss: () -> Unit, onReset: () -> Unit, showBottomSheet: Boolean, darkMode: Boolean
+) {
+
+
+    AnimatedVisibility(
+        visible = showBottomSheet, enter = slideInVertically(
+            initialOffsetY = { it }, animationSpec = tween(durationMillis = 300)
+        ), exit = slideOutVertically(
+            targetOffsetY = { it }, animationSpec = tween(durationMillis = 300)
+        )
+    ) {
+        Surface(
+            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+            color = if (darkMode) Color.Black else Color.White
+        ) {
+            Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        modifier = Modifier.padding(top = 5.dp),
+                        text = "Start New Jaap",
+                        style = TextStyle(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (darkMode) Color.White else Color(0xFF8C4B26)
+                        )
+                    )
+                    Box(
+                        contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
+                    ) {
+                        Surface(
+                            shape = CircleShape,
+                            color = if (darkMode) Color(0XFF361d05) else Color(0xFFcfb69e),
+                            modifier = Modifier.size(40.dp)
+                        ) {}
+                        IconButton(onClick = onDismiss) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Close",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+                Row(modifier = Modifier.fillMaxWidth(0.8f)) {
+                    Text(
+                        text = "Do you want to start a new Jaap ? It will discontinue your Jaap And start a New Jaap.", style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (darkMode) Color.White else Color(0xFF8C4B26)
+                        )
+                    )
+
+                }
+
+                Button(
+                    onClick = {
+                        onReset()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0XFFf36464), contentColor = Color.White
+                    ),
+                    modifier = Modifier.padding(top = 20.dp).align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(fraction = 0.95f),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.yes),
+                        modifier = Modifier.padding(8.dp),
+                        fontSize = 18.sp,
+                    )
+                }
+
+                Button(
+                    onClick = onDismiss,
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = if (darkMode) Color.Black else Color.White,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(fraction = 0.9f),
+                    elevation = ButtonDefaults.elevation(0.dp),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.no),
+                        color = if (darkMode) Color.White else Color(0xFF87490c),
+                        modifier = Modifier.padding(8.dp),
+                        fontSize = 18.sp,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
 

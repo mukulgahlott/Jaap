@@ -13,6 +13,7 @@
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		CC6D64F52CDB805300CAF4DB /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = CC6D64F42CDB805300CAF4DB /* GoogleMobileAds */; };
 		CCD82D732CDCC3830059623F /* Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = CCD82D722CDCC3830059623F /* Splash.png */; };
+		CCF261332CE5E568006D12B3 /* temple_bell.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CCF261322CE5E568006D12B3 /* temple_bell.mp3 */; };
 		EDBEC62C2CD8D27D00B52A90 /* play_beep.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = EDBEC62B2CD8D27D00B52A90 /* play_beep.mp3 */; };
 		EDBEC62E2CD8DE6200B52A90 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EDBEC62D2CD8DE6200B52A90 /* GoogleService-Info.plist */; };
 		EDBEC6312CD8DFB800B52A90 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EDBEC6302CD8DFB800B52A90 /* FirebaseAnalytics */; };
@@ -31,6 +32,7 @@
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB3632DC29227652001CCB65 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		CCD82D722CDCC3830059623F /* Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Splash.png; path = ../../Downloads/Splash.png; sourceTree = "<group>"; };
+		CCF261322CE5E568006D12B3 /* temple_bell.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = temple_bell.mp3; path = ../composeApp/src/androidMain/res/raw/temple_bell.mp3; sourceTree = "<group>"; };
 		ED7647D22CD902E90036B50D /* Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Splash.png; sourceTree = "<group>"; };
 		EDBEC62B2CD8D27D00B52A90 /* play_beep.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = play_beep.mp3; path = ../composeApp/src/androidMain/res/raw/play_beep.mp3; sourceTree = "<group>"; };
 		EDBEC62D2CD8DE6200B52A90 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 		7555FF72242A565900829871 = {
 			isa = PBXGroup;
 			children = (
+				CCF261322CE5E568006D12B3 /* temple_bell.mp3 */,
 				ED7647D22CD902E90036B50D /* Splash.png */,
 				CCD82D722CDCC3830059623F /* Splash.png */,
 				EDBEC62D2CD8DE6200B52A90 /* GoogleService-Info.plist */,
@@ -182,6 +185,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCF261332CE5E568006D12B3 /* temple_bell.mp3 in Resources */,
 				CCD82D732CDCC3830059623F /* Splash.png in Resources */,
 				EDBEC62E2CD8DE6200B52A90 /* GoogleService-Info.plist in Resources */,
 				EDBEC62C2CD8D27D00B52A90 /* play_beep.mp3 in Resources */,

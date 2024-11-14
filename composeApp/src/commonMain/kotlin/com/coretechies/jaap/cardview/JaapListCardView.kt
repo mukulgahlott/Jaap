@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,8 +40,10 @@ import com.example.jetpackCompose.ui.theme.Orange
 import com.example.jetpackCompose.ui.theme.PureOrange
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.ic_delete
+import japp.composeapp.generated.resources.ic_mala
 import japp.composeapp.generated.resources.ic_plus
 import japp.composeapp.generated.resources.ic_recycle
+import japp.composeapp.generated.resources.ic_target
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -92,6 +96,30 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit
                         fontWeight = FontWeight.Bold,
                         color = if (!darkMode) Color(0xFF87490C) else Color.White
                     )
+                    Row(modifier = Modifier.wrapContentWidth()) {
+
+                        Image( modifier = Modifier.size(24.dp).padding(start = 10.dp),
+                            painter = painterResource(Res.drawable.ic_target),
+                            contentDescription = "target",
+                            colorFilter = ColorFilter.tint(Color.Red))
+
+                        Text(modifier = Modifier.padding(start = 10.dp),
+                            color =  if (darkMode)Color.White else Color.Black,
+                            fontSize = 14.sp,
+                            text = "${item.target}")
+
+                        Image( modifier = Modifier.size(24.dp).padding( start = 10.dp),
+                            painter = painterResource(Res.drawable.ic_mala),
+                            contentDescription = "mala",
+                            colorFilter = ColorFilter.tint(if (darkMode)Color.White else Color.Black))
+
+                        Text(modifier = Modifier.padding(horizontal = 10.dp),
+                            color = if (darkMode)Color.White else Color.Black ,
+                            fontSize = 14.sp,
+                            text = (item.totalCount / item.target).toString())
+
+                    }
+
                     Text(
                         text = item.countDate,
                         fontSize = 12.sp,

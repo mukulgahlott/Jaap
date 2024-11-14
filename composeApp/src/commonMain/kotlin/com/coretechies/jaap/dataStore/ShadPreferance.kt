@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -17,7 +18,7 @@ class DataStoreManager(
 ) {
 
     //Data Store Preference Keys
-    private  val idKey = intPreferencesKey("IdKey")
+    private  val idKey = longPreferencesKey("IdKey")
     private val counterKey = intPreferencesKey("Counter")
     private val malaKey = intPreferencesKey("MalaKey")
     private val titleKey = stringPreferencesKey("Title")
@@ -25,20 +26,21 @@ class DataStoreManager(
     private val themeKey = booleanPreferencesKey("ThemeKey")
     private val darkModeKey = booleanPreferencesKey("DarkMode")
     private val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
+    private val bellSoundKey = booleanPreferencesKey("BellSoundEnabled")
     private val vibrationKey = booleanPreferencesKey("VibrationEnabled")
 
 
     // Getter for id
-    val id: Flow<Int> = dataStore.data
+    val id: Flow<Long> = dataStore.data
         .map { preferences ->
-            preferences[malaKey] ?: 0
+            preferences[idKey] ?: 0
         }
 
     // Setter for Id
-    fun setId(value: Int) {
+    fun setId(value: Long) {
         scope.launch {
             dataStore.edit { preferences ->
-                preferences[malaKey] = value
+                preferences[idKey] = value
             }
         }
     }
@@ -146,6 +148,21 @@ class DataStoreManager(
         scope.launch {
             dataStore.edit { preferences ->
                 preferences[beepSoundKey] = value
+            }
+        }
+    }
+
+    // Getter for BellSoundEnabled
+    val bellSoundEnabled: Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[bellSoundKey] ?: true
+        }
+
+    // Setter for BellSoundEnabled
+    fun setBellSoundEnabled(value: Boolean) {
+        scope.launch {
+            dataStore.edit { preferences ->
+                preferences[bellSoundKey] = value
             }
         }
     }
