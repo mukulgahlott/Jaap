@@ -42,6 +42,7 @@ import com.coretechies.jaap.localization.Language
 import com.coretechies.jaap.localization.LocalizedApp
 import com.coretechies.jaap.shareApp.shareApp
 import com.coretechies.jaap.utils.background.ListMenuBackground
+import com.coretechies.jaap.utils.openRate
 import com.coretechies.jaap.utils.openUrl
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.contact_us
@@ -189,8 +190,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         darkMode = darkMode,
                         onClick = {
                             shareApp(
-                                "Hey! Download and join [App Name] now to track your Jaap, stay mindful, and improve your spiritual practice. Keep count of your progress, set daily goals, and stay focused. Download it now from Play Store / App Store or visit  \n" +
-                                        "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
+                                "Hey! Download and join Digital Jaap now to track your Jaap, stay mindful, and improve your spiritual practice. Keep count of your progress, set daily goals, and stay focused. Download it now from Play Store / App Store or visit ",
                                 context
                             )
                         },
@@ -208,10 +208,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         modifier = Modifier,
                         darkMode = darkMode,
                         onClick = {
-                            openUrl(
-                                "https://play.google.com/store/apps/details?id=com.Android.Count&hl=en_IN",
-                                context
-                            )
+                            openRate( context)
                         },onSwitch = {}
                     )
 
@@ -226,7 +223,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         modifier = Modifier,
                         darkMode = darkMode,
                         onClick = {
-                            openUrl("https://app.footballquiz.app/support ", context)
+                            openUrl("http://ctportfolio.in/digitaljaapapp/faq.html", context)
                         },onSwitch = {}
                     )
 
@@ -241,7 +238,8 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         modifier = Modifier,
                         darkMode = darkMode,
                         onClick = {
-                            openUrl("https://app.footballquiz.app/terms_of_services", context)
+                            openUrl(
+                                    "http://ctportfolio.in/digitaljaapapp/terms.html" , context)
                         },onSwitch = {}
                     )
 
@@ -256,7 +254,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         modifier = Modifier,
                         darkMode = darkMode,
                         onClick = {
-                            openUrl("https://app.footballquiz.app/privacy_policy ", context)
+                            openUrl("http://ctportfolio.in/digitaljaapapp/privacypolicy.html", context)
                         },onSwitch = {}
                     )
 
@@ -264,7 +262,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         showSwitch = true,
                         switchState = bellEnabled,
                         icon = painterResource(Res.drawable.ic_bell),
-                        title = "play bell Sound",
+                        title = "Play Bell Sound",
                         description = stringResource(Res.string.privacy),
                         topMargin = 5.dp,
                         showDescription = false,

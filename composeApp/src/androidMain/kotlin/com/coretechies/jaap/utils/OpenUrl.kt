@@ -20,3 +20,19 @@ actual fun openUrl(url: String, context: Any?) {
     }
     }
 }
+
+
+actual fun openRate(context: Any?) {
+    val androidContext = context as? Context
+    if (androidContext != null) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.coretechies.jaap"))
+            androidContext.startActivity(intent)
+        }
+
+        catch (_: Exception) {
+            Toast.makeText(androidContext, "This Device can't open this link", Toast.LENGTH_SHORT).show()
+
+        }
+    }
+}

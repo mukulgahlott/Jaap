@@ -73,7 +73,7 @@ fun SaveBottomSheet(
     val title by dataStoreManager.title.collectAsState("Digital Jaap")
 
 
-
+        target.value = TextFieldValue("")
         textState.value = TextFieldValue(title)
         previousName = title
     if (countingDetails != null) {
@@ -107,18 +107,18 @@ fun SaveBottomSheet(
                     Box(
                         contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
                     ) {
-                        Surface(
-                            shape = CircleShape,
-                            color = Color(0xFFb7926d),
-                            modifier = Modifier.size(40.dp)
-                        ) {}
-                        IconButton(onClick = onDismiss) {
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = "Close",
-                                tint = Color.White
-                            )
-                        }
+//                        Surface(
+//                            shape = CircleShape,
+//                            color = Color(0xFFb7926d),
+//                            modifier = Modifier.size(40.dp)
+//                        ) {}
+//                        IconButton(onClick = onDismiss) {
+//                            Icon(
+//                                imageVector = Icons.Filled.Close,
+//                                contentDescription = "Close",
+//                                tint = Color.White
+//                            )
+//                        }
                     }
 
                     Text(
@@ -217,7 +217,7 @@ fun SaveBottomSheet(
                         // Create a new TextFieldValue that preserves the cursor position
                         if (newText.text.length<=4)
                             target.value = TextFieldValue(
-                                text = newText.text.filter { it != '.' },
+                                text = newText.text.filter { it != '.' && it != ',' && it != ' ' && it != '-'  },
                                 selection = TextRange(newText.text.length) // Set cursor at the end
                             )
                     },

@@ -152,7 +152,7 @@ fun HomeScreen(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (darkMode) Color.White else Color(0XFF87490c),
-                text = title.lowercase().replaceFirstChar { it.uppercaseChar() },
+                text = if (title.length > 16) "${title.take(16)}..." else title.lowercase().replaceFirstChar { it.uppercaseChar() },
                 textAlign = TextAlign.Center
             )
 
@@ -198,30 +198,40 @@ fun HomeScreen(
                     })
             }
 
-            Row(modifier = Modifier.padding(top = 20.dp)
-                .wrapContentWidth()
-                .height(40.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(if(!darkMode) Orange else Color.DarkGray),
-                verticalAlignment = Alignment.CenterVertically)
+            Row(
+                modifier = Modifier.padding(top = 20.dp)
+                    .wrapContentWidth()
+                    .height(40.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (!darkMode) Orange else Color.DarkGray),
+                verticalAlignment = Alignment.CenterVertically
+            )
             {
-                Image( modifier = Modifier.size(28.dp).padding(start = 10.dp),
+                Image(
+                    modifier = Modifier.size(28.dp).padding(start = 10.dp),
                     painter = painterResource(Res.drawable.ic_target),
                     contentDescription = "target",
-                    colorFilter = ColorFilter.tint(Color.Red))
+                    colorFilter = ColorFilter.tint(Color.Red)
+                )
 
-                Text(modifier = Modifier.padding(start = 10.dp),
-                    color =  Color.White,
-                    text = "$target")
+                Text(
+                    modifier = Modifier.padding(start = 10.dp),
+                    color = Color.White,
+                    text = "$target"
+                )
 
-                Image( modifier = Modifier.size(28.dp).padding( start = 10.dp),
+                Image(
+                    modifier = Modifier.size(28.dp).padding(start = 10.dp),
                     painter = painterResource(Res.drawable.ic_mala),
                     contentDescription = "mala",
-                    colorFilter = ColorFilter.tint(if (darkMode)Color.White else Color.Black))
+                    colorFilter = ColorFilter.tint(if (darkMode) Color.White else Color.Black)
+                )
 
-                Text(modifier = Modifier.padding(horizontal = 10.dp),
-                    color = Color.White ,
-                    text = "$mala")
+                Text(
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    color = Color.White,
+                    text = "$mala"
+                )
 
             }
 
@@ -257,25 +267,29 @@ fun HomeScreen(
                             textAlign = TextAlign.End,
                         )
 
-                        Button( enabled = isButtonEnabled,
+                        Button(
+                            enabled = isButtonEnabled,
                             onClick = {
                                 isButtonEnabled = false
                                 if (vibrationEnabled) triggerVibration(context, 100)
                                 if (beepSoundEnabled) playBeep(context)
                                 if (counter < 9999) {
-                                    if(id.toInt() ==0){ showSaveBottomSheet = true }
-                                    scope.launch { dataStoreManager.setCounter(counter + 1) }
-                                    if (counter == target - 1){
-                                        scope.launch { dataStoreManager.setMala(mala + 1)
-                                        dataStoreManager.setCounter(0)
-                                            updateCounter(countingDao= countingDao,
+                                    if (id.toInt() == 0) {
+                                        showSaveBottomSheet = true
+                                        showDiscontinueBottomSheet = false
+                                    }
+                                    scope.launch { dataStoreManager.setCounter(counter + 1)
+                                        if (counter >= target) {
+                                            dataStoreManager.setMala(mala + 1)
+                                            dataStoreManager.setCounter(0)
+                                            updateCounter(countingDao = countingDao,
                                                 totalCount = target * mala + counter,
-                                                id= id,
+                                                id = id,
                                                 countTitle = title,
                                                 target = target,
                                                 onFail = {},
-                                                onSave = {if (bellEnabled) playBell(context) }
-                                                )
+                                                onSave = { if (bellEnabled) playBell(context) }
+                                            )
                                         }
                                     }
                                 }
@@ -294,7 +308,7 @@ fun HomeScreen(
                         // Counter Reset Button
                         Button(
                             onClick = {
-                                if (counter != 0 || target != 108 || mala != 0 ) {
+                                if (counter != 0 || target != 108 || mala != 0) {
                                     showResetBottomSheet = true
                                     showSaveBottomSheet = false
                                 } else {
@@ -313,7 +327,7 @@ fun HomeScreen(
                     Button(
                         onClick = {
                             showDiscontinueBottomSheet = true
-                            showSaveBottomSheet = true
+                            showSaveBottomSheet = false
                         },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = if (darkMode) Color.Black else Orange,
@@ -335,7 +349,7 @@ fun HomeScreen(
         }
         Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
             SaveBottomSheet(
-                prefs= prefs,
+                prefs = prefs,
                 totalCount = target * mala + counter,
                 darkMode = darkMode,
                 countingDetails = countingDetails,

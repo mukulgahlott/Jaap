@@ -8,4 +8,7 @@ actual fun openUrl(url: String, context : Any?) {
     UIApplication.sharedApplication.openURL(nsUrl)
 }
 
-
+actual fun openRate(context : Any?) {
+    val nsUrl = NSURL(string = "https://apps.apple.com/us/app/digital-jaap/id6737768029")
+    UIApplication.sharedApplication.openURL(nsUrl)
+}
