@@ -19,6 +19,8 @@
     <string name="reset_counter">Reset Counter ?</string>
     <string name="reset_description">It will make the counter 0, Are you sure you want to reset the counter ?</string>
     <string name="save">Save</string>
-    <string name="bell">Play Bell When target completed</string>
+    <string name= "playBell">Play Bell Sound</string>
+    <string name= "startNewJaap">Start New Jaap</string>
+    <string name= "startNewJaap_text">Do you want to start a new Jaap ? It will discontinue your Jaap And start a New Jaap.</string>
 
 </resources>

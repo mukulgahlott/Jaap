@@ -107,20 +107,7 @@ fun SaveBottomSheet(
                     Box(
                         contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
                     ) {
-//                        Surface(
-//                            shape = CircleShape,
-//                            color = Color(0xFFb7926d),
-//                            modifier = Modifier.size(40.dp)
-//                        ) {}
-//                        IconButton(onClick = onDismiss) {
-//                            Icon(
-//                                imageVector = Icons.Filled.Close,
-//                                contentDescription = "Close",
-//                                tint = Color.White
-//                            )
-//                        }
                     }
-
                     Text(
                         text = "Save", style = TextStyle(
                             fontSize = 20.sp,

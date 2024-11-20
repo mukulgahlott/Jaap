@@ -76,12 +76,11 @@
 				CCF261322CE5E568006D12B3 /* temple_bell.mp3 */,
 				ED7647D22CD902E90036B50D /* Splash.png */,
 				CCD82D722CDCC3830059623F /* Splash.png */,
-				EDBEC62D2CD8DE6200B52A90 /* GoogleService-Info.plist */,
 				EDBEC62B2CD8D27D00B52A90 /* play_beep.mp3 */,
 				AB1DB47929225F7C00F7AF9C /* Configuration */,
 				7555FF7D242A565900829871 /* iosApp */,
-				7555FF7C242A565900829871 /* Products */,
 				42799AB246E5F90AF97AA0EF /* Frameworks */,
+				7555FF7C242A565900829871 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -96,6 +95,7 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				EDBEC62D2CD8DE6200B52A90 /* GoogleService-Info.plist */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,

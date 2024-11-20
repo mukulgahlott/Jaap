@@ -1,5 +1,6 @@
 import SwiftUI
 import Firebase
+import FirebaseAnalytics
 
 @main
 struct iOSApp: App {
@@ -8,6 +9,10 @@ struct iOSApp: App {
 
     init(){
             FirebaseApp.configure()
+        
+        Analytics.logEvent("app_started", parameters: [
+                   "launch_time": Date().description
+               ])
         }
     var body: some Scene {
         WindowGroup {
@@ -15,6 +20,7 @@ struct iOSApp: App {
                      // Replace with your main content view
                      ContentView()
                     .edgesIgnoringSafeArea(.all)
+                    
                  } else {
                      // The splash screen view
                      VStack {
