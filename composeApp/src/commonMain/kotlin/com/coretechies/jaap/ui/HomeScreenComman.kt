@@ -62,6 +62,7 @@ import japp.composeapp.generated.resources.palette
 import japp.composeapp.generated.resources.save
 import japp.composeapp.generated.resources.ic_target
 import japp.composeapp.generated.resources.ic_mala
+import japp.composeapp.generated.resources.newJaap
 import japp.composeapp.generated.resources.vibrate
 import japp.composeapp.generated.resources.volume
 import kotlinx.coroutines.CoroutineScope
@@ -352,7 +353,7 @@ fun HomeScreen(
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Text(
-                            text = "New Jaap",
+                            text = stringResource(Res.string.newJaap),
                             modifier = Modifier.padding(8.dp),
                             fontSize = 22.sp,
                         )
@@ -369,10 +370,6 @@ fun HomeScreen(
                 countingDetails = countingDetails,
                 countingDao = countingDao,
                 id = id,
-                onDismiss = {
-                    hideKeyboard(context)
-                    showSaveBottomSheet = false
-                },
                 onSave = {
                     hideKeyboard(context)
                     scope.launch {

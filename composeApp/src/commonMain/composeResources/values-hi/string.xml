@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
     <string name="app_title">डिजिटल जाप</string>
-    <string name="save_button">सहेजें</string>
-    <string name="counter_default_count">0000</string>
+    <string name="save_button">सेव</string>
+    <string name="counter_default_count">००००</string>
     <string name="menu_title">मेनू</string>
-    <string name="notification">सूचनाएँ</string>
-    <string name="notification_enabled">सक्षम</string>
+    <string name="notification">सूचनाएं</string>
+    <string name="notification_enabled">सक्रिय</string>
     <string name="language">भाषा</string>
-    <string name="language_name">हिन्दी</string>
-    <string name="share_app">ऐप साझा करें</string>
-    <string name="rate_us">हमारी रेटिंग करें</string>
+    <string name="language_name">हिंदी</string>
+    <string name="share_app">ऐप शेयर करें</string>
+    <string name="rate_us">हमें रेट करें</string>
     <string name="contact_us">हमसे संपर्क करें</string>
     <string name="terms">उपयोग की शर्तें</string>
     <string name="list">सूची</string>
     <string name="privacy">गोपनीयता नीति</string>
-    <string name="yes">हाँ</string>
+    <string name="yes">हां</string>
     <string name="no">नहीं</string>
-    <string name="reset_counter">क्या आप काउंटर रीसेट करना चाहते हैं?</string>
-    <string name="reset_description">यह काउंटर को 0 बना देगा, क्या आप सुनिश्चित हैं कि आप काउंटर को रीसेट करना चाहते हैं?</string>
-    <string name="save">सहेजें</string>
+    <string name="reset_counter">काउंटर रीसेट करें?</string>
+    <string name="reset_description">यह काउंटर को 0 पर सेट कर देगा, क्या आप वाकई काउंटर रीसेट करना चाहते हैं?</string>
+    <string name="save">सेव</string>
+    <string name="playBell">घंटी की आवाज बजाएं</string>
+    <string name="startNewJaap">नया जाप शुरू करें</string>
+    <string name="startNewJaap_text">क्या आप नया जाप शुरू करना चाहते हैं? यह आपका वर्तमान जाप बंद कर देगा और नया जाप शुरू करेगा।</string>
+    <string name="Set_target_default">लक्ष्य सेट करें (डिफ़ॉल्ट लक्ष्य 108 है)</string>
+    <string name="totalCount">कुल गिनती</string>
+    <string name="name">नाम</string>
+    <string name="newJaap">नया जाप</string>
+    <string name="noRecords">यहां अभी तक कोई रिकॉर्ड नहीं है</string>
+    <string name="Home">होम</string>
+    <string name="editTarget">लक्ष्य संपादित करें</string>
+
 </resources>

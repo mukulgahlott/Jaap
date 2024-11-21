@@ -47,7 +47,12 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.room.counter.CountingDao
+import japp.composeapp.generated.resources.Res
+import japp.composeapp.generated.resources.Set_target_default
+import japp.composeapp.generated.resources.app_title
+import japp.composeapp.generated.resources.editTarget
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import updateCounter
 
 @Composable
@@ -64,7 +69,7 @@ fun targetEdit(
     val target = remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
     val dataStoreManager = DataStoreManager(prefs, scope)
-    val title = dataStoreManager.title.collectAsState("Digital Jaap")
+    val title = dataStoreManager.title.collectAsState(stringResource(Res.string.app_title))
 
     target.value = TextFieldValue("")
 
@@ -122,7 +127,7 @@ fun targetEdit(
                                 Spacer(modifier = Modifier.size(50.dp)) // Empty space to balance row layout
 
                                 Text(
-                                    text = "Edit Target",
+                                    text = stringResource(Res.string.editTarget),
                                     style = TextStyle(
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold,
@@ -185,7 +190,7 @@ fun targetEdit(
                                         )
                                     }
                                 },
-                                placeholder = { Text(text = "Set target (default is 108)") },
+                                placeholder = { Text(text = stringResource(Res.string.Set_target_default)) },
                                 colors = TextFieldDefaults.textFieldColors(
                                     backgroundColor = Color(0xFFF1EAE2),
                                     placeholderColor = Color(0xFF9D8E80),

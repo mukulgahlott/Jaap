@@ -58,9 +58,11 @@ import japp.composeapp.generated.resources.ic_rate
 import japp.composeapp.generated.resources.ic_share
 import japp.composeapp.generated.resources.language
 import japp.composeapp.generated.resources.language_name
+import japp.composeapp.generated.resources.menu_title
 import japp.composeapp.generated.resources.moon_stars
 import japp.composeapp.generated.resources.notification
 import japp.composeapp.generated.resources.notification_enabled
+import japp.composeapp.generated.resources.playBell
 import japp.composeapp.generated.resources.privacy
 import japp.composeapp.generated.resources.rate_us
 import japp.composeapp.generated.resources.share_app
@@ -87,10 +89,11 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
 
     val bellEnabled by dataStoreManager.bellSoundEnabled.collectAsState(false)
 
-    var lang by remember { mutableStateOf(Language.Hindi.isoFormat) }
+    val language by dataStoreManager.language.collectAsState(Language.Hindi.isoFormat)
+    var lang by remember { mutableStateOf(language) }
 
     ListMenuBackground(prefs = prefs) {
-        LocalizedApp(language = lang)
+        LocalizedApp(language = language)
         {
             Column(
                 modifier = Modifier.fillMaxSize().padding(top = 10.dp)
@@ -119,7 +122,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (darkMode) Color.White else Color(0XFF87490c),
-                        text = "Menu",
+                        text = stringResource(Res.string.menu_title),
                         textAlign = TextAlign.Center
                     )
 
@@ -171,6 +174,9 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         onClick = {
                             lang = switchLanguage(lang)
                             changeLang(lang)
+                            scope.launch {
+                                dataStoreManager.setLanguage(lang)
+                            }
                         },
                         onSwitch = {}
                     )
@@ -259,7 +265,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         showSwitch = true,
                         switchState = bellEnabled,
                         icon = painterResource(Res.drawable.ic_bell),
-                        title = "Play Bell Sound",
+                        title = stringResource(Res.string.playBell),
                         description = stringResource(Res.string.privacy),
                         topMargin = 5.dp,
                         showDescription = false,
@@ -270,10 +276,6 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                             dataStoreManager.setBellSoundEnabled(isChecked)
                         }
                     )
-
-
-
-
                     Image(
                         painter = painterResource(if (darkMode) Res.drawable.ic_coretechies_white else Res.drawable.ic_coretechies),
                         contentDescription = "CoreTechies Icon",

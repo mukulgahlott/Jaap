@@ -23,6 +23,7 @@ import androidx.datastore.preferences.core.Preferences
 import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.localization.Language
 import com.coretechies.jaap.localization.LocalizedApp
+import com.coretechies.jaap.localization.changeLang
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.utils.AppConstants
@@ -32,6 +33,7 @@ import com.example.jetpackCompose.ui.theme.gray
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -41,8 +43,6 @@ fun MainScreen(
     MaterialTheme {
         var selectedTab by remember { mutableStateOf(0) }
         // State for splash screen visibility
-        val tabs = listOf(AppConstants.HOME, AppConstants.LIST, AppConstants.MENU)
-
         // Define the Bottom Tab Icon size once
         val iconModifier = Modifier.size(width = 28.dp, height = 24.dp)
 
@@ -60,12 +60,23 @@ fun MainScreen(
         val dataStoreManager = DataStoreManager(prefs, scope)
         // Shared Pref For Dark Mode
         val darkMode by dataStoreManager.darkMode.collectAsState(false)
-
-        var lang by remember { mutableStateOf(Language.Hindi.isoFormat) }
+        val language by dataStoreManager.language.collectAsState(Language.Hindi.isoFormat)
 
         LocalizedApp(
-            language = lang
+            language = language
         ) {
+            val homeTab = if (language == "en") stringResource(Res.string.Home) else stringResource(Res.string.Home)
+            val listTab = if (language == "en") stringResource(Res.string.list) else stringResource(Res.string.list)
+            val menuTab = if (language == "en") stringResource(Res.string.menu_title) else stringResource(Res.string.menu_title)
+
+            val tabs = remember(language) {
+                listOf(
+                    homeTab,
+                    listTab,
+                    menuTab
+                )
+            }
+
             Scaffold(bottomBar = {
                 Column {
 //                    BannerAdView("ca-app-pub-3940256099942544/9214589741")
@@ -83,10 +94,10 @@ fun MainScreen(
                     ) {
                         tabs.forEachIndexed { index, tab ->
                             val isActive = selectedTab == index
-                            val currentIcon = when (tab) {
-                                AppConstants.HOME -> painterResource(Res.drawable.home)
-                                AppConstants.LIST -> painterResource(Res.drawable.list)
-                                AppConstants.MENU -> painterResource(Res.drawable.menu)
+                            val currentIcon = when (index) {
+                                0 -> painterResource(Res.drawable.home)
+                                1 -> painterResource(Res.drawable.list)
+                                2 -> painterResource(Res.drawable.menu)
                                 else -> throw IllegalArgumentException("Unknown tab: $tab")
                             }
                             println("Selected Tab: $tab, Active: $isActive") // Debug output

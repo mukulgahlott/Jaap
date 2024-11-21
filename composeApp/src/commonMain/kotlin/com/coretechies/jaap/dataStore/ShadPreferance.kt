@@ -28,6 +28,7 @@ class DataStoreManager(
     private val beepSoundKey = booleanPreferencesKey("BeepSoundEnabled")
     private val bellSoundKey = booleanPreferencesKey("BellSoundEnabled")
     private val vibrationKey = booleanPreferencesKey("VibrationEnabled")
+    private val languageKey = stringPreferencesKey("LanguageKey")
 
 
     // Getter for id
@@ -41,6 +42,21 @@ class DataStoreManager(
         scope.launch {
             dataStore.edit { preferences ->
                 preferences[idKey] = value
+            }
+        }
+    }
+
+    // Getter for mala
+    val language: Flow<String> = dataStore.data
+        .map { preferences ->
+            preferences[languageKey] ?: "hi"
+        }
+
+    // Setter for mala
+    fun setLanguage(value: String) {
+        scope.launch {
+            dataStore.edit { preferences ->
+                preferences[languageKey] = value
             }
         }
     }

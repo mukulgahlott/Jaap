@@ -37,6 +37,7 @@ import customButtons
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.list
 import japp.composeapp.generated.resources.moon_stars
+import japp.composeapp.generated.resources.noRecords
 import japp.composeapp.generated.resources.volume
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -147,7 +148,7 @@ fun ListScreen(
                     }
                 } else {
                     Text(
-                        text = "No Records Here Yet",
+                        text = stringResource(Res.string.noRecords),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (darkMode) Color.White else Color.Black,

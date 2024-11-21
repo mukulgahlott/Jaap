@@ -51,7 +51,6 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun SaveBottomSheet(
     prefs: DataStore<Preferences>,
-    onDismiss: () -> Unit,
     countingDao: CountingDao,
     id: Long,
     countingDetails: CountingDetails?,
@@ -73,9 +72,9 @@ fun SaveBottomSheet(
     val title by dataStoreManager.title.collectAsState("Digital Jaap")
 
 
-        target.value = TextFieldValue("")
-        textState.value = TextFieldValue(title)
-        previousName = title
+    target.value = TextFieldValue("")
+    textState.value = TextFieldValue(title)
+    previousName = title
     if (countingDetails != null) {
         performUpdate.value = countingDetails.totalCount != totalCount
     }
@@ -106,10 +105,9 @@ fun SaveBottomSheet(
 
                     Box(
                         contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
-                    ) {
-                    }
+                    ) {}
                     Text(
-                        text = "Save", style = TextStyle(
+                        text = stringResource(Res.string.save), style = TextStyle(
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color(0xFF8C4B26)
@@ -126,28 +124,26 @@ fun SaveBottomSheet(
                         ) {}
                         IconButton(onClick = {
                             if (id.toInt() != 0 || countingDetails != null) {
-                                    updateCounter(
-                                        totalCount = totalCount,
-                                        countTitle = textState.value.text,
-                                        countingDao = countingDao,
-                                        onFail = {
-                                            onFail()
-                                        },
-                                        onSave = onSave,
-                                        target =  if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text.toInt() else 108,
-                                        id = id
-                                    )
+                                updateCounter(
+                                    totalCount = totalCount,
+                                    countTitle = textState.value.text,
+                                    countingDao = countingDao,
+                                    onFail = {
+                                        onFail()
+                                    },
+                                    onSave = onSave,
+                                    target = if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text.toInt() else 108,
+                                    id = id
+                                )
                             } else {
-                                insertList(
-                                    totalCount,
+                                insertList(totalCount,
                                     textState.value.text,
                                     countingDao,
-                                    onFail = {
-                                    },
+                                    onFail = {},
                                     onSave = {
                                         onSave()
                                         scope.launch {
-                                            dataStoreManager.setTarget(if(target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text else "108")
+                                            dataStoreManager.setTarget(if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text else "108")
                                             dataStoreManager.setTitle(textState.value.text)
                                         }
                                     },
@@ -172,8 +168,7 @@ fun SaveBottomSheet(
                 Spacer(modifier = Modifier.height(16.dp))
                 // Text Field for Name input
 
-                TextField(
-                    value = textState.value,
+                TextField(value = textState.value,
                     onValueChange = {
                         textState.value = it
                         if (countingDetails != null) {
@@ -184,7 +179,7 @@ fun SaveBottomSheet(
                             }
                         }
                     },
-                    placeholder = { Text(text = "Name") },
+                    placeholder = { Text(text = stringResource(Res.string.name)) },
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color(0xFFF1EAE2), // Light background color
                         placeholderColor = Color(0xFF9D8E80),
@@ -198,17 +193,15 @@ fun SaveBottomSheet(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                TextField(
-                    value = target.value,
+                TextField(value = target.value,
                     onValueChange = { newText ->
                         // Create a new TextFieldValue that preserves the cursor position
-                        if (newText.text.length<=4)
-                            target.value = TextFieldValue(
-                                text = newText.text.filter { it != '.' && it != ',' && it != ' ' && it != '-'  },
-                                selection = TextRange(newText.text.length) // Set cursor at the end
-                            )
+                        if (newText.text.length <= 4) target.value = TextFieldValue(
+                            text = newText.text.filter { it != '.' && it != ',' && it != ' ' && it != '-' },
+                            selection = TextRange(newText.text.length) // Set cursor at the end
+                        )
                     },
-                    placeholder = { Text(text = "Set target default target is (108) ") },
+                    placeholder = { Text(stringResource(Res.string.Set_target_default)) },
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = Color(0xFFF1EAE2), // Light background color
                         placeholderColor = Color(0xFF9D8E80),
@@ -225,7 +218,7 @@ fun SaveBottomSheet(
 
                 // Total Count text
                 Text(
-                    text = "Total Count : $totalCount", style = TextStyle(
+                    text = stringResource(Res.string.totalCount)+" : $totalCount", style = TextStyle(
                         color = Color(0xFFFF8C00), // Custom color for count text
                         fontSize = 16.sp
                     )
@@ -250,27 +243,26 @@ fun insertList(
 ) {
 
     if (countTitle.isNotBlank()) {
-        if (totalCount != 0) {
-            val countingTempObj = CountingDetails(
-                totalCount = totalCount,
-                countTitle = countTitle,
-                countDate = getCurrentDateTime(),
-                countingDetailsUserId = "Jajman0900",
-                countingDetailsUserName =  "Jajman-0900",
-                target = target
-            )
-            CoroutineScope(Dispatchers.IO).launch {
-                onSave()
-                val id = countingDao.insert(countingTempObj)
-                scope.launch {
-                    dataStoreManager.setId(id)
-                }
+
+        val countingTempObj = CountingDetails(
+            totalCount = totalCount,
+            countTitle = countTitle,
+            countDate = getCurrentDateTime(),
+            countingDetailsUserId = "Jajman0900",
+            countingDetailsUserName = "Jajman-0900",
+            target = target
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            onSave()
+            val id = countingDao.insert(countingTempObj)
+            scope.launch {
+                dataStoreManager.setId(id)
             }
-        } else {
-            noCount()
         }
     } else {
-        onFail() }}
+        onFail()
+    }
+}
 
 fun updateCounter(
     countingDao: CountingDao,
@@ -434,7 +426,6 @@ fun resetBottomSheet(
 }
 
 
-
 @Composable
 fun discontinueBottomSheet(
     onDismiss: () -> Unit, onReset: () -> Unit, showBottomSheet: Boolean, darkMode: Boolean
@@ -460,7 +451,7 @@ fun discontinueBottomSheet(
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 5.dp),
-                        text = "Start New Jaap",
+                        text = stringResource(Res.string.startNewJaap),
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold,
@@ -486,7 +477,8 @@ fun discontinueBottomSheet(
                 }
                 Row(modifier = Modifier.fillMaxWidth(0.8f)) {
                     Text(
-                        text = "Do you want to start a new Jaap ? It will discontinue your Jaap And start a New Jaap.", style = TextStyle(
+                        text = stringResource(Res.string.startNewJaap_text),
+                        style = TextStyle(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (darkMode) Color.White else Color(0xFF8C4B26)
