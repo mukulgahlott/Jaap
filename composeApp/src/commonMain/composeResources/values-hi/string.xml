@@ -26,8 +26,14 @@
     <string name="totalCount">कुल गिनती</string>
     <string name="name">नाम</string>
     <string name="newJaap">नया जाप</string>
+    <string name="contin">जारी रखें</string>
+    <string name="delete">हटाएं</string>
     <string name="noRecords">यहां अभी तक कोई रिकॉर्ड नहीं है</string>
     <string name="Home">होम</string>
     <string name="editTarget">लक्ष्य संपादित करें</string>
+    <string name="noThem">थीम आ रही है, इसे अगले संस्करण में लॉन्च किया जाएगा!!</string>
+    <string name="emptyCounter">आपका जाप काउंटर पहले से ही खाली है</string>
+    <string name="savedSuccessfully">आपका जाप काउंट सफलतापूर्वक सहेजा गया है</string>
+
 
 </resources>

@@ -57,7 +57,6 @@ fun SaveBottomSheet(
     darkMode: Boolean,
     onSave: () -> Unit,
     onFail: () -> Unit,
-    noCount: () -> Unit,
     totalCount: Int,
     showBottomSheet: Boolean,
 ) {
@@ -136,7 +135,8 @@ fun SaveBottomSheet(
                                     id = id
                                 )
                             } else {
-                                insertList(totalCount,
+                                insertList(
+                                    totalCount,
                                     textState.value.text,
                                     countingDao,
                                     onFail = {},
@@ -147,7 +147,6 @@ fun SaveBottomSheet(
                                             dataStoreManager.setTitle(textState.value.text)
                                         }
                                     },
-                                    noCount = noCount,
                                     target = if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text.toInt() else 108,
                                     scope = scope,
                                     dataStoreManager = dataStoreManager
@@ -235,18 +234,16 @@ fun insertList(
     countTitle: String,
     countingDao: CountingDao,
     onFail: () -> Unit,
-    noCount: () -> Unit,
     onSave: () -> Unit,
     target: Int,
     scope: CoroutineScope,
     dataStoreManager: DataStoreManager
 ) {
-
-    if (countTitle.isNotBlank()) {
-
+    var title = ""
+    title = if (countTitle.isBlank()) "Digital Jaap" else countTitle
         val countingTempObj = CountingDetails(
             totalCount = totalCount,
-            countTitle = countTitle,
+            countTitle = title,
             countDate = getCurrentDateTime(),
             countingDetailsUserId = "Jajman0900",
             countingDetailsUserName = "Jajman-0900",
@@ -259,9 +256,6 @@ fun insertList(
                 dataStoreManager.setId(id)
             }
         }
-    } else {
-        onFail()
-    }
 }
 
 fun updateCounter(

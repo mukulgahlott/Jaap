@@ -39,10 +39,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.example.jetpackCompose.ui.theme.PureOrange
 import japp.composeapp.generated.resources.Res
+import japp.composeapp.generated.resources.ic_language
 import japp.composeapp.generated.resources.ic_right_arrow
+import japp.composeapp.generated.resources.language
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -112,7 +115,7 @@ fun RenderCustomButton(
             contentAlignment = Alignment.CenterStart
         ) {
             Row(modifier = Modifier.clickable(enabled = isButtonEnabled) { // Use isButtonEnabled here
-                    isButtonEnabled = false // Disable button
+                   if (showDescription == false ) isButtonEnabled = false // Disable button
                     onClick()
                 }.fillMaxWidth().padding(
                     start = 20.dp,

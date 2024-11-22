@@ -65,6 +65,8 @@ fun MainScreen(
         LocalizedApp(
             language = language
         ) {
+            changeLang(language)
+
             val homeTab = if (language == "en") stringResource(Res.string.Home) else stringResource(Res.string.Home)
             val listTab = if (language == "en") stringResource(Res.string.list) else stringResource(Res.string.list)
             val menuTab = if (language == "en") stringResource(Res.string.menu_title) else stringResource(Res.string.menu_title)

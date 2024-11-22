@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.coretechies.jaap.dataStore.DataStoreManager
+import com.coretechies.jaap.localization.Language
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import com.coretechies.jaap.ui.targetEdit
@@ -56,6 +57,7 @@ import com.example.jetpackCompose.ui.theme.Orange
 import japp.composeapp.generated.resources.DS_DIGI
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.device_1
+import japp.composeapp.generated.resources.emptyCounter
 import japp.composeapp.generated.resources.ic_device_dark
 import japp.composeapp.generated.resources.moon_stars
 import japp.composeapp.generated.resources.palette
@@ -63,6 +65,8 @@ import japp.composeapp.generated.resources.save
 import japp.composeapp.generated.resources.ic_target
 import japp.composeapp.generated.resources.ic_mala
 import japp.composeapp.generated.resources.newJaap
+import japp.composeapp.generated.resources.noThem
+import japp.composeapp.generated.resources.savedSuccessfully
 import japp.composeapp.generated.resources.vibrate
 import japp.composeapp.generated.resources.volume
 import kotlinx.coroutines.CoroutineScope
@@ -122,6 +126,8 @@ fun HomeScreen(
     // Shared Pref For Vibration
     val vibrationEnabled by dataStoreManager.vibrationEnabled.collectAsState(true)
 
+    val language by dataStoreManager.language.collectAsState(Language.Hindi.isoFormat)
+
     // For Scroll View
     val scrollState = rememberScrollState()
 
@@ -136,17 +142,12 @@ fun HomeScreen(
         }
     }
 
-//    val textState = remember { mutableStateOf(TextFieldValue("")) }
-//
-//    if (countingDetails != null) {
-//        textState.value = TextFieldValue(countingDetails.countTitle)
-//
-//
-//    } else {
-//        textState.value = TextFieldValue("")
-//    }
-
     FullScreenBackground(prefs) {
+
+        val noThem = if(language == "en") stringResource(Res.string.noThem) else stringResource(Res.string.noThem)
+        val emptyCounter = if(language=="en") stringResource(Res.string.emptyCounter) else stringResource(Res.string.emptyCounter)
+        val jaapSaved = if (language == "en") stringResource(Res.string.savedSuccessfully) else stringResource(Res.string.savedSuccessfully)
+
         Column(
             modifier = Modifier.fillMaxSize().padding(top = 10.dp).verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -189,7 +190,7 @@ fun HomeScreen(
                     darkMode = darkMode,
                     onClick = {
                         showToast(
-                            "Theme is on it's way, Will be launched in next version!!",
+                            noThem,
                             context
                         )
                     })
@@ -327,7 +328,7 @@ fun HomeScreen(
                                     showResetBottomSheet = true
                                     showSaveBottomSheet = false
                                 } else {
-                                    showToast("Your jaap counter is already empty", context)
+                                    showToast(emptyCounter, context)
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
@@ -373,7 +374,7 @@ fun HomeScreen(
                 onSave = {
                     hideKeyboard(context)
                     scope.launch {
-                        showToast("Your jaap count has been saved successfully", context)
+                        showToast(jaapSaved, context)
                     }
                     onDiscontinue()
                     showSaveBottomSheet = false
@@ -381,16 +382,8 @@ fun HomeScreen(
                     dataStoreManager.setBeepSoundEnabled(beepSoundEnabled)
                 },
                 showBottomSheet = showSaveBottomSheet,
-
                 onFail = {
                     hideKeyboard(context)
-                    showToast("Please enter a name to save your counter ", context)
-                },
-                noCount = {
-                    showToast(
-                        "Your jaap counter is empty. Start counting first !",
-                        context
-                    )
                 })
 
         }

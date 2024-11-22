@@ -26,7 +26,16 @@
     <string name="totalCount">Total Count</string>
     <string name="name">Name</string>
     <string name = "newJaap">New Jaap</string>
+    <string name = "contin">Continue</string>
+    <string name = "delete">Delete</string>
     <string name = "noRecords">No Records Here Yet</string>
     <string name = "Home">Home</string>
     <string name ="editTarget">Edit Target</string>
+    <string name ="noThem">Theme is on it's way, Will be launched in next version!!</string>
+    <string name ="emptyCounter">Your jaap counter is already empty</string>
+    <string name ="savedSuccessfully">Your jaap count has been saved successfully</string>
+
+
+
+
 </resources>

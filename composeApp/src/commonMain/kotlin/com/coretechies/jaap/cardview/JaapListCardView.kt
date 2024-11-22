@@ -39,12 +39,15 @@ import com.coretechies.jaap.room.counter.CountingDetails
 import com.example.jetpackCompose.ui.theme.Orange
 import com.example.jetpackCompose.ui.theme.PureOrange
 import japp.composeapp.generated.resources.Res
+import japp.composeapp.generated.resources.contin
+import japp.composeapp.generated.resources.delete
 import japp.composeapp.generated.resources.ic_delete
 import japp.composeapp.generated.resources.ic_mala
 import japp.composeapp.generated.resources.ic_plus
 import japp.composeapp.generated.resources.ic_recycle
 import japp.composeapp.generated.resources.ic_target
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit , onContinue: () -> Unit) {
@@ -162,7 +165,7 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit
 
                                 Text(
                                     modifier = Modifier.padding(end = 15.dp), color = PureOrange,
-                                    text = "Continue"
+                                    text = stringResource(Res.string.contin)
                                 )
                             }
                         }
@@ -181,7 +184,7 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit
                                 Text(
                                     modifier = Modifier.padding(start = 8.dp, end = 15.dp),
                                     color = Color(0xFFf36464),
-                                    text = "Delete"
+                                    text = stringResource(Res.string.delete)
                                 )
                             }
                         }
