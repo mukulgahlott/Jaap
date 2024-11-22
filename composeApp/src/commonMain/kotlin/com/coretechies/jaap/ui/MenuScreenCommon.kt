@@ -193,7 +193,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         darkMode = darkMode,
                         onClick = {
                             shareApp(
-                                "Hey! Download and join Digital Jaap now to track your Jaap, stay mindful, and improve your spiritual practice. Keep count of your progress, set daily goals, and stay focused. Download it now from Play Store / App Store or visit ",
+                                "Hey! Download and join Digital Jaap now to track your Jaap, stay mindful, and improve your spiritual practice. Keep count of your progress, set daily goals, and stay focused. Download it now from Play Store / App Store or visit \n Play Store Link :- https://play.google.com/store/apps/details?id=com.coretechies.jaap \n App Store Link :- https://apps.apple.com/us/app/digital-jaap/id6737768029",
                                 context
                             )
                         },

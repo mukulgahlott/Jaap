@@ -1,6 +1,7 @@
 import SwiftUI
 import Firebase
 import FirebaseAnalytics
+import FirebaseCrashlytics
 
 @main
 struct iOSApp: App {
@@ -9,6 +10,7 @@ struct iOSApp: App {
 
     init(){
             FirebaseApp.configure()
+            Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
         
         Analytics.logEvent("app_started", parameters: [
                    "launch_time": Date().description

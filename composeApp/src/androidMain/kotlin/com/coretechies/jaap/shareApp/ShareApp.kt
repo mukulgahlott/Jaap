@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat.startActivity
 actual fun shareApp(appLink: String, context: Any?) {
     val intent = Intent().apply {
         action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, "$appLink https://play.google.com/store/apps/details?id=com.coretechies.jaap")
+        putExtra(Intent.EXTRA_TEXT, "$appLink ")
         type = "text/plain"
     }
 

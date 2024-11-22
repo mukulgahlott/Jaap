@@ -144,7 +144,7 @@ fun SaveBottomSheet(
                                         onSave()
                                         scope.launch {
                                             dataStoreManager.setTarget(if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text else "108")
-                                            dataStoreManager.setTitle(textState.value.text)
+                                            dataStoreManager.setTitle(if (textState.value.text.isNotBlank())textState.value.text else "Digital Jaap")
                                         }
                                     },
                                     target = if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text.toInt() else 108,

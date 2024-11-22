@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,6 +63,8 @@ fun ListScreen(
 
     // Shared Pref For Dark Mode
     val darkMode by dataStoreManager.darkMode.collectAsState(false)
+
+    val expandedMenuId = remember { mutableStateOf<Long?>(null) }
 
     // Shared Pref For Beep Tone Sound
     val beepSoundEnabled by dataStoreManager.beepSoundEnabled.collectAsState(false)
@@ -114,8 +117,11 @@ fun ListScreen(
                     ) {
                         items(countingData.reversed()) { item ->
                             CardViewJaap(
-                                item,
-                                darkMode,
+                                item = item,
+                                darkMode = darkMode,
+                                isMenuExpanded = expandedMenuId.value == item.id, // Check if this card's menu is expanded
+                                onMenuExpand = { expandedMenuId.value = item.id }, // Expand this menu
+                                onMenuDismiss = { expandedMenuId.value = null },   // Collapse the menu
                                 onDelete = {
                                     scope.launch {
                                         countingDao.delete(item)
@@ -127,12 +133,12 @@ fun ListScreen(
                                         dataStoreManager.setId(item.id)
                                         dataStoreManager.setTitle(item.countTitle)
                                         dataStoreManager.setTarget(item.target.toString())
-                                        dataStoreManager.setCounter(item.totalCount % item.target )
+                                        dataStoreManager.setCounter(item.totalCount % item.target)
                                         dataStoreManager.setMala(item.totalCount / item.target)
 
                                         launch(Dispatchers.Main) {
                                             onRoute(item)
-                                            dataStoreManager.setCounter(item.totalCount % item.target )
+                                            dataStoreManager.setCounter(item.totalCount % item.target)
                                             dataStoreManager.setId(item.id)
                                             dataStoreManager.setTarget(item.target.toString())
                                             dataStoreManager.setMala(item.totalCount / item.target)

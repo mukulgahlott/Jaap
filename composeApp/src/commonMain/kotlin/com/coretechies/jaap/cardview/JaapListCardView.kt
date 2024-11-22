@@ -25,8 +25,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,33 +48,31 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit , onContinue: () -> Unit) {
-    val isMenuExpanded = remember { mutableStateOf(false) }
+fun CardViewJaap(
+    item: CountingDetails, darkMode: Boolean, onDelete: () -> Unit, onContinue: () -> Unit,
+    isMenuExpanded: Boolean, // State for this card's menu
+    onMenuExpand: () -> Unit, // Callback to expand menu
+    onMenuDismiss: () -> Unit,
+) {
 
     Card(
         elevation = 0.dp,
         shape = RoundedCornerShape(8.dp),
         backgroundColor = if (darkMode) Color.Black else Color.White,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 15.dp, vertical = 10.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp, vertical = 10.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Box(
-                    modifier = Modifier.width(80.dp)
-                        .background(
-                            color = if (darkMode) Color(0XFF2c2c2c) else Orange,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(12.dp),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.width(80.dp).background(
+                        color = if (darkMode) Color(0XFF2c2c2c) else Orange,
+                        shape = RoundedCornerShape(8.dp)
+                    ).padding(12.dp), contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = item.totalCount.toString(),
@@ -88,9 +84,7 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit
                 }
 
                 Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 12.dp),
+                    modifier = Modifier.weight(1f).padding(start = 12.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
@@ -101,32 +95,38 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit
                     )
                     Row(modifier = Modifier.wrapContentWidth()) {
 
-                        Image( modifier = Modifier.size(24.dp).padding(start = 10.dp),
+                        Image(
+                            modifier = Modifier.size(24.dp).padding(start = 10.dp),
                             painter = painterResource(Res.drawable.ic_target),
                             contentDescription = "target",
-                            colorFilter = ColorFilter.tint(Color.Red))
+                            colorFilter = ColorFilter.tint(Color.Red)
+                        )
 
-                        Text(modifier = Modifier.padding(start = 10.dp),
-                            color =  if (darkMode)Color.White else Color.Black,
+                        Text(
+                            modifier = Modifier.padding(start = 10.dp),
+                            color = if (darkMode) Color.White else Color.Black,
                             fontSize = 14.sp,
-                            text = "${item.target}")
+                            text = "${item.target}"
+                        )
 
-                        Image( modifier = Modifier.size(24.dp).padding( start = 10.dp),
+                        Image(
+                            modifier = Modifier.size(24.dp).padding(start = 10.dp),
                             painter = painterResource(Res.drawable.ic_mala),
                             contentDescription = "mala",
-                            colorFilter = ColorFilter.tint(if (darkMode)Color.White else Color.Black))
+                            colorFilter = ColorFilter.tint(if (darkMode) Color.White else Color.Black)
+                        )
 
-                        Text(modifier = Modifier.padding(horizontal = 10.dp),
-                            color = if (darkMode)Color.White else Color.Black ,
+                        Text(
+                            modifier = Modifier.padding(horizontal = 10.dp),
+                            color = if (darkMode) Color.White else Color.Black,
                             fontSize = 14.sp,
-                            text = (item.totalCount / item.target).toString())
+                            text = (item.totalCount / item.target).toString()
+                        )
 
                     }
 
                     Text(
-                        text = item.countDate,
-                        fontSize = 12.sp,
-                        color = Color.Gray
+                        text = item.countDate, fontSize = 12.sp, color = Color.Gray
                     )
                 }
 
@@ -134,20 +134,22 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "More Options",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable { isMenuExpanded.value = true },
+                        modifier = Modifier.size(24.dp).clickable {
+                            if (isMenuExpanded) {
+                                onMenuDismiss() // Collapse if already expanded
+                            } else {
+                                onMenuExpand() // Expand this menu
+                            }
+                        },
                         tint = if (!darkMode) Color(0xFF87490C) else Color.Gray
                     )
 
-                    DropdownMenu(
-                        modifier = Modifier.background(if (darkMode) Color.DarkGray else Color.White),
-                        expanded = isMenuExpanded.value,
-                        onDismissRequest = { isMenuExpanded.value = false }
-                    ) {
+                    DropdownMenu(modifier = Modifier.background(if (darkMode) Color.DarkGray else Color.White),
+                        expanded = isMenuExpanded,
+                        onDismissRequest = { onMenuDismiss()}) {
                         DropdownMenuItem(onClick = {
                             onContinue()
-                            isMenuExpanded.value = false
+                            onMenuDismiss()
                         }) {
                             Row(modifier = Modifier.fillMaxSize()) {
                                 Box(modifier = Modifier.wrapContentSize().padding(end = 8.dp)) {
@@ -164,14 +166,15 @@ fun CardViewJaap(item: CountingDetails, darkMode: Boolean , onDelete: () -> Unit
                                 }
 
                                 Text(
-                                    modifier = Modifier.padding(end = 15.dp), color = PureOrange,
+                                    modifier = Modifier.padding(end = 15.dp),
+                                    color = PureOrange,
                                     text = stringResource(Res.string.contin)
                                 )
                             }
                         }
                         DropdownMenuItem(onClick = {
                             // Handle delete action
-                            isMenuExpanded.value = false
+                            onMenuDismiss()
                             onDelete()
                         }) {
                             Row(modifier = Modifier.fillMaxSize()) {
