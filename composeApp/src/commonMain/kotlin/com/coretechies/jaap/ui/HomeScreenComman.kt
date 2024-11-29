@@ -118,7 +118,7 @@ fun HomeScreen(
     val bellEnabled by dataStoreManager.bellSoundEnabled.collectAsState(true)
 
     // Shared Pref For Digital Jaap
-    val title by dataStoreManager.title.collectAsState("Digital Jaap")
+    val title by dataStoreManager.title.collectAsState("डिजिटल जाप")
 
     // Shared Pref For Beep Tone Sound
     val beepSoundEnabled by dataStoreManager.beepSoundEnabled.collectAsState(false)
@@ -157,7 +157,7 @@ fun HomeScreen(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (darkMode) Color.White else Color(0XFF87490c),
-                text = if (title.length > 16) "${title.take(16)}..." else title.lowercase()
+                text = if (title.length > 16) "${title.take(16).replaceFirstChar { it.uppercaseChar() }}..." else title
                     .replaceFirstChar { it.uppercaseChar() },
                 textAlign = TextAlign.Center
             )
@@ -268,7 +268,6 @@ fun HomeScreen(
                             contentDescription = "device",
                             modifier = Modifier.size(350.dp),
                             contentScale = ContentScale.Fit
-
                         )
 
                         Text(
@@ -324,7 +323,7 @@ fun HomeScreen(
                         // Counter Reset Button
                         Button(
                             onClick = {
-                                if (counter != 0 || target != 108 || mala != 0) {
+                                if (counter != 0 ) {
                                     showResetBottomSheet = true
                                     showSaveBottomSheet = false
                                 } else {

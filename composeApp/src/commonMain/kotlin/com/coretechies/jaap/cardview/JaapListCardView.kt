@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -72,11 +73,11 @@ fun CardViewJaap(
                     modifier = Modifier.width(80.dp).background(
                         color = if (darkMode) Color(0XFF2c2c2c) else Orange,
                         shape = RoundedCornerShape(8.dp)
-                    ).padding(12.dp), contentAlignment = Alignment.Center
+                    ).fillMaxHeight().padding(vertical = 22.dp), contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = item.totalCount.toString(),
-                        fontSize = 18.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White,
                         textAlign = TextAlign.Center
@@ -88,41 +89,60 @@ fun CardViewJaap(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = item.countTitle,
+                        text = item.countTitle.replaceFirstChar { it.uppercaseChar() },
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (!darkMode) Color(0xFF87490C) else Color.White
                     )
-                    Row(modifier = Modifier.wrapContentWidth()) {
 
-                        Image(
-                            modifier = Modifier.size(24.dp).padding(start = 10.dp),
-                            painter = painterResource(Res.drawable.ic_target),
-                            contentDescription = "target",
-                            colorFilter = ColorFilter.tint(Color.Red)
-                        )
 
+                    Row(
+                        modifier = Modifier.wrapContentWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(26.dp)
+                                .padding(start = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                modifier = Modifier.size(26.dp).padding(top = 3.dp),
+                                painter = painterResource(Res.drawable.ic_target),
+                                contentDescription = "target",
+                                colorFilter = ColorFilter.tint(Color.Red)
+                            )
+                        }
                         Text(
-                            modifier = Modifier.padding(start = 10.dp),
+                            modifier = Modifier
+                                .padding(start = 10.dp)
+                                .align(Alignment.Bottom),
                             color = if (darkMode) Color.White else Color.Black,
                             fontSize = 14.sp,
                             text = "${item.target}"
                         )
 
-                        Image(
-                            modifier = Modifier.size(24.dp).padding(start = 10.dp),
-                            painter = painterResource(Res.drawable.ic_mala),
-                            contentDescription = "mala",
-                            colorFilter = ColorFilter.tint(if (darkMode) Color.White else Color.Black)
-                        )
-
+                        Box(
+                            modifier = Modifier
+                                .size(25.dp)
+                                .padding(start = 10.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Image(
+                                modifier = Modifier.padding(top = 3.dp),
+                                painter = painterResource(Res.drawable.ic_mala),
+                                contentDescription = "mala",
+                                colorFilter = ColorFilter.tint(if (darkMode) Color.White else Color.Black)
+                            )
+                        }
                         Text(
-                            modifier = Modifier.padding(horizontal = 10.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                                .align(Alignment.Bottom),
                             color = if (darkMode) Color.White else Color.Black,
                             fontSize = 14.sp,
                             text = (item.totalCount / item.target).toString()
                         )
-
                     }
 
                     Text(
@@ -146,7 +166,7 @@ fun CardViewJaap(
 
                     DropdownMenu(modifier = Modifier.background(if (darkMode) Color.DarkGray else Color.White),
                         expanded = isMenuExpanded,
-                        onDismissRequest = { onMenuDismiss()}) {
+                        onDismissRequest = { onMenuDismiss() }) {
                         DropdownMenuItem(onClick = {
                             onContinue()
                             onMenuDismiss()

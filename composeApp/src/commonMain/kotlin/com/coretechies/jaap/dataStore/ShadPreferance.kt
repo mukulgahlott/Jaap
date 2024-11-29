@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.coretechies.jaap.localization.Language
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.CoroutineScope
@@ -49,7 +50,7 @@ class DataStoreManager(
     // Getter for mala
     val language: Flow<String> = dataStore.data
         .map { preferences ->
-            preferences[languageKey] ?: "hi"
+            preferences[languageKey] ?: Language.Hindi.isoFormat
         }
 
     // Setter for mala
@@ -94,7 +95,7 @@ class DataStoreManager(
     // Getter for counter
     val title: Flow<String> = dataStore.data
         .map { preferences ->
-            preferences[titleKey] ?: "Digital Jaap"
+            preferences[titleKey] ?: "डिजिटल जाप"
         }
 
     // Setter for counter

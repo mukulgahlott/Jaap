@@ -174,9 +174,7 @@ fun MenuScreen( context: Any? , prefs: DataStore<Preferences>) {
                         onClick = {
                             lang = switchLanguage(lang)
                             changeLang(lang)
-                            scope.launch {
-                                dataStoreManager.setLanguage(lang)
-                            }
+                            dataStoreManager.setLanguage(lang)
                         },
                         onSwitch = {}
                     )

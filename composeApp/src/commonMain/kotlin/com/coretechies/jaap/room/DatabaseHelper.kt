@@ -1,14 +1,12 @@
 package com.coretechies.jaap.room
 
-
 import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 
-
-@Database(entities = [CountingDetails::class], version = 2)
+@Database(entities = [CountingDetails::class], version = 3)
 @ConstructedBy(DatabaseHelperConstructor::class)
 abstract class DatabaseHelper : RoomDatabase() {
 

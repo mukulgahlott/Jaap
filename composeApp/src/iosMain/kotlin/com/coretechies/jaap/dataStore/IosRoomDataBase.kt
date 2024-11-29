@@ -12,8 +12,9 @@ import platform.Foundation.NSUserDomainMask
 fun getDatabaseHelper(): DatabaseHelper {
     val dbFilePath = documentDirectory() + "/jaap.db"
     return Room.databaseBuilder<DatabaseHelper>(
-        name = dbFilePath,
-    ).setDriver(BundledSQLiteDriver())
+        name = dbFilePath,)
+        .fallbackToDestructiveMigration(dropAllTables = true)
+        .setDriver(BundledSQLiteDriver())
         .build()
 }
 

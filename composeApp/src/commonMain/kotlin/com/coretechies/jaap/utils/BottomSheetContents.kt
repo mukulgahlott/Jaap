@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.coretechies.jaap.dataStore.DataStoreManager
+import com.coretechies.jaap.localization.Language
 import com.coretechies.jaap.room.counter.CountingDao
 import com.coretechies.jaap.room.counter.CountingDetails
 import japp.composeapp.generated.resources.*
@@ -69,10 +70,11 @@ fun SaveBottomSheet(
     val scope = rememberCoroutineScope()
     val dataStoreManager = DataStoreManager(prefs, scope)
     val title by dataStoreManager.title.collectAsState("Digital Jaap")
+    val language by dataStoreManager.language.collectAsState(Language.Hindi.isoFormat)
 
 
     target.value = TextFieldValue("")
-    textState.value = TextFieldValue(title)
+    textState.value = if (title == "Digital Jaap" && language == "hi")TextFieldValue("डिजिटल जाप") else TextFieldValue(title)
     previousName = title
     if (countingDetails != null) {
         performUpdate.value = countingDetails.totalCount != totalCount
@@ -169,12 +171,14 @@ fun SaveBottomSheet(
 
                 TextField(value = textState.value,
                     onValueChange = {
-                        textState.value = it
-                        if (countingDetails != null) {
-                            if (previousName != it.text) {
-                                performUpdate.value = true
-                            } else {
-                                countingDetails.countTitle = it.text
+                        if (it.text.length<=16) {
+                            textState.value = it
+                            if (countingDetails != null) {
+                                if (previousName != it.text) {
+                                    performUpdate.value = true
+                                } else {
+                                    countingDetails.countTitle = it.text
+                                }
                             }
                         }
                     },
@@ -213,15 +217,15 @@ fun SaveBottomSheet(
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Total Count text
-                Text(
-                    text = stringResource(Res.string.totalCount)+" : $totalCount", style = TextStyle(
-                        color = Color(0xFFFF8C00), // Custom color for count text
-                        fontSize = 16.sp
-                    )
-                )
+//                Spacer(modifier = Modifier.height(16.dp))
+//
+//                // Total Count text
+//                Text(
+//                    text = stringResource(Res.string.totalCount)+" : $totalCount", style = TextStyle(
+//                        color = Color(0xFFFF8C00), // Custom color for count text
+//                        fontSize = 16.sp
+//                    )
+//                )
                 Spacer(modifier = Modifier.height(50.dp))
             }
         }
@@ -331,13 +335,13 @@ fun resetBottomSheet(
             shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             color = if (darkMode) Color.Black else Color.White
         ) {
-            Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+            Column(modifier = Modifier.fillMaxWidth().padding(15.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        modifier = Modifier.padding(top = 5.dp),
+                        modifier = Modifier.padding(top = 5.dp, start = 6.dp),
                         text = stringResource(Res.string.reset_counter),
                         style = TextStyle(
                             fontSize = 24.sp,
@@ -346,23 +350,25 @@ fun resetBottomSheet(
                         )
                     )
                     Box(
-                        contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)
+                        contentAlignment = Alignment.Center, // Center content within the Box
+                        modifier = Modifier.size(50.dp)
                     ) {
                         Surface(
                             shape = CircleShape,
                             color = if (darkMode) Color(0XFF361d05) else Color(0xFFcfb69e),
                             modifier = Modifier.size(40.dp)
                         ) {}
-                        IconButton(onClick = onDismiss) {
+
+                        IconButton(onClick = onDismiss) { // No need for extra alignment, already centered
                             Icon(
                                 imageVector = Icons.Filled.Close,
                                 contentDescription = "Close",
                                 tint = Color.White
                             )
                         }
-                    }
                 }
-                Row(modifier = Modifier.fillMaxWidth(0.8f)) {
+                }
+                Row(modifier = Modifier.fillMaxWidth(0.8f).padding(start = 6.dp)) {
                     Text(
                         text = stringResource(Res.string.reset_description), style = TextStyle(
                             fontSize = 16.sp,
@@ -381,7 +387,7 @@ fun resetBottomSheet(
                         backgroundColor = Color(0XFFf36464), contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 20.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.95f),
+                        .fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
@@ -444,7 +450,7 @@ fun discontinueBottomSheet(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        modifier = Modifier.padding(top = 5.dp),
+                        modifier = Modifier.padding(top = 5.dp, start = 4.dp),
                         text = stringResource(Res.string.startNewJaap),
                         style = TextStyle(
                             fontSize = 24.sp,
@@ -469,7 +475,7 @@ fun discontinueBottomSheet(
                         }
                     }
                 }
-                Row(modifier = Modifier.fillMaxWidth(0.8f)) {
+                Row(modifier = Modifier.fillMaxWidth(0.9f).padding(start = 4.dp)) {
                     Text(
                         text = stringResource(Res.string.startNewJaap_text),
                         style = TextStyle(
@@ -489,7 +495,7 @@ fun discontinueBottomSheet(
                         backgroundColor = Color(0XFFf36464), contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 20.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.95f),
+                        .fillMaxWidth(),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
@@ -506,7 +512,7 @@ fun discontinueBottomSheet(
                         contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.9f),
+                        .fillMaxWidth(),
                     elevation = ButtonDefaults.elevation(0.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
