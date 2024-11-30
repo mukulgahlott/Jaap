@@ -229,7 +229,9 @@ fun HomeScreen(
                 )
 
                 Text(
-                    modifier = Modifier.padding(start = 10.dp),
+                    modifier = Modifier
+                        //.padding(start = 10.dp) // Android
+                        .padding(start = 10.dp, bottom = 2.dp), // IOS
                     color = Color.White,
                     text = "$target"
                 )
@@ -242,7 +244,9 @@ fun HomeScreen(
                 )
 
                 Text(
-                    modifier = Modifier.padding(horizontal = 10.dp),
+                    modifier = Modifier
+                        //.padding(start = 10.dp) // Android
+                        .padding(start = 10.dp, bottom = 2.dp, end = 10.dp), // IOS
                     color = Color.White,
                     text = "$mala"
                 )

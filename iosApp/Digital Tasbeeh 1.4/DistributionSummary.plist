@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Digital-Tasbeeh.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>buildNumber</key>
+			<string>1</string>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>F5AB57953A0EF8CB492B1B9CC0DDEF6369ACEE21</string>
+				<key>dateExpires</key>
+				<string>21/10/25</string>
+				<key>type</key>
+				<string>Cloud Managed Apple Distribution</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>buildNumber</key>
+					<string>1</string>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>F5AB57953A0EF8CB492B1B9CC0DDEF6369ACEE21</string>
+						<key>dateExpires</key>
+						<string>21/10/25</string>
+						<key>type</key>
+						<string>Cloud Managed Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>FirebaseAnalytics.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>V3H45YYUP2</string>
+						<key>name</key>
+						<string>Core Techies India Private Limited</string>
+					</dict>
+					<key>versionNumber</key>
+					<string>11.4.0</string>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>buildNumber</key>
+					<string>1</string>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>F5AB57953A0EF8CB492B1B9CC0DDEF6369ACEE21</string>
+						<key>dateExpires</key>
+						<string>21/10/25</string>
+						<key>type</key>
+						<string>Cloud Managed Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>GoogleAppMeasurement.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>V3H45YYUP2</string>
+						<key>name</key>
+						<string>Core Techies India Private Limited</string>
+					</dict>
+					<key>versionNumber</key>
+					<string>11.4.0</string>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>buildNumber</key>
+					<string>1</string>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>F5AB57953A0EF8CB492B1B9CC0DDEF6369ACEE21</string>
+						<key>dateExpires</key>
+						<string>21/10/25</string>
+						<key>type</key>
+						<string>Cloud Managed Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>GoogleAppMeasurementIdentitySupport.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>V3H45YYUP2</string>
+						<key>name</key>
+						<string>Core Techies India Private Limited</string>
+					</dict>
+					<key>versionNumber</key>
+					<string>11.4.0</string>
+				</dict>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>arm64</string>
+					</array>
+					<key>buildNumber</key>
+					<string>11.0.0</string>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>F5AB57953A0EF8CB492B1B9CC0DDEF6369ACEE21</string>
+						<key>dateExpires</key>
+						<string>21/10/25</string>
+						<key>type</key>
+						<string>Cloud Managed Apple Distribution</string>
+					</dict>
+					<key>name</key>
+					<string>GoogleAppMeasurementOnDeviceConversion.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>V3H45YYUP2</string>
+						<key>name</key>
+						<string>Core Techies India Private Limited</string>
+					</dict>
+					<key>versionNumber</key>
+					<string>11.0.0</string>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>V3H45YYUP2.com.coretechies.tasbeeh.Digital-Tasbeeh</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>V3H45YYUP2</string>
+				<key>get-task-allow</key>
+				<false/>
+			</dict>
+			<key>name</key>
+			<string>Digital-Tasbeeh.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>d06b3417-7d45-4f98-ba07-356840973266</string>
+				<key>dateExpires</key>
+				<string>21/10/25</string>
+				<key>name</key>
+				<string>iOS Team Ad Hoc Provisioning Profile: com.coretechies.tasbeeh.Digital-Tasbeeh</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>V3H45YYUP2</string>
+				<key>name</key>
+				<string>Core Techies India Private Limited</string>
+			</dict>
+			<key>versionNumber</key>
+			<string>1.4</string>
+		</dict>
+	</array>
+</dict>
+</plist>

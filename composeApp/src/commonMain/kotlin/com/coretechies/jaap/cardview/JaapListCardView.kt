@@ -115,7 +115,8 @@ fun CardViewJaap(
                         }
                         Text(
                             modifier = Modifier
-                                .padding(start = 10.dp)
+                                //.padding(start = 10.dp) // Android
+                                .padding(start = 10.dp, bottom = 2.dp) // IOS
                                 .align(Alignment.Bottom),
                             color = if (darkMode) Color.White else Color.Black,
                             fontSize = 14.sp,
@@ -137,7 +138,8 @@ fun CardViewJaap(
                         }
                         Text(
                             modifier = Modifier
-                                .padding(horizontal = 10.dp)
+//                                .padding(start = 10.dp, end = 10.dp) // Android
+                                .padding(start = 10.dp, end = 10.dp, bottom = 2.dp) // IOS
                                 .align(Alignment.Bottom),
                             color = if (darkMode) Color.White else Color.Black,
                             fontSize = 14.sp,
