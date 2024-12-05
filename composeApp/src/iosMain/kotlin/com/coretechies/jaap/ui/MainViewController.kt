@@ -10,6 +10,6 @@ fun MainScreenView() = ComposeUIViewController {
     val prefs = remember { createDataStore() }
     val countingDao = getDatabaseHelper().countingDao()
 
-    MainScreen(prefs = prefs , countingDao = countingDao, context = null)
+    App(prefs = prefs , countingDao = countingDao, context = null)
     }
 

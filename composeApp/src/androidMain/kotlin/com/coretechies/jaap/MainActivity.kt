@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.coretechies.jaap.dataStore.createDataStore
 import com.coretechies.jaap.dataStore.room.getDatabaseHelper
 import com.coretechies.jaap.ui.App
-import com.coretechies.jaap.ui.MainScreen
 import com.coretechies.jaap.ui.SplashScreen
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
@@ -20,28 +19,19 @@ import com.google.firebase.ktx.initialize
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        
+
         super.onCreate(savedInstanceState)
 
         val countingDao = getDatabaseHelper(applicationContext).countingDao()
 
+
         Firebase.initialize(this)
 
         setContent {
-
-            var isSplashScreenVisible by remember { mutableStateOf(true) } // State for splash screen visibility
-
-            // Show splash screen
-            if (isSplashScreenVisible) {
-                SplashScreen {
-                    isSplashScreenVisible = false
-                }
-            } else {
-//                MobileAds.initialize(this)
-                MainScreen(context = LocalContext.current, prefs = remember {
+                App(context = LocalContext.current, prefs = remember {
                     createDataStore(applicationContext)
                 }, countingDao = countingDao)
-            }
+//                MobileAds.initialize(this)
         }
     }
 }
@@ -49,5 +39,5 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App()
+
 }

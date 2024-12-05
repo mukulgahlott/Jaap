@@ -30,6 +30,7 @@ class DataStoreManager(
     private val bellSoundKey = booleanPreferencesKey("BellSoundEnabled")
     private val vibrationKey = booleanPreferencesKey("VibrationEnabled")
     private val languageKey = stringPreferencesKey("LanguageKey")
+    private val languageSelectScreen = booleanPreferencesKey("languageScreen")
 
 
     // Getter for id
@@ -180,6 +181,21 @@ class DataStoreManager(
         scope.launch {
             dataStore.edit { preferences ->
                 preferences[bellSoundKey] = value
+            }
+        }
+    }
+
+
+    val languageScreenEnabled: Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[languageSelectScreen] ?: true
+        }
+
+
+    fun setLanguageScreenEnabled(value: Boolean) {
+        scope.launch {
+            dataStore.edit { preferences ->
+                preferences[languageSelectScreen] = value
             }
         }
     }
