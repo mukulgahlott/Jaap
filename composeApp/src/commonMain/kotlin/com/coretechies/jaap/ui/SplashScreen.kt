@@ -31,7 +31,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(Res.drawable.bc_splash),
             contentDescription = "static splash Screen",
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
 
         )
     }

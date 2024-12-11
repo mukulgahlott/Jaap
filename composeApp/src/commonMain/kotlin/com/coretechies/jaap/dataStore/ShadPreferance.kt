@@ -96,7 +96,7 @@ class DataStoreManager(
     // Getter for counter
     val title: Flow<String> = dataStore.data
         .map { preferences ->
-            preferences[titleKey] ?: "डिजिटल जाप"
+            preferences[titleKey] ?: "Digital Jaap"
         }
 
     // Setter for counter

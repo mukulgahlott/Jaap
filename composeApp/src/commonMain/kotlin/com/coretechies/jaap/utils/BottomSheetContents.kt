@@ -74,7 +74,7 @@ fun SaveBottomSheet(
 
 
     target.value = TextFieldValue("")
-    textState.value = if (title == "Digital Jaap" && language == "hi")TextFieldValue("डिजिटल जाप") else TextFieldValue(title)
+    textState.value = if (language == "hi")TextFieldValue("डिजिटल जाप") else TextFieldValue("Digital Jaap")
     previousName = title
     if (countingDetails != null) {
         performUpdate.value = countingDetails.totalCount != totalCount
@@ -146,7 +146,7 @@ fun SaveBottomSheet(
                                         onSave()
                                         scope.launch {
                                             dataStoreManager.setTarget(if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text else "108")
-                                            dataStoreManager.setTitle(if (textState.value.text.isNotBlank())textState.value.text else "Digital Jaap")
+                                            dataStoreManager.setTitle(if (textState.value.text.isNotBlank())textState.value.text else if (language == "hi")"डिजिटल जाप" else "Digital Jaap")
                                         }
                                     },
                                     target = if (target.value.text.isNotBlank() && target.value.text.toInt() != 0) target.value.text.toInt() else 108,
@@ -404,7 +404,7 @@ fun resetBottomSheet(
                         contentColor = Color.White
                     ),
                     modifier = Modifier.padding(top = 10.dp).align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(fraction = 0.9f),
+                        .fillMaxWidth(),
                     elevation = ButtonDefaults.elevation(0.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {

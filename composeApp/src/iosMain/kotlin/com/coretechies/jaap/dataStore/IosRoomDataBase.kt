@@ -13,7 +13,6 @@ fun getDatabaseHelper(): DatabaseHelper {
     val dbFilePath = documentDirectory() + "/jaap.db"
     return Room.databaseBuilder<DatabaseHelper>(
         name = dbFilePath,)
-        .fallbackToDestructiveMigration(dropAllTables = true)
         .setDriver(BundledSQLiteDriver())
         .build()
 }

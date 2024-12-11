@@ -56,6 +56,7 @@ import com.coretechies.jaap.utils.triggerVibration
 import com.example.jetpackCompose.ui.theme.Orange
 import japp.composeapp.generated.resources.DS_DIGI
 import japp.composeapp.generated.resources.Res
+import japp.composeapp.generated.resources.app_title
 import japp.composeapp.generated.resources.device_1
 import japp.composeapp.generated.resources.emptyCounter
 import japp.composeapp.generated.resources.ic_device_dark
@@ -117,9 +118,6 @@ fun HomeScreen(
 
     val bellEnabled by dataStoreManager.bellSoundEnabled.collectAsState(true)
 
-    // Shared Pref For Digital Jaap
-    val title by dataStoreManager.title.collectAsState("डिजिटल जाप")
-
     // Shared Pref For Beep Tone Sound
     val beepSoundEnabled by dataStoreManager.beepSoundEnabled.collectAsState(false)
 
@@ -127,6 +125,10 @@ fun HomeScreen(
     val vibrationEnabled by dataStoreManager.vibrationEnabled.collectAsState(true)
 
     val language by dataStoreManager.language.collectAsState(Language.Hindi.isoFormat)
+
+
+    // Shared Pref For Digital Jaap
+    val title by dataStoreManager.title.collectAsState("Digital Jaap")
 
     // For Scroll View
     val scrollState = rememberScrollState()
@@ -152,6 +154,7 @@ fun HomeScreen(
             modifier = Modifier.fillMaxSize().padding(top = 10.dp).verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Text(
                 modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(vertical = 20.dp),
                 fontSize = 24.sp,
@@ -230,8 +233,8 @@ fun HomeScreen(
 
                 Text(
                     modifier = Modifier
-                        //.padding(start = 10.dp) // Android
-                        .padding(start = 10.dp, bottom = 2.dp), // IOS
+                        .padding(start = 10.dp), // Android
+//                        .padding(start = 10.dp, bottom = 2.dp), // IOS
                     color = Color.White,
                     text = "$target"
                 )
@@ -245,8 +248,8 @@ fun HomeScreen(
 
                 Text(
                     modifier = Modifier
-                        //.padding(start = 10.dp) // Android
-                        .padding(start = 10.dp, bottom = 2.dp, end = 10.dp), // IOS
+                        .padding(start = 10.dp,end = 10.dp), // Android
+//                        .padding(start = 10.dp, bottom = 2.dp, end = 10.dp), // IOS
                     color = Color.White,
                     text = "$mala"
                 )
