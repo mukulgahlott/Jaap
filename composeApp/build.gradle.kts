@@ -48,6 +48,7 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
 
                 implementation(libs.androidx.room.runtime)
+                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
                 implementation(libs.sqlite.bundled)
 
                 // For shared viewmodels, can be used with iOS too

@@ -34,6 +34,14 @@
     <string name="noThem">थीम आ रही है, इसे अगले संस्करण में लॉन्च किया जाएगा!!</string>
     <string name="emptyCounter">आपका जाप काउंटर पहले से ही खाली है</string>
     <string name="savedSuccessfully">आपका जाप काउंट सफलतापूर्वक सहेजा गया है</string>
+    <string name="theDigitalDivine">डिजिटल दिव्यता</string>
+    <string name="letsStart">चलिए शुरू करते हैं</string>
+    <string name="GoSocialWithAnusthan">अनुष्ठान के साथ सामाजिक बनें</string>
+    <string name="AReligiousLeaderboard">एक धार्मिक नेतृत्व सूची</string>
+    <string name="AReligiousLeaderboardDescription">उपयोगकर्ताओं को अपने मित्रों और वैश्विक स्तर पर अपनी रैंकिंग देखने की सुविधा दें, जिससे ऐप में सहभागिता और प्रतिस्पर्धा को बढ़ावा मिले।</string>
+    <string name="GoSocialWithAnusthanDescription">उपयोगकर्ताओं को ऐप में कई उपयोगकर्ता प्रोफ़ाइल जोड़ने और उनका प्रबंधन करने की सुविधा दें, जिससे समूह गतिविधियों या आयोजनों के लिए साझा उपयोग का अनुभव मिले।</string>
+    <string name="theDigitalDivineDescription">नवीन डिजिटल विधि से दिव्यता का अनुभव करें। अपने जापों का लेखा-जोखा रखें और एकाग्रचित रहें।</string>
+
 
 
 </resources>

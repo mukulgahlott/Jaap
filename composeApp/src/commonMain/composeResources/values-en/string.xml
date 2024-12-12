@@ -25,17 +25,22 @@
     <string name="Set_target_default">Set target default target is (108)</string>
     <string name="totalCount">Total Count</string>
     <string name="name">Name</string>
-    <string name = "newJaap">New Jaap</string>
-    <string name = "contin">Continue</string>
-    <string name = "delete">Delete</string>
-    <string name = "noRecords">No Records Here Yet</string>
-    <string name = "Home">Home</string>
-    <string name ="editTarget">Edit Target</string>
-    <string name ="noThem">Theme is on it's way, Will be launched in next version!!</string>
-    <string name ="emptyCounter">Your jaap counter is already empty</string>
-    <string name ="savedSuccessfully">Your jaap count has been saved successfully</string>
-
-
+    <string name="newJaap">New Jaap</string>
+    <string name="contin">Continue</string>
+    <string name="delete">Delete</string>
+    <string name="noRecords">No Records Here Yet</string>
+    <string name="Home">Home</string>
+    <string name="letsStart">Let’s Start</string>
+    <string name="editTarget">Edit Target</string>
+    <string name="noThem">Theme is on it's way, Will be launched in next version!!</string>
+    <string name="emptyCounter">Your jaap counter is already empty</string>
+    <string name="savedSuccessfully">Your jaap count has been saved successfully</string>
+    <string name="theDigitalDivine">The Digital Divine</string>
+    <string name="GoSocialWithAnusthan">Go Social with Anusthan</string>
+    <string name="AReligiousLeaderboard">A Religious Leaderboard</string>
+    <string name="AReligiousLeaderboardDescription">Enable users to see their rankings among friends and globally, encouraging engagement and competition within the app.</string>
+    <string name="GoSocialWithAnusthanDescription">Enable users to add and manage multiple user profiles within the app, providing a shared usage experience for group activities or events.</string>
+    <string name="theDigitalDivineDescription">Experience the Divine moment in the all new digital way. Keep record of your enchanting and stay focused.</string>
 
 
 </resources>

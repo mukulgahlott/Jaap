@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.ic_tick
 import org.jetbrains.compose.resources.painterResource
@@ -23,7 +24,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun ChooseLanguageScreen(
     onNextClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     var selectedLanguage by remember { mutableStateOf("English") }
 
@@ -68,8 +70,10 @@ fun ChooseLanguageScreen(
 
             Spacer(modifier = Modifier.height(80.dp)) // Adjust the spacing to align with screenshot
 
+
             Button(
                 onClick = {onNextClick(selectedLanguage)
+                    navController.navigate(AppScreen.WalkThroughScreen.route)
                           },
                 modifier = Modifier
                     .padding(horizontal = 24.dp)

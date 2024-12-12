@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.navigation.NavController
 import com.coretechies.jaap.dataStore.DataStoreManager
 import com.coretechies.jaap.localization.Language
 import com.coretechies.jaap.localization.LocalizedApp
@@ -38,7 +39,7 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
-    prefs: DataStore<Preferences>, countingDao: CountingDao, context: Any?
+    prefs: DataStore<Preferences>, countingDao: CountingDao, context: Any?,navController: NavController
 ) {
     MaterialTheme {
         var selectedTab by remember { mutableStateOf(0) }
