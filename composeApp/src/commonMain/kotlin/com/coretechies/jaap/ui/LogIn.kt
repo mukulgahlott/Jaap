@@ -1,23 +1,54 @@
 package com.coretechies.jaap.ui
 
+import AppScreen
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.jetpackCompose.ui.theme.DarkOrange
 import com.example.jetpackCompose.ui.theme.Orange
+import com.example.jetpackCompose.ui.theme.OrangeSubColor
+import com.example.jetpackCompose.ui.theme.PureOrange
+import com.example.jetpackCompose.ui.theme.SubDark
+import japp.composeapp.generated.resources.DigitalJaap
+import japp.composeapp.generated.resources.Res
+import japp.composeapp.generated.resources.bg_logIn
+import japp.composeapp.generated.resources.ic_login_left
+import japp.composeapp.generated.resources.ic_login_right
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LoginScreen(
@@ -31,35 +62,41 @@ fun LoginScreen(
     var passCode by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+    Box(
+        modifier = Modifier.fillMaxSize().background(color = Color.White),
+        contentAlignment = Alignment.TopCenter
     ) {
-        // App Logo and Title
-        AppLogo()
+        Image(
+            painter = painterResource(Res.drawable.bg_logIn),
+            contentDescription = "",
+            contentScale = ContentScale.FillHeight
+        )
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            // App Logo and Title
+            AppLogo()
 
-        // Login Form
-        LoginForm(
-            userId = userId,
-            passCode = passCode,
-            isError = isError,
-            onUserIdChange = { userId = it },
-            onPassCodeChange = { if (it.length <= 4) passCode = it },
-            onForgotPasswordClick = onForgotPasswordClick,
-            onLoginClick = {
-                isError = userId.isEmpty() || passCode.length != 4
+            // Login Form
+            LoginForm(userId = userId,
+                passCode = passCode,
+                isError = isError,
+                onUserIdChange = { userId = it },
+                onPassCodeChange = { if (it.length <= 4) passCode = it },
+                onForgotPasswordClick = onForgotPasswordClick,
+                onLoginClick = { navController.navigate(AppScreen.CongratulationScreen.route)
+                    isError = userId.isEmpty() || passCode.length != 4
 //                if (!isError) onLoginClick(userId, passCode)
-            }
-        )
+                })
 
-        // Additional Options
-        LoginOptions(
-            onContinueWithoutLogin = onContinueWithoutLogin,
-            onRegisterClick = onRegisterClick
-        )
+            // Additional Options
+            LoginOptions(
+                onContinueWithoutLogin = onContinueWithoutLogin,
+                onRegisterClick = { navController.navigate(AppScreen.SignIn.route) }
+            )
+        }
     }
 }
 
@@ -70,18 +107,15 @@ private fun AppLogo() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Box(
-            modifier = Modifier
-                .size(100.dp)
-                .background(
-                    shape = RoundedCornerShape(50.dp),
-                    color = Color.DarkGray
-                )
+            modifier = Modifier.size(70.dp).background(
+                color = Color.Transparent
+            )
         )
 
-        Text(
-            text = "Digital Jaap",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Medium
+        Image(modifier = Modifier.fillMaxWidth(0.7f),
+            painter = painterResource(Res.drawable.DigitalJaap),
+            contentDescription = "",
+
         )
     }
 }
@@ -97,14 +131,26 @@ private fun LoginForm(
     onLoginClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.fillMaxWidth().padding(top=40.dp), verticalArrangement = Arrangement.spacedBy(19.dp)
     ) {
-        Text(
-            text = "Login",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Medium
-        )
+
+        Row (modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+
+            Image(modifier = Modifier.fillMaxWidth(0.3f),
+                painter = painterResource(Res.drawable.ic_login_left),
+                contentDescription = "",
+                )
+
+            Text(
+                text = "Login", fontSize = 20.sp, fontWeight = FontWeight.Medium, color = Color(0XFFE28B2A)
+            )
+
+            Image(modifier = Modifier.fillMaxWidth(0.55f),
+                painter = painterResource(Res.drawable.ic_login_right),
+                contentDescription = "",
+
+                )
+        }
 
         // User ID Input
         CustomTextField(
@@ -128,9 +174,8 @@ private fun LoginForm(
             )
 
             Text(
-                text = "Forgot Password?",
-                modifier = Modifier
-                    .align(Alignment.End),
+                text = "",
+                modifier = Modifier.align(Alignment.End).padding(vertical = 1.dp),
                 fontSize = 14.sp
             )
         }
@@ -139,12 +184,21 @@ private fun LoginForm(
         Button(
             onClick = onLoginClick,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth().padding(horizontal = 5.dp)
                 .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Orange, // Custom background color
+                contentColor = Color.White,          // Text color
+                disabledBackgroundColor = Orange, // Disabled state background color
+                disabledContentColor = Orange // Disabled state text color
+            ),
+            shape = RoundedCornerShape(12.dp), // Optional: Rounded corners
+            elevation = ButtonDefaults.elevation(8.dp) // Optional: Elevation for shadow
         ) {
             Text(
                 text = "Login",
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold // Optional: Make the text bold
             )
         }
     }
@@ -152,8 +206,7 @@ private fun LoginForm(
 
 @Composable
 private fun LoginOptions(
-    onContinueWithoutLogin: () -> Unit,
-    onRegisterClick: () -> Unit
+    onContinueWithoutLogin: () -> Unit, onRegisterClick: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -162,23 +215,35 @@ private fun LoginOptions(
         Text(
             text = "Continue without login",
             fontSize = 16.sp,
+            color = Orange
         )
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier.fillMaxWidth(.97f)
+                .background(
+                    color = Color(0XFFfaf6f3),
+                    shape = RoundedCornerShape(12.dp) // Adjust corner radius as needed
+                ).height(50.dp)
+                .clip(RoundedCornerShape(12.dp)).clickable{ onRegisterClick() }
+                .padding(horizontal = 15.dp)
+
         ) {
-            Text(
-                text = "Don't have an account? ",
-
-                fontSize = 16.sp
-            )
-            Text(
-                text = "Register",
-
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-            )
+            Row(
+                modifier = Modifier.fillMaxSize(), // Ensure Row fills the Box
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Don't have an account? ",
+                    fontSize = 16.sp
+                )
+                Text(
+                    text = "Register",
+                    color = Orange,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
         }
     }
 }
@@ -193,24 +258,33 @@ private fun CustomTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     isError: Boolean = false
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(horizontal = 5.dp)) {
         Text(
-            text = label,
-            fontSize = 16.sp
+            fontWeight = FontWeight.Medium,
+            text = label, fontSize = 16.sp, color = Color(0XFF87490C),
         )
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            placeholder = { Text(placeholder) },
-            modifier = Modifier.fillMaxWidth(),
-            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                backgroundColor = Color.White,
-                focusedBorderColor = Orange
-            ),
-            singleLine = true,
-            isError = isError
-        )
+            OutlinedTextField(
+                value = value,
+                onValueChange = onValueChange,
+                placeholder = { Text(placeholder, color = Color(0XFF87490C)) },
+                modifier = Modifier
+                    .fillMaxWidth()
+
+                    .background(Color.White, RoundedCornerShape(3.dp)), // Background with rounded corners
+                shape = RoundedCornerShape(10.dp), // Apply rounded corners to the TextField itself
+                visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+                keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = Color.Transparent, // Set background to transparent (handled by Modifier)
+                    focusedBorderColor = Orange,
+                    unfocusedBorderColor = Color(0XFF87490C),
+                    placeholderColor = Color.Gray,
+                    unfocusedLabelColor = Color(0XFF87490C),
+                    focusedLabelColor = Orange
+                ),
+                singleLine = true,
+                isError = isError
+            )
+
     }
 }

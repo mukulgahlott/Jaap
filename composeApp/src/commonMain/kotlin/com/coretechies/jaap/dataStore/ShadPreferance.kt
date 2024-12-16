@@ -31,6 +31,7 @@ class DataStoreManager(
     private val vibrationKey = booleanPreferencesKey("VibrationEnabled")
     private val languageKey = stringPreferencesKey("LanguageKey")
     private val languageSelectScreen = booleanPreferencesKey("languageScreen")
+    private val isLogIn = booleanPreferencesKey("isLogIn")
 
 
     // Getter for id
@@ -135,6 +136,21 @@ class DataStoreManager(
         scope.launch {
             dataStore.edit { preferences ->
                 preferences[themeKey] = value
+            }
+        }
+    }
+
+    // Getter for manageThemeImage
+    val getIsLogIn : Flow<Boolean> = dataStore.data
+        .map { preferences ->
+            preferences[isLogIn] ?: false
+        }
+
+    // Setter for manageThemeImage
+    fun setIsLogin (value: Boolean) {
+        scope.launch {
+            dataStore.edit { preferences ->
+                preferences[isLogIn] = value
             }
         }
     }

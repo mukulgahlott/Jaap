@@ -13,6 +13,7 @@ import com.coretechies.jaap.dataStore.createDataStore
 import com.coretechies.jaap.dataStore.room.getDatabaseHelper
 import com.coretechies.jaap.ui.App
 import com.coretechies.jaap.ui.SplashScreen
+import com.coretechies.jaap.utils.appContext
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        appContext = applicationContext
 
         val countingDao = getDatabaseHelper(applicationContext).countingDao()
 

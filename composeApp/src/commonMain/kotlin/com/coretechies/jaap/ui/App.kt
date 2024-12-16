@@ -35,9 +35,7 @@ fun App(
             isSplashScreenVisible = false
         }
     }
-
     val navController = rememberNavController()
-
     NavHost(
         navController = navController, startDestination = if (showLanguageSelectScreen)AppScreen.ChooseLanguageScreen.route else AppScreen.MainScreen.route
     ) {
@@ -57,29 +55,13 @@ fun App(
         }
         composable(AppScreen.WalkThroughScreen.route) {
             WalkThrough(onNext = {
-//                dataStoreManager.setLanguageScreenEnabled(false)
-//                scope.launch(Dispatchers.Main) { dataStoreManager.setLanguageScreenEnabled(false) }
+
             }, navController = navController)
         }
-//        composable(AppScreen.SignIn.route) { HomeScreen(navController) }
+        composable(AppScreen.SignIn.route) { RegistrationScreen( navController ) }
         composable(AppScreen.LogIn.route) { LoginScreen(onForgotPasswordClick = {}, onRegisterClick = {},onContinueWithoutLogin ={} ,navController= navController) }
-//        composable(AppScreen.CongratulationScreen.route) { SettingsScreen(navController) }
+        composable(AppScreen.CongratulationScreen.route) { CongratsScreen(onContinueClick = {} , navController = navController) }
 //        composable(AppScreen.SearchScreen.route) { SettingsScreen(navController) }
     }
-
-//    if (showLanguageSelectScreen && !walkthrough) {
-//        ChooseLanguageScreen(onNextClick = { language ->
-//            dataStoreManager.setLanguage(if (language == "English") Language.English.isoFormat else Language.Hindi.isoFormat);
-//            walkthrough = true;
-//        })
-//    } else if (walkthrough) {
-//        WalkThrough(onNext = {
-//            dataStoreManager.setLanguageScreenEnabled(false)
-//            walkthrough = false
-//            scope.launch(Dispatchers.Main) { dataStoreManager.setLanguageScreenEnabled(false) }
-//        })
-//    } else if (!showLanguageSelectScreen) {
-//        MainScreen(context = context, prefs = prefs, countingDao = countingDao, navController= navController)
-//    }
 
 }

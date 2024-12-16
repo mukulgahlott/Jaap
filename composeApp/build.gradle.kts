@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -15,16 +14,13 @@ plugins {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class) compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 
     listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
+        iosX64(), iosArm64(), iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -42,20 +38,25 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
-
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.multiplatform.settings)
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.ktor.client.core.v230)  // Core client features
+                implementation(libs.ktor.client.cio)   // CIO engine for JVM
+                implementation(libs.ktor.client.json)  // JSON support
+                implementation(libs.ktor.client.logging) // Logging
+                implementation(libs.ktor.serialization.kotlinx.json) // JSON serialization
+                implementation(libs.ktor.client.content.negotiation) // Content Negotiation Plugin
 
                 implementation(libs.androidx.room.runtime)
-                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+                implementation(libs.navigation.compose)
                 implementation(libs.sqlite.bundled)
 
                 // For shared viewmodels, can be used with iOS too
                 implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.androidx.lifecycle.runtime.compose)
 
-                implementation (libs.androidx.lifecycle.livedata.ktx.v261)
+//                implementation(libs.androidx.lifecycle.livedata.ktx)
 
                 // For shared viewmodels and other common libraries
                 api(libs.datastore.preferences)
@@ -66,14 +67,15 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(compose.preview)
-                implementation(libs.firebase.bom)
                 implementation(libs.google.firebase.crashlytics)
                 implementation(libs.google.firebase.analytics)
                 implementation(libs.lottie.compose)
 
-                implementation("androidx.activity:activity-compose:1.9.2")
+                implementation(libs.androidx.activity.compose.v193)
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.sqlite.bundled)
+
+                implementation(libs.firebase.messaging) // Firebase for Android
 
                 // AdMob
                 implementation(libs.play.services.ads)
@@ -118,7 +120,6 @@ room {
 }
 
 dependencies {
-    implementation(libs.androidx.material3.android)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.filament.android)
     implementation(libs.androidx.navigation.common.ktx)
@@ -127,8 +128,10 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
     implementation(libs.androidx.lifecycle.livedata.ktx)
-
+    implementation(libs.google.firebase.messaging)
     debugImplementation(compose.uiTooling)
     ksp(libs.androidx.room.compiler)
     implementation(libs.firebase.common.ktx)
+    //
+
 }

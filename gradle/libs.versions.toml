@@ -1,5 +1,6 @@
 [versions]
 accompanistSystemuicontroller = "<version>"
+activityCompose = "1.9.3"
 agp = "8.2.2"
 android-compileSdk = "34"
 android-minSdk = "24"
@@ -13,12 +14,22 @@ androidx-lifecycle = "2.8.2"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
 compose-plugin = "1.6.11"
+fcmIos = "0.6.4"
 firebaseBom = "33.5.1"
 firebaseCommonKtx = "21.0.0"
+firebaseMessaging = "24.0.1"
 junit = "4.13.2"
+kmmNotifications = "0.4.1"
 kotlin = "2.0.20"
 kotlinxCoroutinesCore = "1.8.1"
 kotlinxDatetime = "0.4.0"
+ktorClientCio = "3.0.2"
+ktorClientContentNegotiation = "3.0.2"
+ktorClientCore = "3.0.2"
+ktorClientCoreVersion = "2.3.0"
+ktorClientJson = "3.0.2"
+ktorClientLogging = "3.0.2"
+ktorSerializationKotlinxJson = "3.0.2"
 lifecycleLivedataKtxVersion = "2.6.1"
 lottieCompose = "6.0.0"
 material = "1.7.4"
@@ -28,6 +39,7 @@ materialVersion = "1.5.4"
 navigationCompose = "2.8.3"
 filamentAndroid = "1.17.1"
 navigationCommonKtx = "2.8.3"
+navigationComposeVersion = "2.8.0-alpha10"
 playServicesAds = "23.5.0"
 ui = "1.7.4"
 datastoreCoreAndroid = "1.1.1"
@@ -48,10 +60,13 @@ firebaseCrashlytics = "19.2.1"
 googleFirebaseCrashlytics = "3.0.2"
 firebaseAnalytics = "22.1.2"
 uiVersion = "1.6.11"
-lifecycleLivedataKtx = "2.8.7"
+lifecycleLivedataKtx = "2.6.1"
+firebaseMessagingKtx = "24.1.0"
+firebaseMessagingVersion = "24.1.0"
 
 [libraries]
 
+androidx-activity-compose-v193 = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animation" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-lifecycle-livedata-ktx-v261 = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtxVersion" }
@@ -59,8 +74,10 @@ androidx-material-v154 = { module = "androidx.compose.material:material", versio
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-common-ktx = { module = "com.google.firebase:firebase-common-ktx", version.ref = "firebaseCommonKtx" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
 google-firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 google-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+kmm-notifications = { module = "com.linecorp.abc:kmm-notifications", version.ref = "kmmNotifications" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -79,6 +96,13 @@ filament-android = { group = "com.google.ar.sceneform", name = "filament-android
 androidx-navigation-common-ktx = { group = "androidx.navigation", name = "navigation-common-ktx", version.ref = "navigationCommonKtx" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClientCio" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientContentNegotiation" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCore" }
+ktor-client-core-v230 = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientCoreVersion" }
+ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktorClientJson" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorClientLogging" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorSerializationKotlinxJson" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-datastore-core-android = { group = "androidx.datastore", name = "datastore-core-android", version.ref = "datastoreCoreAndroid" }
@@ -88,6 +112,7 @@ androidx-datastore-preferences-core-jvm = { group = "androidx.datastore", name =
 multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformSettings" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
@@ -97,6 +122,8 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "uiVersion" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
+google-firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessagingVersion" }
 
 
 [plugins]
