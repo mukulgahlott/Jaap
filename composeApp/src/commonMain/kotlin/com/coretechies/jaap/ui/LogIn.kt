@@ -1,6 +1,7 @@
 package com.coretechies.jaap.ui
 
 import AppScreen
+import LoginViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,16 +40,22 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.coretechies.jaap.api.ApiClient
+import com.coretechies.jaap.api.ApiService
+import com.coretechies.jaap.utils.getDeviceId
+import com.coretechies.jaap.utils.getFcmToken
 import com.example.jetpackCompose.ui.theme.DarkOrange
 import com.example.jetpackCompose.ui.theme.Orange
 import com.example.jetpackCompose.ui.theme.OrangeSubColor
 import com.example.jetpackCompose.ui.theme.PureOrange
 import com.example.jetpackCompose.ui.theme.SubDark
+import io.ktor.client.HttpClient
 import japp.composeapp.generated.resources.DigitalJaap
 import japp.composeapp.generated.resources.Res
 import japp.composeapp.generated.resources.bg_logIn
 import japp.composeapp.generated.resources.ic_login_left
 import japp.composeapp.generated.resources.ic_login_right
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -61,6 +69,9 @@ fun LoginScreen(
     var userId by remember { mutableStateOf("") }
     var passCode by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
+    val apiService = ApiService(client = HttpClient()) // Initialize the HttpClient
+    val loginViewModel = LoginViewModel(ApiService(ApiClient.client));
+    val coroutineScope = rememberCoroutineScope()  // Remember CoroutineScope for UI-related tasks
 
     Box(
         modifier = Modifier.fillMaxSize().background(color = Color.White),
@@ -85,12 +96,33 @@ fun LoginScreen(
                 isError = isError,
                 onUserIdChange = { userId = it },
                 onPassCodeChange = { if (it.length <= 4) passCode = it },
-                onForgotPasswordClick = onForgotPasswordClick,
-                onLoginClick = { navController.navigate(AppScreen.CongratulationScreen.route)
+                onLoginClick = {
+                    // Triggering the login process when login button is clicked
                     isError = userId.isEmpty() || passCode.length != 4
-//                if (!isError) onLoginClick(userId, passCode)
-                })
 
+                    // Ensure there is no error before proceeding
+                    if (!isError) {
+                        coroutineScope.launch {
+                            // Perform user verification
+                            val result = loginViewModel.verifyUser(
+                                userName = userId,
+                                passcode = passCode.toInt(),
+                                deviceId = getDeviceId(),
+                                fcmToken = getFcmToken()
+                            )
+
+                            // Check result (if needed, depending on API response)
+                            if (result == "verified") {
+                                // Navigate to the next screen if the user is verified
+                                navController.navigate(AppScreen.CongratulationScreen.route)
+                            } else {
+                                // Handle error (e.g., show a message)
+                                isError = true
+                            }
+                        }
+                    }
+                }
+            )
             // Additional Options
             LoginOptions(
                 onContinueWithoutLogin = onContinueWithoutLogin,
@@ -127,7 +159,6 @@ private fun LoginForm(
     isError: Boolean,
     onUserIdChange: (String) -> Unit,
     onPassCodeChange: (String) -> Unit,
-    onForgotPasswordClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
     Column(
@@ -181,7 +212,7 @@ private fun LoginForm(
         }
 
         // Login Button
-        Button(
+        Button(enabled = (userId.isNotBlank() && passCode.length == 4),
             onClick = onLoginClick,
             modifier = Modifier
                 .fillMaxWidth().padding(horizontal = 5.dp)

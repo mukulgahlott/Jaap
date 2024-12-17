@@ -14,7 +14,7 @@ class ApiService(private val client: HttpClient) {
         deviceId: String,
         fcmToken: String
     ): String {
-        return client.get("$baseUrl/checkIsVaried") {
+        return client.get("$baseUrl/${EndPoints.LOGIN}") {
             url {
                 parameters.append("userName", userName)
                 parameters.append("passcode", passcode.toString())

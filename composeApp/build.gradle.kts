@@ -10,9 +10,11 @@ plugins {
     alias(libs.plugins.room)
     id("com.google.gms.google-services")
     alias(libs.plugins.google.firebase.crashlytics)
+
 }
 
 kotlin {
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class) compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -30,6 +32,11 @@ kotlin {
     }
 
     sourceSets {
+         iosMain.dependencies {
+                implementation(libs.ktor.client.ios)
+            }
+
+
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
@@ -41,9 +48,10 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.multiplatform.settings)
                 implementation(libs.kotlinx.datetime)
-                implementation(libs.ktor.client.core.v230)  // Core client features
+                implementation(libs.ktor.client.core)  // Core client features
                 implementation(libs.ktor.client.cio)   // CIO engine for JVM
                 implementation(libs.ktor.client.json)  // JSON support
+                implementation(libs.ktor.clint.auth)  // JSON support
                 implementation(libs.ktor.client.logging) // Logging
                 implementation(libs.ktor.serialization.kotlinx.json) // JSON serialization
                 implementation(libs.ktor.client.content.negotiation) // Content Negotiation Plugin
@@ -74,13 +82,14 @@ kotlin {
                 implementation(libs.androidx.activity.compose.v193)
                 implementation(libs.androidx.room.runtime)
                 implementation(libs.sqlite.bundled)
-
+                implementation(libs.ktor.client.okhttp) // OkHttp for Android
                 implementation(libs.firebase.messaging) // Firebase for Android
 
                 // AdMob
                 implementation(libs.play.services.ads)
             }
         }
+
 
     }
 }

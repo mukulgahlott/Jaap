@@ -18,7 +18,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App(
-    context: Any?, prefs: DataStore<Preferences>, countingDao: CountingDao
+    context: Any?, prefs: DataStore<Preferences>, countingDao: CountingDao,
 ) {
 
     val scope = rememberCoroutineScope()
